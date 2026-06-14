@@ -1,36 +1,60 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Silexio — Portfolio
 
-## Getting Started
+One-page portfolio for [Silexio](https://silexio.be), an independent full-stack engineering studio based in Belgium. Fully static, bilingual (FR/EN), built to score top marks on Core Web Vitals, SEO and accessibility.
 
-First, run the development server:
+## Stack
+
+| Layer | Tech |
+| --- | --- |
+| Framework | Next.js 16 (App Router, Turbopack) |
+| UI | React 19, TypeScript strict |
+| Styles | Tailwind CSS 4 (CSS-first) + hand-written OKLCH design system |
+| Animations | Motion + CSS scroll-driven animations |
+| Tests | Vitest |
+| Package manager | pnpm |
+
+## Getting started
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+pnpm install
+pnpm dev        # http://localhost:3000 → redirects to /fr
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+```bash
+pnpm build      # production build (all routes prerendered)
+pnpm start      # serve the production build
+pnpm lint       # eslint
+pnpm test       # vitest unit tests
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Architecture
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```text
+app/
+├── [lang]/            # fr | en — fully static via generateStaticParams
+│   ├── layout.tsx     # fonts, metadata + hreflang, JSON-LD, theme bootstrap
+│   └── page.tsx       # section assembly
+├── globals.css        # design tokens (OKLCH) + component styles
+├── robots.ts · sitemap.ts · manifest.ts
+└── fonts/             # Luciole (self-hosted, low-vision-friendly body font)
+components/
+├── layout/            # Nav, ChapterMarkers, Footer
+├── sections/          # Hero, Services, Process, Work, Stack, Contact
+└── ui/                # Reveal, LineReveal, Btn, Chip, SectionHead, Neurons…
+hooks/                 # useActiveSection (IntersectionObserver)
+lib/
+├── i18n/              # locales config + t() resolver (+ tests)
+├── data.ts            # all bilingual content, typed
+├── github.ts          # repo stats fetched at build time (daily revalidation)
+└── metadata.ts        # BASE_URL
+```
 
-## Learn More
+### Design notes
 
-To learn more about Next.js, take a look at the following resources:
+- **Package picker** — the services section presents six selectable offerings (showcase site, web app, API & backend, infrastructure, automation, IT support). The visitor builds a selection that persists in `localStorage` and pre-fills both the cal.com booking notes and the contact email, so a prospect's needs arrive with their message. Selections are stored as ids and resolved per language, so switching locale relabels them. State lives in a `useSyncExternalStore` store, no provider.
+- **Live GitHub data** — project rows show star counts fetched from the GitHub API at build time (revalidated daily), with a silent fallback when the API is unreachable.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **i18n by route** — `/fr` and `/en` are prerendered separately with `hreflang` alternates and a bilingual sitemap. Translations resolve in Server Components only; no dictionary ships to the client.
+- **Theme** — light/dark via a `data-theme` attribute set by an inline script before first paint (no flash), persisted in `localStorage`, animated with the View Transitions API.
+- **Animations** — reveal effects use Motion (`whileInView`, `useScroll` for the pinned scrollytelling); purely decorative motion (hero shard, scroll progress, marquee) stays in CSS with `animation-timeline` behind `@supports`. Everything honors `prefers-reduced-motion`.
+- **Performance** — zero runtime data fetching, self-hosted fonts via `next/font`, static HTML served from the edge, strict security headers (CSP, HSTS) in `next.config.ts`.
