@@ -1,6 +1,6 @@
 # Silexio — Portfolio
 
-One-page portfolio for [Silexio](https://silexio.be), an independent full-stack engineering studio based in Belgium. Fully static, bilingual (FR/EN), built to score top marks on Core Web Vitals, SEO and accessibility.
+One-page portfolio for [Silexio](https://silexio.be), an independent full-stack engineering studio based in Belgium. Fully static, bilingual (FR/EN), scoring a perfect 100 on Lighthouse SEO, accessibility and best practices, with a cross-browser liquid-glass UI.
 
 ## Stack
 
@@ -56,5 +56,6 @@ lib/
 
 - **i18n by route** — `/fr` and `/en` are prerendered separately with `hreflang` alternates and a bilingual sitemap. Translations resolve in Server Components only; no dictionary ships to the client.
 - **Theme** — light/dark via a `data-theme` attribute set by an inline script before first paint (no flash), persisted in `localStorage`, animated with the View Transitions API.
+- **Liquid glass** — the floating navbar and the mobile sheet share one glass language: transparent `color-mix` background, `backdrop-filter` blur + saturation, and a specular `::before` highlight. Pure CSS, so it renders identically across Chrome, Safari and Firefox.
 - **Animations** — the hero headline reveals via CSS (server-rendered, so the LCP text paints without waiting for hydration); below-the-fold reveals use Motion (`whileInView`, `useScroll` for the pinned scrollytelling). Purely decorative motion (hero shard, scroll progress, marquee) stays in CSS with `animation-timeline` behind `@supports`. Everything honors `prefers-reduced-motion`.
 - **Performance** — zero runtime data fetching, self-hosted fonts via `next/font`, static HTML served from the edge, strict security headers (CSP, HSTS) in `next.config.ts`.

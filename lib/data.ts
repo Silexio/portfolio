@@ -6,7 +6,7 @@ export const META = {
     en: "Silexio — Full-stack development & IT · Belgium",
   },
   description: {
-    fr: "Studio indépendant basé en Belgique. Développement full-stack, backend, infrastructure et support IT. Un seul interlocuteur, de l'idée jusqu'au serveur en production.",
+    fr: "Studio indépendant en Belgique. Développement full-stack, backend, infrastructure et support IT. Un seul interlocuteur, de l'idée au serveur en production.",
     en: "Independent studio based in Belgium. Full-stack development, backend, infrastructure and IT support. One point of contact, from idea to production.",
   },
 } satisfies Record<string, Bilingual>;
