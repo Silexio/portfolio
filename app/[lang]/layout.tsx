@@ -105,7 +105,7 @@ export default async function RootLayout({ children, params }: LayoutProps<"/[la
           dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData(lang)) }}
         />
       </head>
-      <body>{children}</body>
+      <body suppressHydrationWarning>{children}</body>
     </html>
   );
 }

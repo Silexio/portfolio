@@ -40,7 +40,7 @@ app/
 components/
 ├── layout/            # Nav, ChapterMarkers, Footer
 ├── sections/          # Hero, Services, Process, Work, Stack, Contact
-└── ui/                # Reveal, LineReveal, Btn, Chip, SectionHead, Neurons…
+└── ui/                # Reveal, HeroLines, Btn, Chip, SectionHead, Neurons…
 hooks/                 # useActiveSection (IntersectionObserver)
 lib/
 ├── i18n/              # locales config + t() resolver (+ tests)
@@ -56,5 +56,5 @@ lib/
 
 - **i18n by route** — `/fr` and `/en` are prerendered separately with `hreflang` alternates and a bilingual sitemap. Translations resolve in Server Components only; no dictionary ships to the client.
 - **Theme** — light/dark via a `data-theme` attribute set by an inline script before first paint (no flash), persisted in `localStorage`, animated with the View Transitions API.
-- **Animations** — reveal effects use Motion (`whileInView`, `useScroll` for the pinned scrollytelling); purely decorative motion (hero shard, scroll progress, marquee) stays in CSS with `animation-timeline` behind `@supports`. Everything honors `prefers-reduced-motion`.
+- **Animations** — the hero headline reveals via CSS (server-rendered, so the LCP text paints without waiting for hydration); below-the-fold reveals use Motion (`whileInView`, `useScroll` for the pinned scrollytelling). Purely decorative motion (hero shard, scroll progress, marquee) stays in CSS with `animation-timeline` behind `@supports`. Everything honors `prefers-reduced-motion`.
 - **Performance** — zero runtime data fetching, self-hosted fonts via `next/font`, static HTML served from the edge, strict security headers (CSP, HSTS) in `next.config.ts`.

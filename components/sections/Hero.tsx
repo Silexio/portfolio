@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { Btn } from "@/components/ui/Btn";
-import { LineReveal } from "@/components/ui/LineReveal";
+import { HeroLines } from "@/components/ui/HeroLines";
 import { Reveal } from "@/components/ui/Reveal";
 import { I18N, MARQUEE } from "@/lib/data";
 import type { Locale } from "@/lib/i18n/config";
@@ -31,11 +31,11 @@ export function Hero({ lang }: { lang: Locale }) {
         </Reveal>
 
         <p className="hero__supertitle">
-          <LineReveal lines={t(i18n.titlePre, lang)} baseDelay={150} />
+          <HeroLines lines={t(i18n.titlePre, lang)} baseDelay={150} />
         </p>
 
         <h1 className="hero__title">
-          <LineReveal
+          <HeroLines
             lines={[
               t(i18n.titleA, lang),
               <span key="line-2">

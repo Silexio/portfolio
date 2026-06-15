@@ -71,7 +71,7 @@ export const I18N = {
     metaBaseValue: { fr: "Belgique · UTC+1", en: "Belgium · UTC+1" },
     metaBaseSub: { fr: "Remote · Sur place", en: "Remote · On-site" },
     metaStatusLabel: { fr: "DISPO", en: "STATUS" },
-    metaStatusValue: { fr: "Ouvert aux projets 2026", en: "Open for 2026 projects" },
+    metaStatusValue: { fr: "Ouvert aux nouvelles opportunités", en: "Open for new opportunities" },
   },
   services: {
     eyebrow: { fr: "Services", en: "Services" },

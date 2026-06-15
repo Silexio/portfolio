@@ -29,8 +29,7 @@ export function Neurons() {
     const mouse = { x: -9999, y: -9999, active: false };
 
     const computeAccent = () =>
-      getComputedStyle(document.documentElement).getPropertyValue("--accent").trim() ||
-      "oklch(58% 0.18 38)";
+      getComputedStyle(document.documentElement).getPropertyValue("--accent").trim();
     let accent = computeAccent();
 
     function seed(w: number, h: number) {
