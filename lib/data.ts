@@ -14,13 +14,23 @@ export const META = {
 export const EMAIL = "contact@silexio.be";
 
 export const URLS = {
-  cal: "https://silexio.cal.eu/nicolas.jzw",
   email: `mailto:${EMAIL}`,
   linkedin: "https://www.linkedin.com/company/silexio-be",
   github: "https://github.com/Silexio",
   facebook: "https://www.facebook.com/silexio",
   instagram: "https://www.instagram.com/silexio.be",
   threads: "https://www.threads.net/@silexio.be",
+} as const;
+
+/** Règles d'ouverture du calendrier de rendez-vous (jours/heures en heure de Bruxelles). */
+export const BOOKING = {
+  timezone: "Europe/Brussels",
+  workdays: [1, 2, 3, 4, 5],
+  startHour: 8,
+  endHour: 16,
+  slotMinutes: 30,
+  horizonDays: 21,
+  leadMinutes: 120,
 } as const;
 
 export type SocialId = "linkedin" | "github" | "facebook" | "instagram" | "threads";
@@ -71,7 +81,7 @@ export const I18N = {
     metaBaseValue: { fr: "Belgique · UTC+1", en: "Belgium · UTC+1" },
     metaBaseSub: { fr: "Remote · Sur place", en: "Remote · On-site" },
     metaStatusLabel: { fr: "DISPO", en: "STATUS" },
-    metaStatusValue: { fr: "Ouvert aux nouvelles opportunités", en: "Open for new opportunities" },
+    metaStatusValue: { fr: "Ouvert", en: "Open" },
   },
   services: {
     eyebrow: { fr: "Services", en: "Services" },
@@ -124,10 +134,131 @@ export const I18N = {
       en: "Hi Silexio,\n\nI'm interested in the following services: {services}\n\nMy project: (briefly describe what you'd like to build)\nWhat I already have: (existing site, mockups, content, domain name, assets…)\nDesired timeline: \nRough budget: \n\nLooking forward to talking,",
     },
   },
+  booking: {
+    eyebrow: { fr: "Rendez-vous", en: "Booking" },
+    title: { fr: "Réservez\nun créneau.", en: "Book\na slot." },
+    subtitle: {
+      fr: "Choisissez un créneau, je vous confirme par email. Visio ou appel — comme vous préférez.",
+      en: "Pick a slot, I confirm by email. Video or call — your choice.",
+    },
+    tzNote: { fr: "Heures affichées en heure de Bruxelles", en: "Times shown in Brussels time" },
+    pickDay: { fr: "Choisissez un jour", en: "Pick a day" },
+    pickSlot: { fr: "Choisissez un horaire", en: "Pick a time" },
+    noSlots: { fr: "Aucun créneau disponible ce jour", en: "No slots available that day" },
+    loadingSlots: { fr: "Chargement des disponibilités…", en: "Loading availability…" },
+    slotsError: { fr: "Impossible de charger les disponibilités. Réessayez.", en: "Couldn't load availability. Try again." },
+    selectedSlot: { fr: "Créneau choisi", en: "Selected slot" },
+    change: { fr: "Modifier", en: "Change" },
+    formTitle: { fr: "Vos coordonnées", en: "Your details" },
+    name: { fr: "Nom", en: "Name" },
+    namePlaceholder: { fr: "Votre nom", en: "Your name" },
+    email: { fr: "Email", en: "Email" },
+    emailPlaceholder: { fr: "vous@exemple.com", en: "you@example.com" },
+    phone: { fr: "Téléphone", en: "Phone" },
+    phonePlaceholder: { fr: "+32 4xx xx xx xx", en: "+32 4xx xx xx xx" },
+    phoneNote: {
+      fr: "Votre numéro me sert à vous joindre et à l'ajouter à ma liste de confiance (anti-spam).",
+      en: "Your number lets me reach you and add you to my trusted list (anti-spam).",
+    },
+    mode: { fr: "Format", en: "Format" },
+    modeVideo: { fr: "Visio", en: "Video" },
+    modeCall: { fr: "Appel", en: "Call" },
+    message: { fr: "Message", en: "Message" },
+    messagePlaceholder: { fr: "En une phrase, votre besoin (optionnel)", en: "In one line, your need (optional)" },
+    optional: { fr: "optionnel", en: "optional" },
+    interests: { fr: "Ce qui vous intéresse", en: "What caught your eye" },
+    submit: { fr: "Envoyer la demande", en: "Send request" },
+    submitting: { fr: "Envoi…", en: "Sending…" },
+    successTitle: { fr: "Demande envoyée", en: "Request sent" },
+    successBody: {
+      fr: "Merci ! Je vous confirme le rendez-vous par email très vite.",
+      en: "Thanks! I'll confirm the booking by email shortly.",
+    },
+    errorGeneric: { fr: "Une erreur est survenue. Réessayez.", en: "Something went wrong. Try again." },
+    errorSlotTaken: { fr: "Ce créneau vient d'être pris. Choisissez-en un autre.", en: "This slot was just taken. Please pick another." },
+    errorRate: { fr: "Trop de demandes. Réessayez plus tard.", en: "Too many requests. Try again later." },
+    errorCaptcha: { fr: "Vérification anti-robot échouée. Réessayez.", en: "Anti-bot check failed. Try again." },
+    errorValidation: { fr: "Vérifiez les champs du formulaire.", en: "Please check the form fields." },
+    captchaLabel: { fr: "Vérification anti-robot", en: "Anti-bot verification" },
+  },
   footer: {
     rights: { fr: "Tous droits réservés", en: "All rights reserved" },
     tag: { fr: "Fait en Belgique", en: "Made in Belgium" },
   },
+} as const;
+
+/** Libellés de la section réservation résolus en strings (un par clé de I18N.booking). */
+export type BookingLabels = Record<keyof typeof I18N.booking, string>;
+
+/** Templates des emails de réservation (résolus serveur via t(), placeholders remplacés ensuite). */
+export const BOOKING_EMAILS = {
+  owner: {
+    subject: { fr: "Nouvelle demande de RDV — {name}", en: "New booking request — {name}" },
+    heading: { fr: "Nouvelle demande de rendez-vous", en: "New booking request" },
+    fields: {
+      slot: { fr: "Créneau", en: "Slot" },
+      mode: { fr: "Format", en: "Format" },
+      name: { fr: "Nom", en: "Name" },
+      email: { fr: "Email", en: "Email" },
+      phone: { fr: "Téléphone", en: "Phone" },
+      message: { fr: "Message", en: "Message" },
+      packages: { fr: "Intérêts", en: "Interests" },
+    },
+    confirm: { fr: "Confirmer le rendez-vous", en: "Confirm booking" },
+    refuse: { fr: "Refuser", en: "Decline" },
+    hint: {
+      fr: "Pense à ajouter le numéro à ta liste de confiance avant de confirmer.",
+      en: "Remember to whitelist the number before confirming.",
+    },
+  },
+  pending: {
+    subject: { fr: "Votre demande de rendez-vous — Silexio", en: "Your booking request — Silexio" },
+    body: {
+      fr: "Bonjour {name},\n\nVotre demande de rendez-vous le {slot} ({mode}) a bien été reçue.\nJe la confirme par email très vite — vous recevrez alors le lien visio ou les modalités de l'appel.\n\nÀ très vite,\nNicolas — Silexio",
+      en: "Hi {name},\n\nYour booking request for {slot} ({mode}) has been received.\nI'll confirm it by email shortly — you'll then get the video link or the call details.\n\nTalk soon,\nNicolas — Silexio",
+    },
+  },
+  confirmed: {
+    subject: { fr: "Rendez-vous confirmé — {slot}", en: "Booking confirmed — {slot}" },
+    body: {
+      fr: "Bonjour {name},\n\nVotre rendez-vous du {slot} est confirmé.\n\n{meetingInfo}\n\nÀ très vite,\nNicolas — Silexio",
+      en: "Hi {name},\n\nYour booking on {slot} is confirmed.\n\n{meetingInfo}\n\nTalk soon,\nNicolas — Silexio",
+    },
+    meetingVideo: {
+      fr: "Lien visio : {url}\n(Je rejoins en premier pour ouvrir la salle.)",
+      en: "Video link: {url}\n(I'll join first to open the room.)",
+    },
+    meetingCall: {
+      fr: "Je vous appelle au numéro fourni à l'heure convenue.",
+      en: "I'll call you on the number you provided at the agreed time.",
+    },
+  },
+  refused: {
+    subject: { fr: "À propos de votre demande de rendez-vous", en: "About your booking request" },
+    body: {
+      fr: "Bonjour {name},\n\nJe ne peux malheureusement pas honorer le créneau du {slot}.\nN'hésitez pas à en choisir un autre sur silexio.be ou à me répondre directement.\n\nÀ bientôt,\nNicolas — Silexio",
+      en: "Hi {name},\n\nUnfortunately I can't take the {slot} slot.\nFeel free to pick another one on silexio.be or reply directly.\n\nBest,\nNicolas — Silexio",
+    },
+  },
+} as const;
+
+/** Strings de la page d'action propriétaire (confirmation/refus en deux temps). */
+export const BOOKING_ACTION = {
+  confirmQuestion: { fr: "Confirmer ce rendez-vous ?", en: "Confirm this booking?" },
+  refuseQuestion: { fr: "Refuser ce rendez-vous ?", en: "Decline this booking?" },
+  confirmCta: { fr: "Confirmer", en: "Confirm" },
+  refuseCta: { fr: "Refuser", en: "Decline" },
+  confirmedTitle: { fr: "Rendez-vous confirmé", en: "Booking confirmed" },
+  confirmedBody: { fr: "Le client a reçu un email avec les modalités.", en: "The client received an email with the details." },
+  refusedTitle: { fr: "Rendez-vous refusé", en: "Booking declined" },
+  refusedBody: { fr: "Le créneau est de nouveau disponible. Le client a été prévenu.", en: "The slot is available again. The client has been notified." },
+  alreadyTitle: { fr: "Déjà traité", en: "Already handled" },
+  alreadyBody: { fr: "Ce rendez-vous a déjà été traité.", en: "This booking has already been handled." },
+  expiredTitle: { fr: "Créneau dépassé", en: "Slot in the past" },
+  expiredBody: { fr: "Ce créneau est déjà passé.", en: "This slot is already in the past." },
+  invalidTitle: { fr: "Lien invalide", en: "Invalid link" },
+  invalidBody: { fr: "Ce lien est invalide ou a expiré.", en: "This link is invalid or has expired." },
+  summaryLabel: { fr: "Demande", en: "Request" },
 } as const;
 
 export type PackageId = "site" | "webapp" | "api" | "infra" | "automation" | "it";

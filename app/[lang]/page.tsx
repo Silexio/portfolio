@@ -1,6 +1,7 @@
 import { ChapterMarkers } from "@/components/layout/ChapterMarkers";
 import { Footer } from "@/components/layout/Footer";
 import { Nav } from "@/components/layout/Nav";
+import { Booking } from "@/components/sections/Booking";
 import { Contact } from "@/components/sections/Contact";
 import { Hero } from "@/components/sections/Hero";
 import { Packages } from "@/components/sections/Packages";
@@ -30,6 +31,7 @@ export default async function Page({ params }: PageProps<"/[lang]">) {
         <Contact lang={lang} />
       </main>
       <Footer lang={lang} />
+      <Booking lang={lang} />
     </>
   );
 }

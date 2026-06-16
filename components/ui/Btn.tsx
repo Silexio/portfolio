@@ -1,19 +1,16 @@
 type BtnProps = {
   children: React.ReactNode;
-  href: string;
+  href?: string;
+  onClick?: () => void;
   variant?: "ghost" | "ember";
   icon?: boolean;
   srHint?: string;
 };
 
-export function Btn({ children, href, variant, icon = true, srHint }: BtnProps) {
-  const external = href.startsWith("http");
-  return (
-    <a
-      href={href}
-      className={variant ? `btn btn--${variant}` : "btn"}
-      {...(external && { target: "_blank", rel: "noopener noreferrer" })}
-    >
+export function Btn({ children, href, onClick, variant, icon = true, srHint }: BtnProps) {
+  const className = variant ? `btn btn--${variant}` : "btn";
+  const inner = (
+    <>
       {children}
       {srHint && <span className="sr-only"> — {srHint}</span>}
       {icon && (
@@ -27,6 +24,21 @@ export function Btn({ children, href, variant, icon = true, srHint }: BtnProps) 
           />
         </svg>
       )}
-    </a>
+    </>
+  );
+
+  if (href) {
+    const external = href.startsWith("http");
+    return (
+      <a href={href} className={className} {...(external && { target: "_blank", rel: "noopener noreferrer" })}>
+        {inner}
+      </a>
+    );
+  }
+
+  return (
+    <button type="button" className={className} onClick={onClick}>
+      {inner}
+    </button>
   );
 }

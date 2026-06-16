@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useActiveSection } from "@/hooks/useActiveSection";
+import { openBooking } from "@/hooks/useBookingModal";
 import { useSelectedPackages } from "@/hooks/usePackages";
 import type { Locale } from "@/lib/i18n/config";
 
@@ -19,7 +20,6 @@ export type NavLabels = {
   toggleLang: string;
   toggleTheme: string;
   cta: string;
-  newTab: string;
   selected: string;
 };
 
@@ -27,7 +27,6 @@ type NavClientProps = {
   lang: Locale;
   links: NavLink[];
   labels: NavLabels;
-  calUrl: string;
 };
 
 function toggleTheme() {
@@ -71,7 +70,7 @@ function ThemeIcon() {
   );
 }
 
-export function NavClient({ lang, links, labels, calUrl }: NavClientProps) {
+export function NavClient({ lang, links, labels }: NavClientProps) {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const menuRef = useRef<HTMLButtonElement>(null);
@@ -194,10 +193,16 @@ export function NavClient({ lang, links, labels, calUrl }: NavClientProps) {
           ))}
         </ul>
         <div className="sheet__foot">
-          <a href={calUrl} className="btn btn--ember" target="_blank" rel="noopener noreferrer">
+          <button
+            type="button"
+            className="btn btn--ember"
+            onClick={() => {
+              setOpen(false);
+              openBooking();
+            }}
+          >
             {labels.cta}
-            <span className="sr-only"> — {labels.newTab}</span>
-          </a>
+          </button>
           <div className="sheet__foot-row">
             {langSwitch}
             <button type="button" className="nav__tool" onClick={toggleTheme} aria-label={labels.toggleTheme}>

@@ -1,0 +1,46 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum MeetingType {
+  video
+  call
+}
+
+enum BookingStatus {
+  pending
+  confirmed
+  refused
+}
+
+model Booking {
+  id          String        @id @default(cuid())
+  slotStart   DateTime      @db.Timestamptz(3)
+  name        String
+  email       String
+  phone       String
+  meetingType MeetingType
+  message     String?
+  locale      String
+  packages    String[]
+  jitsiRoom   String?
+  status      BookingStatus @default(pending)
+  createdAt   DateTime      @default(now()) @db.Timestamptz(3)
+  updatedAt   DateTime      @updatedAt @db.Timestamptz(3)
+
+  @@index([slotStart])
+  @@index([status])
+}
+
+model RateLimitHit {
+  id        String   @id @default(cuid())
+  ipHash    String
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+
+  @@index([ipHash, createdAt])
+}

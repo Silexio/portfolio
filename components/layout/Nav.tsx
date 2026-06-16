@@ -1,5 +1,5 @@
 import { NavClient, type NavLink } from "@/components/layout/NavClient";
-import { I18N, URLS } from "@/lib/data";
+import { I18N } from "@/lib/data";
 import type { Locale } from "@/lib/i18n/config";
 import { t } from "@/lib/i18n/utils";
 
@@ -11,7 +11,6 @@ export function Nav({ lang }: { lang: Locale }) {
     <NavClient
       lang={lang}
       links={links}
-      calUrl={URLS.cal}
       labels={{
         home: t(I18N.a11y.home, lang),
         menu: t(I18N.a11y.menu, lang),
@@ -19,7 +18,6 @@ export function Nav({ lang }: { lang: Locale }) {
         toggleLang: t(I18N.a11y.toggleLang, lang),
         toggleTheme: t(I18N.a11y.toggleTheme, lang),
         cta: t(I18N.contact.cal, lang),
-        newTab: t(I18N.a11y.newTab, lang),
         selected: t(I18N.a11y.selected, lang),
       }}
     />

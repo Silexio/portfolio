@@ -96,19 +96,21 @@ body {
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
   transition: background var(--dur-slow) var(--ease-out), color var(--dur-slow) var(--ease-out);
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
 ::selection { background: var(--accent); color: var(--paper); }
-img, svg { display: block; max-width: 100%; }
-img { -webkit-user-drag: none; }
+img, svg { display: block; max-width: 100%; -webkit-user-drag: none; user-select: none; }
 button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
 a { color: inherit; text-decoration: none; }
 
-.nav, .sheet, .chapter-markers, .btn, .chip, .status-pill,
-.marquee, .chat, .eyebrow, .featured__eyebrow, .contact__picks-label,
-.section-head__num, .hero__meta-item .label, .featured__scene-step,
-.stack__label, .project__num, .project__year, .project__chev, .footer__brand {
-  -webkit-user-select: none;
-  user-select: none;
+/* UI non-sélectionnable (body) ; on réautorise la sélection dans les champs de saisie. */
+input, textarea, select, [contenteditable="true"] {
+  -webkit-user-select: text;
+  user-select: text;
+  -webkit-touch-callout: default;
 }
 
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
@@ -288,23 +290,25 @@ section { padding-block: var(--section-y); position: relative; }
   .nav__links, .nav__tools .nav__lang { display: none; }
   .nav__menu-btn { display: inline-flex; }
 }
-@media (min-width: 761px) { .sheet { display: none; } }
-
 .sheet {
   position: fixed; inset: 0; z-index: 200;
   background: color-mix(in oklch, var(--bg) 85%, transparent);
   backdrop-filter: blur(22px) saturate(180%);
   -webkit-backdrop-filter: blur(22px) saturate(180%);
-  display: flex; flex-direction: column;
+  display: none; flex-direction: column;
   padding: 28px var(--gutter);
   transform: translateY(-100%);
-  transition: transform 420ms var(--ease-out);
+  transition: transform 420ms var(--ease-out), display 420ms allow-discrete;
 }
 .sheet::before {
   content: ""; position: absolute; inset: 0; pointer-events: none;
   background: radial-gradient(120% 55% at 50% -8%, var(--accent-tint), transparent 60%);
 }
-.sheet[data-open="true"] { transform: none; }
+.sheet[data-open="true"] { display: flex; transform: none; }
+@starting-style {
+  .sheet[data-open="true"] { transform: translateY(-100%); }
+}
+@media (min-width: 761px) { .sheet[data-open="true"], .sheet { display: none; } }
 .sheet__head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 48px; }
 .sheet__links { list-style: none; padding: 0; margin: 0; flex: 1; }
 .sheet__links a {
@@ -451,6 +455,24 @@ section { padding-block: var(--section-y); position: relative; }
 @media (min-width: 600px) { .package { min-height: 300px; } }
 .package:has(.package__add:hover) { background: var(--bg-alt); }
 .package[data-selected="true"] { background: var(--accent-tint); box-shadow: inset 0 0 0 1.5px var(--accent); }
+/* Coins arrondis sur les cartes d'angle : sinon le clip arrondi du grid rogne l'anneau de
+   sélection (inset) aux angles. Synchronisé avec la grille (6 offres : 1 / 2 / 3 colonnes). */
+.packages__grid > .package:first-child { border-radius: var(--radius-card) var(--radius-card) 0 0; }
+.packages__grid > .package:last-child { border-radius: 0 0 var(--radius-card) var(--radius-card); }
+@media (min-width: 600px) {
+  .packages__grid > .package { border-radius: 0; }
+  .packages__grid > .package:first-child { border-top-left-radius: var(--radius-card); }
+  .packages__grid > .package:nth-child(2) { border-top-right-radius: var(--radius-card); }
+  .packages__grid > .package:nth-child(5) { border-bottom-left-radius: var(--radius-card); }
+  .packages__grid > .package:last-child { border-bottom-right-radius: var(--radius-card); }
+}
+@media (min-width: 1024px) {
+  .packages__grid > .package { border-radius: 0; }
+  .packages__grid > .package:first-child { border-top-left-radius: var(--radius-card); }
+  .packages__grid > .package:nth-child(3) { border-top-right-radius: var(--radius-card); }
+  .packages__grid > .package:nth-child(4) { border-bottom-left-radius: var(--radius-card); }
+  .packages__grid > .package:last-child { border-bottom-right-radius: var(--radius-card); }
+}
 .package__head { display: flex; justify-content: space-between; align-items: flex-start; }
 .package__num { font: 500 11px/1 var(--font-mono); letter-spacing: 0.18em; color: var(--accent); }
 .package__icon { color: var(--fg-muted); transition: color var(--dur-base), transform var(--dur-base); }
@@ -619,6 +641,157 @@ section { padding-block: var(--section-y); position: relative; }
 .stack__group:hover { background: var(--bg-alt); }
 .stack__label { font: 500 10px/1 var(--font-mono); letter-spacing: 0.22em; text-transform: uppercase; color: var(--fg-subtle); }
 .stack__items { display: flex; flex-wrap: wrap; gap: var(--gap-chips); }
+
+/* ── 13b Booking (modale glass : calendrier + formulaire) ──── */
+.booking-modal {
+  width: min(560px, 92vw); max-height: min(90svh, 760px);
+  margin: auto; /* recentre : le preflight Tailwind met margin:0, ce qui casse le centrage UA du dialog modal */
+  padding: 0; border: none; border-radius: var(--radius-card);
+  background: color-mix(in oklch, var(--bg) 86%, transparent);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  color: var(--fg); box-shadow: 0 40px 90px -30px oklch(0% 0 0 / 0.45);
+  opacity: 0; transform: translateY(10px) scale(0.985);
+  transition: opacity 280ms var(--ease-out), transform 280ms var(--ease-out),
+    overlay 280ms allow-discrete, display 280ms allow-discrete;
+}
+.booking-modal[open] { opacity: 1; transform: none; }
+.booking-modal:focus, .booking-modal:focus-visible { outline: none; }
+@starting-style {
+  .booking-modal[open] { opacity: 0; transform: translateY(10px) scale(0.985); }
+}
+.booking-modal::backdrop {
+  background: oklch(12% 0.02 50 / 0.5);
+  backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px);
+  opacity: 0;
+  transition: opacity 280ms var(--ease-out), overlay 280ms allow-discrete, display 280ms allow-discrete;
+}
+.booking-modal[open]::backdrop { opacity: 1; }
+@starting-style {
+  .booking-modal[open]::backdrop { opacity: 0; }
+}
+.booking-modal__inner { position: relative; max-height: inherit; overflow-y: auto; padding: clamp(24px, 4vw, 40px); container-type: inline-size; }
+.booking-modal__close {
+  position: absolute; top: 12px; right: 12px; z-index: 1;
+  width: 44px; height: 44px; border-radius: var(--radius-pill);
+  display: inline-flex; align-items: center; justify-content: center;
+  color: var(--fg-muted); transition: color var(--dur-fast), background var(--dur-fast);
+}
+.booking-modal__close:hover { color: var(--fg); background: var(--hairline); }
+.booking-modal__title {
+  font: 500 clamp(26px, 4vw, 34px)/1.05 var(--font-display);
+  letter-spacing: -0.03em; white-space: pre-line; margin: 0 0 10px; padding-right: 44px;
+}
+.booking-modal__tz {
+  display: inline-flex; align-items: center; gap: 8px;
+  font: 500 11px/1 var(--font-mono); letter-spacing: 0.1em;
+  color: var(--fg-subtle); margin: 0 0 clamp(20px, 3vw, 26px);
+}
+.booking-form { display: flex; flex-direction: column; gap: clamp(20px, 3vw, 28px); }
+
+.booking-cal__days {
+  display: flex; gap: 6px; overflow-x: auto; padding-bottom: 6px;
+  scrollbar-width: thin;
+}
+.booking-cal__day {
+  flex: 0 0 auto; min-height: 40px; padding: 9px 14px; border-radius: var(--radius-pill);
+  display: inline-flex; align-items: center;
+  border: 1px solid var(--hairline); background: var(--bg); cursor: pointer;
+  font: 500 12px/1 var(--font-mono); color: var(--fg-muted); white-space: nowrap;
+  transition: color var(--dur-fast), border-color var(--dur-fast), background var(--dur-fast);
+}
+.booking-cal__day:hover { color: var(--fg); }
+.booking-cal__day[data-active="true"] { color: var(--accent); border-color: var(--accent); background: var(--accent-tint); }
+.booking-cal__slots {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(74px, 1fr));
+  gap: 8px; margin-top: 16px;
+}
+.booking-cal__slot {
+  min-height: 44px; padding: 6px; border-radius: 8px; border: 1px solid var(--hairline-strong);
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--bg); color: var(--fg); cursor: pointer;
+  font: 500 13px/1 var(--font-mono);
+  transition: color var(--dur-fast), border-color var(--dur-fast), background var(--dur-fast);
+}
+.booking-cal__slot:hover:not(:disabled) { color: var(--accent); border-color: var(--accent); }
+.booking-cal__slot[data-selected="true"] { background: var(--accent); border-color: var(--accent); color: var(--paper); }
+.booking-cal__slot:disabled { opacity: 0.32; cursor: not-allowed; text-decoration: line-through; }
+.booking-cal__empty { grid-column: 1 / -1; color: var(--fg-muted); font-size: 14px; padding: 12px 0; margin: 0; }
+
+.booking-form__selected {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 14px 16px; border-radius: var(--radius-card);
+  background: var(--accent-tint); box-shadow: inset 0 0 0 1px var(--accent-tint);
+}
+.booking-form__selected-text { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.booking-form__selected-label { font: 500 10px/1 var(--font-mono); letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); }
+.booking-form__selected strong { font-size: 16px; color: var(--fg); }
+.booking-form__change {
+  flex: 0 0 auto; min-height: 36px; padding: 0 14px; border-radius: var(--radius-pill);
+  font: 500 11px/1 var(--font-mono); letter-spacing: 0.06em; color: var(--accent);
+  border: 1px solid color-mix(in oklch, var(--accent) 35%, transparent);
+  transition: background var(--dur-fast), border-color var(--dur-fast);
+}
+.booking-form__change:hover { background: color-mix(in oklch, var(--accent) 14%, transparent); border-color: var(--accent); }
+/* Modale étroite (mobile) : une fois le créneau choisi, on replie le calendrier
+   pour rapprocher le formulaire. Container query = basé sur la largeur de la modale. */
+@container (max-width: 400px) {
+  .booking-form[data-picked="true"] .booking-cal { display: none; }
+}
+
+.booking-form__fields { border: 0; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 18px; }
+.booking-form__legend { padding: 0; margin-bottom: 2px; font: 500 10px/1 var(--font-mono); letter-spacing: 0.2em; text-transform: uppercase; color: var(--fg-subtle); }
+.booking-form__field { display: flex; flex-direction: column; gap: 7px; }
+.booking-form__field > label,
+.booking-form__field-label { font: 500 12px/1 var(--font-mono); letter-spacing: 0.06em; color: var(--fg-muted); }
+.booking-form__optional { color: var(--fg-subtle); }
+.booking-form__field input,
+.booking-form__field textarea {
+  width: 100%; padding: 12px 14px; font: 400 15px/1.5 var(--font-body); color: var(--fg);
+  background: var(--bg); border: 1px solid var(--hairline-strong); border-radius: 8px;
+  transition: border-color var(--dur-fast), box-shadow var(--dur-fast);
+}
+.booking-form__field input::placeholder,
+.booking-form__field textarea::placeholder { color: var(--fg-subtle); }
+.booking-form__field input:focus-visible,
+.booking-form__field textarea:focus-visible { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-tint); }
+.booking-form__field textarea { resize: vertical; min-height: 84px; }
+.booking-form__hint { font-size: 12px; line-height: 1.45; color: var(--fg-subtle); }
+
+.booking-form__modes { display: flex; flex-wrap: wrap; gap: 8px; }
+.booking-form__mode {
+  display: inline-flex; align-items: center; gap: 8px; cursor: pointer;
+  padding: 10px 16px; border: 1px solid var(--hairline-strong); border-radius: var(--radius-pill);
+  font-size: 14px; color: var(--fg-muted);
+  transition: color var(--dur-fast), border-color var(--dur-fast), background var(--dur-fast);
+}
+.booking-form__mode[data-active="true"] { color: var(--accent); border-color: var(--accent); background: var(--accent-tint); }
+.booking-form__mode input { accent-color: var(--accent); }
+.booking-form__chips { display: flex; flex-wrap: wrap; gap: var(--gap-chips); }
+
+.booking-form__honeypot { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+.booking-form__captcha { min-height: 65px; }
+.booking-form__error { color: var(--accent); font-size: 14px; margin: 0; }
+.booking-form__loading { color: var(--fg-muted); font-size: 14px; margin: 0; }
+.booking-form__submit { align-self: flex-start; }
+.booking-form__success {
+  padding: clamp(28px, 5vw, 40px); text-align: center;
+  border-radius: var(--radius-card); background: var(--accent-tint); box-shadow: inset 0 0 0 1.5px var(--accent);
+}
+.booking-form__success h3 { font: 500 clamp(22px, 3vw, 28px)/1.1 var(--font-display); margin: 0 0 8px; }
+.booking-form__success p { color: var(--fg-muted); margin: 0; }
+
+.booking-action { min-height: 100svh; display: flex; align-items: center; justify-content: center; padding: var(--gutter); }
+.booking-action__card {
+  width: 100%; max-width: 460px; text-align: center;
+  background: var(--bg); border: 1px solid var(--hairline); border-radius: var(--radius-card);
+  padding: clamp(32px, 6vw, 48px);
+}
+.booking-action__title { font: 500 clamp(24px, 4vw, 32px)/1.1 var(--font-display); margin: 0 0 12px; }
+.booking-action__body { color: var(--fg-muted); line-height: 1.55; margin: 0; }
+.booking-action__summary { color: var(--fg-muted); margin: 0 0 24px; }
+.booking-action__summary strong { color: var(--fg); }
+.booking-action__actions { display: flex; justify-content: center; }
 
 /* ── 14 Contact + neurons ─────────────────────────────────── */
 .contact { text-align: center; }
