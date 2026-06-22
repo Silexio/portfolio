@@ -24,7 +24,7 @@ export function BookingModal({ lang, siteKey, labels, packageLabels, closeLabel 
     if (!dialog) return;
     if (open && !dialog.open) {
       dialog.showModal();
-      dialog.focus(); // évite l'anneau de focus sur la croix : focus discret sur la modale
+      dialog.focus();
     }
     if (!open && dialog.open) dialog.close();
     document.body.style.overflow = open ? "hidden" : "";

@@ -23,5 +23,12 @@ function getTransporter(): Transporter {
 export async function sendMail(to: string, mail: Mail): Promise<void> {
   const from = process.env.SMTP_FROM || process.env.SMTP_USER;
   if (!from) throw new Error("SMTP_FROM/SMTP_USER is not set");
-  await getTransporter().sendMail({ from, to, subject: mail.subject, html: mail.html, text: mail.text });
+  await getTransporter().sendMail({
+    from,
+    to,
+    subject: mail.subject,
+    html: mail.html,
+    text: mail.text,
+    attachments: mail.attachments,
+  });
 }

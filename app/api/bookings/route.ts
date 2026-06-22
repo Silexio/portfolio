@@ -23,7 +23,6 @@ export async function POST(req: Request) {
     return json("bad_request", 400);
   }
 
-  // Honeypot: a filled `company` field means a bot — fake success, no side effects.
   if (raw && typeof raw === "object" && typeof (raw as { company?: unknown }).company === "string" && (raw as { company: string }).company.length > 0) {
     return NextResponse.json({ ok: true }, { status: 201 });
   }
@@ -65,31 +64,27 @@ export async function POST(req: Request) {
   const labelById = new Map<string, string>(PACKAGES.map((p) => [p.id, t(p.title, data.locale)]));
   const packageLabels = data.packages.map((id) => labelById.get(id) ?? id);
 
-  try {
-    const notify = process.env.BOOKING_NOTIFY_EMAIL;
-    if (notify) {
-      await sendMail(
-        notify,
-        ownerEmail({
-          id: bookingId,
-          name: data.name,
-          email: data.email,
-          phone: data.phone,
-          meetingType: data.meetingType,
-          message: data.message,
-          packages: packageLabels,
-          slotIso: data.slotStart,
-          locale: data.locale,
-        }),
-      );
-    }
+  const notify = process.env.BOOKING_NOTIFY_EMAIL;
+  if (notify) {
     await sendMail(
-      data.email,
-      pendingEmail({ name: data.name, slotIso: data.slotStart, meetingType: data.meetingType, locale: data.locale }),
-    );
-  } catch {
-    // The booking is persisted; a mail failure must not surface as an error to the client.
+      notify,
+      ownerEmail({
+        id: bookingId,
+        name: data.name,
+        email: data.email,
+        phone: data.phone,
+        meetingType: data.meetingType,
+        message: data.message,
+        packages: packageLabels,
+        slotIso: data.slotStart,
+        locale: data.locale,
+      }),
+    ).catch(() => undefined);
   }
+  await sendMail(
+    data.email,
+    pendingEmail({ name: data.name, slotIso: data.slotStart, meetingType: data.meetingType, locale: data.locale }),
+  ).catch(() => undefined);
 
   return NextResponse.json({ ok: true }, { status: 201 });
 }

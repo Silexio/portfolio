@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { confirmedEmail, ownerEmail, pendingEmail, refusedEmail } from "@/lib/booking/email";
+import { confirmedEmail, ownerConfirmedEmail, ownerEmail, pendingEmail, refusedEmail } from "@/lib/booking/email";
 
 process.env.BOOKING_ACTION_SECRET = "test-secret-0123456789abcdef0123456789abcdef";
 
@@ -64,16 +64,43 @@ describe("pendingEmail", () => {
 });
 
 describe("confirmedEmail", () => {
+  const video = confirmedEmail({ id: "abc", name: "Jane", email: "jane@example.com", slotIso, meetingType: "video", roomSlug: "silexio-xyz", locale: "fr" });
+
   it("includes the Jitsi link for video meetings", () => {
-    const mail = confirmedEmail({ name: "Jane", slotIso, meetingType: "video", roomSlug: "silexio-xyz", locale: "fr" });
-    expect(mail.text).toContain("https://meet.jit.si/silexio-xyz");
-    expect(mail.html).toContain('href="https://meet.jit.si/silexio-xyz"');
+    expect(video.text).toContain("https://meet.jit.si/silexio-xyz");
+    expect(video.html).toContain('href="https://meet.jit.si/silexio-xyz"');
+  });
+
+  it("attaches an .ics invite with the meeting as location", () => {
+    expect(video.attachments?.[0].filename).toBe("rendez-vous.ics");
+    expect(video.attachments?.[0].content).toContain("BEGIN:VEVENT");
+    expect(video.attachments?.[0].content).toContain("LOCATION:https://meet.jit.si/silexio-xyz");
   });
 
   it("uses the call note for phone meetings (no link)", () => {
-    const mail = confirmedEmail({ name: "Jane", slotIso, meetingType: "call", locale: "en" });
+    const mail = confirmedEmail({ id: "abc", name: "Jane", email: "jane@example.com", slotIso, meetingType: "call", locale: "en" });
     expect(mail.text).not.toContain("meet.jit.si");
     expect(mail.text).toContain("call you");
+    expect(mail.attachments?.[0].content).toContain("BEGIN:VEVENT");
+  });
+});
+
+describe("ownerConfirmedEmail", () => {
+  it("addresses the owner with client details + .ics", () => {
+    const mail = ownerConfirmedEmail({
+      id: "abc",
+      name: "Jane",
+      email: "jane@example.com",
+      phone: "+32470123456",
+      slotIso,
+      meetingType: "video",
+      roomSlug: "silexio-xyz",
+      locale: "fr",
+      ownerEmail: "contact@silexio.be",
+    });
+    expect(mail.text).toContain("Jane");
+    expect(mail.text).toContain("+32470123456");
+    expect(mail.attachments?.[0].content).toContain("BEGIN:VEVENT");
   });
 });
 

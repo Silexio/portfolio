@@ -240,6 +240,23 @@ export const BOOKING_EMAILS = {
       en: "Hi {name},\n\nUnfortunately I can't take the {slot} slot.\nFeel free to pick another one on silexio.be or reply directly.\n\nBest,\nNicolas — Silexio",
     },
   },
+  ownerConfirmed: {
+    subject: { fr: "RDV confirmé — {slot} — {name}", en: "Booking confirmed — {slot} — {name}" },
+    body: {
+      fr: "Tu as confirmé le rendez-vous avec {name} ({email} · {phone}) le {slot}.\n\n{meetingInfo}\n\nL'événement est en pièce jointe (.ics).",
+      en: "You confirmed the booking with {name} ({email} · {phone}) on {slot}.\n\n{meetingInfo}\n\nThe event is attached (.ics).",
+    },
+    meetingCall: {
+      fr: "Format : appel. Tu appelles {name} au numéro fourni.",
+      en: "Format: call. You call {name} on the provided number.",
+    },
+  },
+  ics: {
+    summary: { fr: "Rendez-vous Silexio", en: "Silexio booking" },
+    descriptionVideo: { fr: "Visio Silexio — lien : {url}", en: "Silexio video call — link: {url}" },
+    descriptionCall: { fr: "Appel téléphonique avec Silexio.", en: "Phone call with Silexio." },
+    locationCall: { fr: "Appel téléphonique", en: "Phone call" },
+  },
 } as const;
 
 /** Strings de la page d'action propriétaire (confirmation/refus en deux temps). */

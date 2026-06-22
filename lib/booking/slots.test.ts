@@ -28,7 +28,7 @@ describe("zonedWallToUtc — DST", () => {
 });
 
 describe("listSlotStarts", () => {
-  const now = new Date("2026-01-12T00:00:00Z"); // Monday
+  const now = new Date("2026-01-12T00:00:00Z");
   const slots = listSlotStarts(now);
 
   it("returns slots", () => {
@@ -94,7 +94,7 @@ describe("isValidSlot", () => {
   });
 
   it("rejects a weekend slot", () => {
-    expect(isValidSlot("2026-01-17T09:00:00.000Z", now)).toBe(false); // Saturday
+    expect(isValidSlot("2026-01-17T09:00:00.000Z", now)).toBe(false);
   });
 
   it("rejects an out-of-hours slot", () => {

@@ -1,13 +1,15 @@
-import { BOOKING_EMAILS, I18N } from "@/lib/data";
+import { BOOKING, BOOKING_EMAILS, EMAIL, I18N } from "@/lib/data";
 import { BASE_URL } from "@/lib/metadata";
 import type { Locale } from "@/lib/i18n/config";
 import { t } from "@/lib/i18n/utils";
 import { formatSlotLabel } from "@/lib/booking/format";
+import { buildIcs } from "@/lib/booking/ics";
 import { meetingUrl } from "@/lib/booking/meeting";
 import type { MeetingMode } from "@/lib/booking/schema";
 import { signAction, type BookingAction } from "@/lib/booking/token";
 
-export type Mail = { subject: string; html: string; text: string };
+export type MailAttachment = { filename: string; content: string; contentType: string };
+export type Mail = { subject: string; html: string; text: string; attachments?: MailAttachment[] };
 
 export type OwnerMailData = {
   id: string;
@@ -28,6 +30,18 @@ export type ClientMailData = {
   roomSlug?: string;
   locale: Locale;
 };
+
+export type ConfirmedMailData = {
+  id: string;
+  name: string;
+  email: string;
+  slotIso: string;
+  meetingType: MeetingMode;
+  roomSlug?: string;
+  locale: Locale;
+};
+
+export type OwnerConfirmedMailData = ConfirmedMailData & { phone: string; ownerEmail: string };
 
 function esc(value: string): string {
   return value
@@ -55,6 +69,38 @@ function modeLabel(meetingType: MeetingMode, locale: Locale): string {
 function actionUrl(id: string, action: BookingAction, locale: Locale): string {
   const token = signAction(id, action);
   return `${BASE_URL}/${locale}/booking/${action}?id=${encodeURIComponent(id)}&token=${token}`;
+}
+
+function meetingLink(meetingType: MeetingMode, roomSlug?: string): string | undefined {
+  return meetingType === "video" && roomSlug ? meetingUrl(roomSlug) : undefined;
+}
+
+type IcsTarget = {
+  id: string;
+  slotIso: string;
+  meetingType: MeetingMode;
+  roomSlug?: string;
+  locale: Locale;
+  attendeeName: string;
+  attendeeEmail: string;
+};
+
+function bookingIcs(target: IcsTarget): MailAttachment {
+  const ics = BOOKING_EMAILS.ics;
+  const url = meetingLink(target.meetingType, target.roomSlug);
+  const content = buildIcs({
+    uid: `${target.id}@silexio.be`,
+    start: new Date(target.slotIso),
+    durationMinutes: BOOKING.slotMinutes,
+    summary: t(ics.summary, target.locale),
+    description: url ? fill(t(ics.descriptionVideo, target.locale), { url }) : t(ics.descriptionCall, target.locale),
+    location: url ?? t(ics.locationCall, target.locale),
+    organizerName: "Silexio",
+    organizerEmail: EMAIL,
+    attendeeName: target.attendeeName,
+    attendeeEmail: target.attendeeEmail,
+  });
+  return { filename: "rendez-vous.ics", content, contentType: "text/calendar; charset=utf-8; method=PUBLISH" };
 }
 
 /** Notification to the owner with all client details and signed confirm/decline links. */
@@ -131,18 +177,42 @@ export function pendingEmail(data: ClientMailData): Mail {
   return clientMail(subject, text);
 }
 
-/** Confirmation email to the client, with the Jitsi link (video) or call note. */
-export function confirmedEmail(data: ClientMailData): Mail {
+/** Confirmation email to the client, with the Jitsi link (video) or call note + an .ics invite. */
+export function confirmedEmail(data: ConfirmedMailData): Mail {
   const tpl = BOOKING_EMAILS.confirmed;
   const slot = formatSlotLabel(data.slotIso, data.locale);
-  const url = data.meetingType === "video" && data.roomSlug ? meetingUrl(data.roomSlug) : undefined;
-  const meetingInfo =
-    data.meetingType === "video" && url
-      ? fill(t(tpl.meetingVideo, data.locale), { url })
-      : t(tpl.meetingCall, data.locale);
+  const url = meetingLink(data.meetingType, data.roomSlug);
+  const meetingInfo = url ? fill(t(tpl.meetingVideo, data.locale), { url }) : t(tpl.meetingCall, data.locale);
   const subject = fill(t(tpl.subject, data.locale), { slot });
   const text = fill(t(tpl.body, data.locale), { name: data.name, slot, meetingInfo });
-  return clientMail(subject, text, url);
+  const mail = clientMail(subject, text, url);
+  return {
+    ...mail,
+    attachments: [bookingIcs({ ...data, attendeeName: data.name, attendeeEmail: data.email })],
+  };
+}
+
+/** Confirmation email to the owner (after they confirm), with the meeting details + an .ics invite. */
+export function ownerConfirmedEmail(data: OwnerConfirmedMailData): Mail {
+  const tpl = BOOKING_EMAILS.ownerConfirmed;
+  const slot = formatSlotLabel(data.slotIso, data.locale);
+  const url = meetingLink(data.meetingType, data.roomSlug);
+  const meetingInfo = url
+    ? fill(t(BOOKING_EMAILS.confirmed.meetingVideo, data.locale), { url })
+    : fill(t(tpl.meetingCall, data.locale), { name: data.name });
+  const subject = fill(t(tpl.subject, data.locale), { slot, name: data.name });
+  const text = fill(t(tpl.body, data.locale), {
+    name: data.name,
+    email: data.email,
+    phone: data.phone,
+    slot,
+    meetingInfo,
+  });
+  const mail = clientMail(subject, text, url);
+  return {
+    ...mail,
+    attachments: [bookingIcs({ ...data, attendeeName: "Silexio", attendeeEmail: data.ownerEmail })],
+  };
 }
 
 /** Decline email to the client; the slot is freed. */

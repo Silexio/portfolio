@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { asLocale } from "@/lib/i18n/utils";
 import { verifyAction, type BookingAction } from "@/lib/booking/token";
 import { getPrisma } from "@/lib/booking/prisma";
-import { confirmedEmail, refusedEmail } from "@/lib/booking/email";
+import { confirmedEmail, ownerConfirmedEmail, refusedEmail } from "@/lib/booking/email";
 import { sendMail } from "@/lib/booking/mailer";
 import { BookingStatus } from "@/generated/prisma/client";
 
@@ -23,29 +23,26 @@ export async function applyAction(action: BookingAction, id: string, token: stri
 
   if (action === "confirm") {
     await prisma.booking.update({ where: { id }, data: { status: BookingStatus.confirmed } });
-    try {
-      await sendMail(
-        booking.email,
-        confirmedEmail({
-          name: booking.name,
-          slotIso,
-          meetingType: booking.meetingType,
-          roomSlug: booking.jitsiRoom ?? undefined,
-          locale,
-        }),
-      );
-    } catch {
-      // booking is confirmed; mail failure is non-fatal.
+    const base = {
+      id,
+      name: booking.name,
+      email: booking.email,
+      slotIso,
+      meetingType: booking.meetingType,
+      roomSlug: booking.jitsiRoom ?? undefined,
+      locale,
+    };
+    await sendMail(booking.email, confirmedEmail(base)).catch(() => undefined);
+    const owner = process.env.BOOKING_NOTIFY_EMAIL;
+    if (owner) {
+      const ownerMail = ownerConfirmedEmail({ ...base, phone: booking.phone, ownerEmail: owner });
+      await sendMail(owner, ownerMail).catch(() => undefined);
     }
     return "confirmed";
   }
 
   await prisma.booking.update({ where: { id }, data: { status: BookingStatus.refused } });
-  try {
-    await sendMail(booking.email, refusedEmail({ name: booking.name, slotIso, locale }));
-  } catch {
-    // booking is refused; mail failure is non-fatal.
-  }
+  await sendMail(booking.email, refusedEmail({ name: booking.name, slotIso, locale })).catch(() => undefined);
   return "refused";
 }
 

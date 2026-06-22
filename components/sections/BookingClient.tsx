@@ -108,14 +108,8 @@ export function BookingClient({ lang, siteKey, active, labels, packageLabels }: 
         setStatus("success");
         return;
       }
-      let key: ErrorKey = "errorGeneric";
-      try {
-        const body = (await res.json()) as { error?: string };
-        if (body.error && body.error in ERROR_BY_CODE) key = ERROR_BY_CODE[body.error];
-      } catch {
-        // keep generic
-      }
-      setErrorKey(key);
+      const body = (await res.json().catch(() => null)) as { error?: string } | null;
+      setErrorKey(body?.error && body.error in ERROR_BY_CODE ? ERROR_BY_CODE[body.error] : "errorGeneric");
       setStatus("error");
     } catch {
       setErrorKey("errorGeneric");

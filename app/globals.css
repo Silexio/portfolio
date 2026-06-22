@@ -43,6 +43,7 @@
 
   --radius-pill: 999px;
   --radius-card: 14px;
+  --radius-card-inner: calc(var(--radius-card) - 1px);
 
   --content-max: 1320px;
   --gutter: clamp(20px, 5vw, 56px);
@@ -106,7 +107,6 @@ img, svg { display: block; max-width: 100%; -webkit-user-drag: none; user-select
 button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
 a { color: inherit; text-decoration: none; }
 
-/* UI non-sélectionnable (body) ; on réautorise la sélection dans les champs de saisie. */
 input, textarea, select, [contenteditable="true"] {
   -webkit-user-select: text;
   user-select: text;
@@ -434,16 +434,15 @@ section { padding-block: var(--section-y); position: relative; }
 .section-head__sub { font: 400 15px/1.55 var(--font-body); color: var(--fg-muted); max-width: 380px; margin: 0; }
 
 /* ── 10 Packages (selectable) ─────────────────────────────── */
-/* grille mosaïque hairline — partagée avec .stack__grid (§13) */
 .packages__grid,
 .stack__grid {
   display: grid; grid-template-columns: 1fr; gap: 1px;
   background: var(--hairline); border: 1px solid var(--hairline);
-  border-radius: var(--radius-card); overflow: hidden;
+  border-radius: var(--radius-card);
 }
+.stack__grid { overflow: hidden; }
 @media (min-width: 600px)  { .packages__grid, .stack__grid { grid-template-columns: repeat(2, 1fr); } }
 @media (min-width: 1024px) { .packages__grid { grid-template-columns: repeat(3, 1fr); } }
-/* surface de carte partagée — panneau dans une grille (avec .stack__group §13) */
 .package,
 .stack__group {
   background: var(--bg);
@@ -455,23 +454,19 @@ section { padding-block: var(--section-y); position: relative; }
 @media (min-width: 600px) { .package { min-height: 300px; } }
 .package:has(.package__add:hover) { background: var(--bg-alt); }
 .package[data-selected="true"] { background: var(--accent-tint); box-shadow: inset 0 0 0 1.5px var(--accent); }
-/* Coins arrondis sur les cartes d'angle : sinon le clip arrondi du grid rogne l'anneau de
-   sélection (inset) aux angles. Synchronisé avec la grille (6 offres : 1 / 2 / 3 colonnes). */
-.packages__grid > .package:first-child { border-radius: var(--radius-card) var(--radius-card) 0 0; }
-.packages__grid > .package:last-child { border-radius: 0 0 var(--radius-card) var(--radius-card); }
-@media (min-width: 600px) {
-  .packages__grid > .package { border-radius: 0; }
-  .packages__grid > .package:first-child { border-top-left-radius: var(--radius-card); }
-  .packages__grid > .package:nth-child(2) { border-top-right-radius: var(--radius-card); }
-  .packages__grid > .package:nth-child(5) { border-bottom-left-radius: var(--radius-card); }
-  .packages__grid > .package:last-child { border-bottom-right-radius: var(--radius-card); }
+.packages__grid > .package:first-child { border-top-left-radius: var(--radius-card-inner); }
+.packages__grid > .package:last-child { border-bottom-right-radius: var(--radius-card-inner); }
+@media (max-width: 599px) {
+  .packages__grid > .package:first-child { border-top-right-radius: var(--radius-card-inner); }
+  .packages__grid > .package:last-child { border-bottom-left-radius: var(--radius-card-inner); }
+}
+@media (min-width: 600px) and (max-width: 1023px) {
+  .packages__grid > .package:nth-child(2) { border-top-right-radius: var(--radius-card-inner); }
+  .packages__grid > .package:nth-child(5) { border-bottom-left-radius: var(--radius-card-inner); }
 }
 @media (min-width: 1024px) {
-  .packages__grid > .package { border-radius: 0; }
-  .packages__grid > .package:first-child { border-top-left-radius: var(--radius-card); }
-  .packages__grid > .package:nth-child(3) { border-top-right-radius: var(--radius-card); }
-  .packages__grid > .package:nth-child(4) { border-bottom-left-radius: var(--radius-card); }
-  .packages__grid > .package:last-child { border-bottom-right-radius: var(--radius-card); }
+  .packages__grid > .package:nth-child(3) { border-top-right-radius: var(--radius-card-inner); }
+  .packages__grid > .package:nth-child(4) { border-bottom-left-radius: var(--radius-card-inner); }
 }
 .package__head { display: flex; justify-content: space-between; align-items: flex-start; }
 .package__num { font: 500 11px/1 var(--font-mono); letter-spacing: 0.18em; color: var(--accent); }

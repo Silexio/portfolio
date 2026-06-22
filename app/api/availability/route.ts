@@ -12,19 +12,16 @@ export async function GET() {
   const taken = new Set<string>();
 
   if (starts.length > 0) {
-    try {
-      const prisma = getPrisma();
-      const rows = await prisma.booking.findMany({
+    const rows = await getPrisma()
+      .booking.findMany({
         where: {
           slotStart: { gte: new Date(starts[0]), lte: new Date(starts[starts.length - 1]) },
           status: { in: [BookingStatus.pending, BookingStatus.confirmed] },
         },
         select: { slotStart: true },
-      });
-      for (const row of rows) taken.add(row.slotStart.toISOString());
-    } catch {
-      // DB unavailable → expose all slots as available; the POST handler still guards against races.
-    }
+      })
+      .catch(() => []);
+    for (const row of rows) taken.add(row.slotStart.toISOString());
   }
 
   const days = groupByDay(starts).map((day) => ({
