@@ -5,8 +5,6 @@ import { EMAIL, META, URLS } from "@/lib/data";
 import { LOCALES, type Locale } from "@/lib/i18n/config";
 import { localeParam, t } from "@/lib/i18n/utils";
 import { BASE_URL } from "@/lib/metadata";
-import { Analytics } from "@vercel/analytics/next"
-import { SpeedInsights } from "@vercel/speed-insights/next"
 import "../globals.css";
 
 const montserrat = Montserrat({ subsets: ["latin"], weight: ["500", "600"], variable: "--font-montserrat" });
@@ -97,6 +95,7 @@ export async function generateMetadata({
 
 export default async function RootLayout({ children, params }: LayoutProps<"/[lang]">) {
   const lang = await localeParam(params);
+  const beaconToken = process.env.NEXT_PUBLIC_CF_BEACON_TOKEN;
   return (
     <html
       lang={lang}
@@ -104,8 +103,13 @@ export default async function RootLayout({ children, params }: LayoutProps<"/[la
       className={`${montserrat.variable} ${inter.variable} ${firaCode.variable} ${luciole.variable}`}
     >
       <head>
-        <Analytics />
-        <SpeedInsights />
+        {beaconToken && (
+          <script
+            defer
+            src="https://static.cloudflareinsights.com/beacon.min.js"
+            data-cf-beacon={JSON.stringify({ token: beaconToken })}
+          />
+        )}
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
         <script
           type="application/ld+json"
