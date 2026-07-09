@@ -21,6 +21,14 @@
       "enabled": false,
       "persist": true,
       "head_sampling_rate": 1
+    },
+    "queues": {
+      "producers": [
+        {
+          "queue": "portfolio-revalidation-queue",
+          "binding": "NEXT_CACHE_REVALIDATION_WORKER_QUEUE"
+        }
+      ]
     }
   }
 }
