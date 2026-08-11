@@ -208,8 +208,8 @@ section { padding-block: var(--section-y); position: relative; }
   background: color-mix(in oklch, var(--bg) 42%, transparent);
   border: 1px solid color-mix(in oklch, var(--fg) 10%, transparent);
   border-radius: var(--radius-pill);
-  backdrop-filter: blur(32px) saturate(200%) brightness(1.06);
   -webkit-backdrop-filter: blur(32px) saturate(200%) brightness(1.06);
+  backdrop-filter: blur(32px) saturate(200%) brightness(1.06);
   box-shadow:
     inset 0 1px 0 var(--glass-edge),
     inset 0 0 0 1px oklch(100% 0 0 / 0.04),
@@ -293,8 +293,8 @@ section { padding-block: var(--section-y); position: relative; }
 .sheet {
   position: fixed; inset: 0; z-index: 200;
   background: color-mix(in oklch, var(--bg) 85%, transparent);
-  backdrop-filter: blur(22px) saturate(180%);
   -webkit-backdrop-filter: blur(22px) saturate(180%);
+  backdrop-filter: blur(22px) saturate(180%);
   display: none; flex-direction: column;
   padding: 28px var(--gutter);
   transform: translateY(-100%);
@@ -643,8 +643,8 @@ section { padding-block: var(--section-y); position: relative; }
   margin: auto; /* recentre : le preflight Tailwind met margin:0, ce qui casse le centrage UA du dialog modal */
   padding: 0; border: none; border-radius: var(--radius-card);
   background: color-mix(in oklch, var(--bg) 86%, transparent);
-  backdrop-filter: blur(24px) saturate(180%);
   -webkit-backdrop-filter: blur(24px) saturate(180%);
+  backdrop-filter: blur(24px) saturate(180%);
   color: var(--fg); box-shadow: 0 40px 90px -30px oklch(0% 0 0 / 0.45);
   opacity: 0; transform: translateY(10px) scale(0.985);
   transition: opacity 280ms var(--ease-out), transform 280ms var(--ease-out),
@@ -657,13 +657,24 @@ section { padding-block: var(--section-y); position: relative; }
 }
 .booking-modal::backdrop {
   background: oklch(12% 0.02 50 / 0.5);
-  backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px);
   opacity: 0;
   transition: opacity 280ms var(--ease-out), overlay 280ms allow-discrete, display 280ms allow-discrete;
 }
 .booking-modal[open]::backdrop { opacity: 1; }
 @starting-style {
   .booking-modal[open]::backdrop { opacity: 0; }
+}
+
+/* Sans backdrop-filter — Chrome dont l'accélération matérielle est coupée ou le GPU blocklisté,
+   vieux WebViews — le verre n'est plus qu'un voile translucide et le texte passe sur le contenu.
+   Ces surfaces flottent au-dessus de n'importe quoi : on retombe sur un fond quasi opaque. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .nav__bar,
+  .nav__bar[data-scrolled="true"],
+  .sheet,
+  .booking-modal { background: color-mix(in oklch, var(--bg) 96%, transparent); }
+  .booking-modal::backdrop { background: oklch(12% 0.02 50 / 0.72); }
 }
 .booking-modal__inner { position: relative; max-height: inherit; overflow-y: auto; padding: clamp(24px, 4vw, 40px); container-type: inline-size; }
 .booking-modal__close {
@@ -776,17 +787,23 @@ section { padding-block: var(--section-y); position: relative; }
 .booking-form__success h3 { font: 500 clamp(22px, 3vw, 28px)/1.1 var(--font-display); margin: 0 0 8px; }
 .booking-form__success p { color: var(--fg-muted); margin: 0; }
 
-.booking-action { min-height: 100svh; display: flex; align-items: center; justify-content: center; padding: var(--gutter); }
-.booking-action__card {
+/* Carte centrée plein écran, partagée par la page d'action du RDV et le boundary d'erreur racine. */
+.booking-action,
+.fallback { min-height: 100svh; display: flex; align-items: center; justify-content: center; padding: var(--gutter); }
+.booking-action__card,
+.fallback__card {
   width: 100%; max-width: 460px; text-align: center;
   background: var(--bg); border: 1px solid var(--hairline); border-radius: var(--radius-card);
   padding: clamp(32px, 6vw, 48px);
 }
-.booking-action__title { font: 500 clamp(24px, 4vw, 32px)/1.1 var(--font-display); margin: 0 0 12px; }
-.booking-action__body { color: var(--fg-muted); line-height: 1.55; margin: 0; }
+.booking-action__title,
+.fallback__title { font: 500 clamp(24px, 4vw, 32px)/1.1 var(--font-display); margin: 0 0 12px; }
+.booking-action__body,
+.fallback__body { color: var(--fg-muted); line-height: 1.55; margin: 0; }
 .booking-action__summary { color: var(--fg-muted); margin: 0 0 24px; }
 .booking-action__summary strong { color: var(--fg); }
 .booking-action__actions { display: flex; justify-content: center; }
+.fallback__actions { display: flex; justify-content: center; gap: var(--gap-chips); flex-wrap: wrap; margin-top: 24px; }
 
 /* ── 14 Contact + neurons ─────────────────────────────────── */
 .contact { text-align: center; }
