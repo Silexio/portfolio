@@ -1,18 +1,8 @@
 import type { NextConfig } from "next";
 import { withSentryConfig } from "@sentry/nextjs";
+import { initOpenNextCloudflareForDev } from "@opennextjs/cloudflare";
 
 const isDev = process.env.NODE_ENV !== "production";
-
-// Origine du Sentry self-hosted, dérivée du DSN — ajoutée à connect-src en repli du tunnelRoute.
-const sentryOrigin = (() => {
-  const dsn = process.env.NEXT_PUBLIC_SENTRY_DSN;
-  if (!dsn) return "";
-  try {
-    return new URL(dsn).origin;
-  } catch {
-    return "";
-  }
-})();
 
 const securityHeaders = [
   { key: "X-DNS-Prefetch-Control", value: "on" },
@@ -29,7 +19,7 @@ const securityHeaders = [
       "style-src 'self' 'unsafe-inline'",
       "img-src 'self' data:",
       "font-src 'self'",
-      `connect-src 'self'${sentryOrigin ? ` ${sentryOrigin}` : ""}`,
+      "connect-src 'self'",
       "frame-src https://challenges.cloudflare.com",
       "object-src 'none'",
       "base-uri 'self'",
@@ -49,15 +39,18 @@ const nextConfig: NextConfig = {
   },
 };
 
-// Sentry (self-host) : tunnelRoute → les events client passent par /monitoring (same-origin),
-// donc la CSP reste 'self' (aucune modif connect-src). Tout est inerte sans NEXT_PUBLIC_SENTRY_DSN.
-// L'upload des source maps ne se fait que si SENTRY_AUTH_TOKEN est fourni.
+// Binds the wrangler.jsonc resources (D1, env) into `next dev`, so the booking flow works locally.
+initOpenNextCloudflareForDev();
+
+// Bugsink (self-hosted, Sentry protocol). tunnelRoute keeps client events same-origin, so connect-src
+// stays 'self' and ad blockers can't drop them. Source maps upload only when a token is provided.
 export default withSentryConfig(nextConfig, {
+  sentryUrl: process.env.SENTRY_URL,
   org: process.env.SENTRY_ORG,
   project: process.env.SENTRY_PROJECT,
-  sentryUrl: process.env.SENTRY_URL,
   authToken: process.env.SENTRY_AUTH_TOKEN,
+  tunnelRoute: "/monitoring",
   silent: !process.env.CI,
   widenClientFileUpload: true,
-  tunnelRoute: "/monitoring",
+  sourcemaps: { disable: !process.env.SENTRY_AUTH_TOKEN },
 });

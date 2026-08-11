@@ -5,8 +5,6 @@ import { EMAIL, META, URLS } from "@/lib/data";
 import { LOCALES, type Locale } from "@/lib/i18n/config";
 import { localeParam, t } from "@/lib/i18n/utils";
 import { BASE_URL } from "@/lib/metadata";
-import { Analytics } from "@vercel/analytics/next"
-import { SpeedInsights } from "@vercel/speed-insights/next"
 import "../globals.css";
 
 const montserrat = Montserrat({ subsets: ["latin"], weight: ["500", "600"], variable: "--font-montserrat" });
@@ -104,8 +102,6 @@ export default async function RootLayout({ children, params }: LayoutProps<"/[la
       className={`${montserrat.variable} ${inter.variable} ${firaCode.variable} ${luciole.variable}`}
     >
       <head>
-        <Analytics />
-        <SpeedInsights />
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
         <script
           type="application/ld+json"

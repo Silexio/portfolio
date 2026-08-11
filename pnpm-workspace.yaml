@@ -1,9 +1,9 @@
 allowBuilds:
-  '@prisma/engines': true
   '@sentry/cli': true
-  prisma: true
+  esbuild: true
   sharp: true
   unrs-resolver: true
+  workerd: true
 ignoredBuiltDependencies:
   - sharp
   - unrs-resolver

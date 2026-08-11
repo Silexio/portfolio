@@ -32,21 +32,16 @@ yarn-error.log*
 .env*
 !.env.example
 
-# vercel
-.vercel
+# cloudflare (build OpenNext, état local de wrangler, types générés par `wrangler types`)
+/.open-next
+/.wrangler
+cloudflare-env.d.ts
 
 # typescript
 *.tsbuildinfo
 next-env.d.ts
 
-# prisma generated client (régénéré par `prisma generate`)
-/generated
-
 # playwright
 /test-results
 /playwright-report
 /playwright/.cache
-
-# sentry
-.sentryclirc
-.env.sentry-build-plugin
