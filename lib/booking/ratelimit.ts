@@ -4,8 +4,10 @@ const WINDOW_MS = 60 * 60 * 1000;
 const MAX_PER_WINDOW = 5;
 const RETENTION_MS = 24 * 60 * 60 * 1000;
 
-/** Extracts the originating client IP from proxy headers (Vercel sets x-forwarded-for). */
+/** Extracts the originating client IP. Cloudflare sets CF-Connecting-IP and it cannot be spoofed. */
 export function clientIp(headers: Headers): string {
+  const connecting = headers.get("cf-connecting-ip")?.trim();
+  if (connecting) return connecting;
   const forwarded = headers.get("x-forwarded-for");
   if (forwarded) return forwarded.split(",")[0].trim();
   return headers.get("x-real-ip")?.trim() || "0.0.0.0";
@@ -20,14 +22,10 @@ export function hashIp(ip: string): string {
 
 /** Records a hit and returns false when the IP exceeded the hourly quota. */
 export async function checkRateLimit(ip: string, now: Date = new Date()): Promise<boolean> {
-  const { getPrisma } = await import("@/lib/booking/prisma");
-  const prisma = getPrisma();
+  const { countHits, recordHit } = await import("@/lib/booking/db");
   const ipHash = hashIp(ip);
-  const recent = await prisma.rateLimitHit.count({
-    where: { ipHash, createdAt: { gte: new Date(now.getTime() - WINDOW_MS) } },
-  });
-  if (recent >= MAX_PER_WINDOW) return false;
-  await prisma.rateLimitHit.create({ data: { ipHash } });
-  await prisma.rateLimitHit.deleteMany({ where: { createdAt: { lt: new Date(now.getTime() - RETENTION_MS) } } });
+  const windowStart = new Date(now.getTime() - WINDOW_MS).toISOString();
+  if ((await countHits(ipHash, windowStart)) >= MAX_PER_WINDOW) return false;
+  await recordHit(ipHash, now, new Date(now.getTime() - RETENTION_MS).toISOString());
   return true;
 }

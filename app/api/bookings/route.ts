@@ -1,19 +1,22 @@
 import { NextResponse } from "next/server";
 import { PACKAGES } from "@/lib/data";
 import { t } from "@/lib/i18n/utils";
+import { insertBooking } from "@/lib/booking/db";
+import { ownerEmail, pendingEmail } from "@/lib/booking/email";
+import { sendMail } from "@/lib/booking/mailer";
+import { generateRoomSlug } from "@/lib/booking/meeting";
+import { checkRateLimit, clientIp } from "@/lib/booking/ratelimit";
 import { bookingSchema } from "@/lib/booking/schema";
 import { isValidSlot } from "@/lib/booking/slots";
 import { verifyTurnstile } from "@/lib/booking/turnstile";
-import { checkRateLimit, clientIp } from "@/lib/booking/ratelimit";
-import { generateRoomSlug } from "@/lib/booking/meeting";
-import { getPrisma } from "@/lib/booking/prisma";
-import { ownerEmail, pendingEmail } from "@/lib/booking/email";
-import { sendMail } from "@/lib/booking/mailer";
-import { Prisma } from "@/generated/prisma/client";
-
-export const runtime = "nodejs";
 
 const json = (error: string, status: number) => NextResponse.json({ error }, { status });
+
+function isHoneypotFilled(raw: unknown): boolean {
+  if (!raw || typeof raw !== "object") return false;
+  const company = (raw as { company?: unknown }).company;
+  return typeof company === "string" && company.length > 0;
+}
 
 export async function POST(req: Request) {
   let raw: unknown;
@@ -23,9 +26,7 @@ export async function POST(req: Request) {
     return json("bad_request", 400);
   }
 
-  if (raw && typeof raw === "object" && typeof (raw as { company?: unknown }).company === "string" && (raw as { company: string }).company.length > 0) {
-    return NextResponse.json({ ok: true }, { status: 201 });
-  }
+  if (isHoneypotFilled(raw)) return NextResponse.json({ ok: true }, { status: 201 });
 
   const parsed = bookingSchema.safeParse(raw);
   if (!parsed.success) return json("validation", 400);
@@ -38,12 +39,11 @@ export async function POST(req: Request) {
   if (!(await verifyTurnstile(data.turnstileToken, ip))) return json("captcha", 400);
   if (!(await checkRateLimit(ip, now))) return json("rate_limit", 429);
 
-  const jitsiRoom = generateRoomSlug();
-  let bookingId: string;
+  let bookingId: string | null;
   try {
-    const created = await getPrisma().booking.create({
-      data: {
-        slotStart: new Date(data.slotStart),
+    bookingId = await insertBooking(
+      {
+        slotStart: data.slotStart,
         name: data.name,
         email: data.email,
         phone: data.phone,
@@ -51,15 +51,14 @@ export async function POST(req: Request) {
         message: data.message ?? null,
         locale: data.locale,
         packages: data.packages,
-        jitsiRoom,
+        meetingRoom: generateRoomSlug(),
       },
-      select: { id: true },
-    });
-    bookingId = created.id;
-  } catch (e) {
-    if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === "P2002") return json("slot_taken", 409);
+      now,
+    );
+  } catch {
     return json("server", 500);
   }
+  if (!bookingId) return json("slot_taken", 409);
 
   const labelById = new Map<string, string>(PACKAGES.map((p) => [p.id, t(p.title, data.locale)]));
   const packageLabels = data.packages.map((id) => labelById.get(id) ?? id);

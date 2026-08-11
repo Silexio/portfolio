@@ -4,9 +4,8 @@ import { notFound } from "next/navigation";
 import { BOOKING_ACTION, I18N } from "@/lib/data";
 import type { Locale } from "@/lib/i18n/config";
 import { asLocale, t, type Bilingual } from "@/lib/i18n/utils";
-import type { MeetingMode } from "@/lib/booking/schema";
 import { verifyAction, type BookingAction } from "@/lib/booking/token";
-import { getPrisma } from "@/lib/booking/prisma";
+import { findBooking } from "@/lib/booking/db";
 import { formatSlotLabel } from "@/lib/booking/format";
 
 export const dynamic = "force-dynamic";
@@ -71,15 +70,7 @@ export default async function BookingActionPage({ params, searchParams }: PagePr
     );
   }
 
-  let booking: { name: string; slotStart: Date; meetingType: MeetingMode; status: string } | null = null;
-  try {
-    booking = await getPrisma().booking.findUnique({
-      where: { id },
-      select: { name: true, slotStart: true, meetingType: true, status: true },
-    });
-  } catch {
-    booking = null;
-  }
+  const booking = await findBooking(id).catch(() => null);
   if (!booking) {
     return (
       <Shell>
@@ -95,7 +86,7 @@ export default async function BookingActionPage({ params, searchParams }: PagePr
     );
   }
 
-  const slot = formatSlotLabel(booking.slotStart.toISOString(), lang);
+  const slot = formatSlotLabel(booking.slotStart, lang);
   const mode = t(booking.meetingType === "video" ? I18N.booking.modeVideo : I18N.booking.modeCall, lang);
   const question = act === "confirm" ? BOOKING_ACTION.confirmQuestion : BOOKING_ACTION.refuseQuestion;
   const cta = act === "confirm" ? BOOKING_ACTION.confirmCta : BOOKING_ACTION.refuseCta;

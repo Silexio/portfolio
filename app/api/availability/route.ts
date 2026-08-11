@@ -1,28 +1,16 @@
 import { NextResponse } from "next/server";
 import { BOOKING } from "@/lib/data";
+import { listHeldSlots } from "@/lib/booking/db";
 import { groupByDay, listSlotStarts } from "@/lib/booking/slots";
-import { getPrisma } from "@/lib/booking/prisma";
-import { BookingStatus } from "@/generated/prisma/client";
 
-export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function GET() {
   const starts = listSlotStarts(new Date());
-  const taken = new Set<string>();
-
-  if (starts.length > 0) {
-    const rows = await getPrisma()
-      .booking.findMany({
-        where: {
-          slotStart: { gte: new Date(starts[0]), lte: new Date(starts[starts.length - 1]) },
-          status: { in: [BookingStatus.pending, BookingStatus.confirmed] },
-        },
-        select: { slotStart: true },
-      })
-      .catch(() => []);
-    for (const row of rows) taken.add(row.slotStart.toISOString());
-  }
+  // A dead database greys out nothing rather than breaking the modal.
+  const held =
+    starts.length > 0 ? await listHeldSlots(starts[0], starts[starts.length - 1]).catch(() => []) : [];
+  const taken = new Set(held);
 
   const days = groupByDay(starts).map((day) => ({
     day: day.day,

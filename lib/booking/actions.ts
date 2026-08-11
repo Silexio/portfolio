@@ -1,10 +1,9 @@
 import { NextResponse } from "next/server";
 import { asLocale } from "@/lib/i18n/utils";
-import { verifyAction, type BookingAction } from "@/lib/booking/token";
-import { getPrisma } from "@/lib/booking/prisma";
+import { findBooking, settleBooking } from "@/lib/booking/db";
 import { confirmedEmail, ownerConfirmedEmail, refusedEmail } from "@/lib/booking/email";
 import { sendMail } from "@/lib/booking/mailer";
-import { BookingStatus } from "@/generated/prisma/client";
+import { verifyAction, type BookingAction } from "@/lib/booking/token";
 
 export type ActionState = "confirmed" | "refused" | "already" | "expired" | "invalid";
 
@@ -12,38 +11,39 @@ export type ActionState = "confirmed" | "refused" | "already" | "expired" | "inv
 export async function applyAction(action: BookingAction, id: string, token: string): Promise<ActionState> {
   if (!id || !token || !verifyAction(id, action, token)) return "invalid";
 
-  const prisma = getPrisma();
-  const booking = await prisma.booking.findUnique({ where: { id } });
+  const booking = await findBooking(id);
   if (!booking) return "invalid";
-  if (booking.status !== BookingStatus.pending) return "already";
-  if (booking.slotStart.getTime() < Date.now()) return "expired";
+  if (booking.status !== "pending") return "already";
+  if (new Date(booking.slotStart).getTime() < Date.now()) return "expired";
 
-  const locale = asLocale(booking.locale);
-  const slotIso = booking.slotStart.toISOString();
+  const status = action === "confirm" ? "confirmed" : "refused";
+  if (!(await settleBooking(id, status))) return "already";
 
-  if (action === "confirm") {
-    await prisma.booking.update({ where: { id }, data: { status: BookingStatus.confirmed } });
-    const base = {
-      id,
-      name: booking.name,
-      email: booking.email,
-      slotIso,
-      meetingType: booking.meetingType,
-      roomSlug: booking.jitsiRoom ?? undefined,
-      locale,
-    };
-    await sendMail(booking.email, confirmedEmail(base)).catch(() => undefined);
-    const owner = process.env.BOOKING_NOTIFY_EMAIL;
-    if (owner) {
-      const ownerMail = ownerConfirmedEmail({ ...base, phone: booking.phone, ownerEmail: owner });
-      await sendMail(owner, ownerMail).catch(() => undefined);
-    }
-    return "confirmed";
+  if (action === "refuse") {
+    await sendMail(
+      booking.email,
+      refusedEmail({ name: booking.name, slotIso: booking.slotStart, locale: booking.locale }),
+    ).catch(() => undefined);
+    return "refused";
   }
 
-  await prisma.booking.update({ where: { id }, data: { status: BookingStatus.refused } });
-  await sendMail(booking.email, refusedEmail({ name: booking.name, slotIso, locale })).catch(() => undefined);
-  return "refused";
+  const base = {
+    id,
+    name: booking.name,
+    email: booking.email,
+    slotIso: booking.slotStart,
+    meetingType: booking.meetingType,
+    roomSlug: booking.meetingRoom ?? undefined,
+    locale: booking.locale,
+  };
+  await sendMail(booking.email, confirmedEmail(base)).catch(() => undefined);
+
+  const owner = process.env.BOOKING_NOTIFY_EMAIL;
+  if (owner) {
+    const ownerMail = ownerConfirmedEmail({ ...base, phone: booking.phone, ownerEmail: owner });
+    await sendMail(owner, ownerMail).catch(() => undefined);
+  }
+  return "confirmed";
 }
 
 /** Parses the owner action form, applies it, and redirects to the localized result page. */
