@@ -1,7 +1,8 @@
 "use client";
 
-import Script from "next/script";
-import { useCallback, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
+
+const API_URL = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
 
 type RenderOptions = {
   sitekey: string;
@@ -15,6 +16,7 @@ declare global {
     turnstile?: {
       render: (el: HTMLElement, opts: RenderOptions) => string;
       reset: (id?: string) => void;
+      remove: (id: string) => void;
     };
   }
 }
@@ -25,30 +27,61 @@ type TurnstileProps = {
   label: string;
 };
 
-/** Cloudflare Turnstile widget — loads api.js via next/script and renders once it's ready. */
+let apiScript: Promise<void> | null = null;
+
+/**
+ * Loads the Turnstile API once per page, whoever asks first.
+ * next/script is deliberately avoided here: the widget mounts inside the booking modal, long after
+ * the load event, and its lazyOnload/afterInteractive strategies never injected the tag in that
+ * situation — leaving the submit button disabled forever with no error anywhere.
+ */
+function loadApi(): Promise<void> {
+  if (apiScript) return apiScript;
+  apiScript = new Promise((resolve, reject) => {
+    if (window.turnstile) return resolve();
+    const script = document.createElement("script");
+    script.src = API_URL;
+    script.async = true;
+    script.onload = () => resolve();
+    script.onerror = () => {
+      apiScript = null;
+      reject(new Error("Turnstile API failed to load"));
+    };
+    document.head.appendChild(script);
+  });
+  return apiScript;
+}
+
+/** Cloudflare Turnstile widget. Renders as soon as the API is available, once per mount. */
 export function Turnstile({ siteKey, onToken, label }: TurnstileProps) {
   const hostRef = useRef<HTMLDivElement>(null);
-  const widgetId = useRef<string | null>(null);
   const onTokenRef = useRef(onToken);
 
   useEffect(() => {
     onTokenRef.current = onToken;
   }, [onToken]);
 
-  const render = useCallback(() => {
-    if (!hostRef.current || !window.turnstile || widgetId.current) return;
-    widgetId.current = window.turnstile.render(hostRef.current, {
-      sitekey: siteKey,
-      callback: (value) => onTokenRef.current(value),
-      "expired-callback": () => onTokenRef.current(null),
-      "error-callback": () => onTokenRef.current(null),
-    });
+  useEffect(() => {
+    let widgetId: string | null = null;
+    let cancelled = false;
+
+    loadApi()
+      .then(() => {
+        if (cancelled || !hostRef.current || !window.turnstile) return;
+        widgetId = window.turnstile.render(hostRef.current, {
+          sitekey: siteKey,
+          callback: (value) => onTokenRef.current(value),
+          "expired-callback": () => onTokenRef.current(null),
+          "error-callback": () => onTokenRef.current(null),
+        });
+      })
+      .catch(() => onTokenRef.current(null));
+
+    return () => {
+      cancelled = true;
+      if (widgetId) window.turnstile?.remove(widgetId);
+    };
   }, [siteKey]);
 
-  return (
-    <>
-      <Script src="https://challenges.cloudflare.com/turnstile/v0/api.js" strategy="lazyOnload" onReady={render} />
-      <div ref={hostRef} className="booking-form__captcha" aria-label={label} />
-    </>
-  );
+  return <div ref={hostRef} className="booking-form__captcha" aria-label={label} />;
 }
