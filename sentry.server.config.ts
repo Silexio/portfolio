@@ -1,10 +1,12 @@
 import * as Sentry from "@sentry/nextjs";
 
-const dsn = process.env.NEXT_PUBLIC_SENTRY_DSN;
-
-if (dsn) {
+// Bugsink only ingests error events: sending traces would be dropped on arrival.
+// sendDefaultPii stays off — booking payloads carry prospect names, emails and phone numbers.
+if (process.env.SENTRY_DSN) {
   Sentry.init({
-    dsn,
-    tracesSampleRate: process.env.NODE_ENV === "development" ? 1.0 : 0.1,
+    dsn: process.env.SENTRY_DSN,
+    tracesSampleRate: 0,
+    sendDefaultPii: false,
+    environment: process.env.NODE_ENV,
   });
 }
