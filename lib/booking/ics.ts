@@ -40,6 +40,23 @@ function fold(line: string): string {
   return chunks.join("\r\n");
 }
 
+/**
+ * Lien « Ajouter à Google Agenda » pour le même événement que le .ics — utile sur mobile, où une
+ * pièce jointe passe souvent inaperçue. L'endpoint /calendar/render n'est pas documenté par Google
+ * mais est stable de longue date ; le .ics reste la voie principale, ce lien n'est qu'un raccourci.
+ */
+export function googleCalendarUrl(input: IcsInput): string {
+  const end = new Date(input.start.getTime() + input.durationMinutes * 60_000);
+  const params = new URLSearchParams({
+    action: "TEMPLATE",
+    text: input.summary,
+    dates: `${toUtc(input.start)}/${toUtc(end)}`,
+    details: input.description,
+    location: input.location,
+  });
+  return `https://calendar.google.com/calendar/render?${params}`;
+}
+
 /** Génère un VEVENT iCalendar (RFC 5545) ajoutable dans tout agenda (Apple/Google/Outlook). */
 export function buildIcs(input: IcsInput, stamp: Date = new Date()): string {
   const end = new Date(input.start.getTime() + input.durationMinutes * 60_000);

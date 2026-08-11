@@ -7,7 +7,7 @@ const base = {
   durationMinutes: 30,
   summary: "Rendez-vous Silexio",
   description: "Visio avec Nicolas",
-  location: "https://meet.jit.si/silexio-xyz",
+  location: "https://kmeet.infomaniak.com/silexio-xyz",
   organizerName: "Silexio",
   organizerEmail: "contact@silexio.be",
   attendeeName: "Jane Doe",
@@ -34,7 +34,7 @@ describe("buildIcs", () => {
 
   it("carries summary, location, organizer and attendee", () => {
     expect(ics).toContain("SUMMARY:Rendez-vous Silexio");
-    expect(ics).toContain("LOCATION:https://meet.jit.si/silexio-xyz");
+    expect(ics).toContain("LOCATION:https://kmeet.infomaniak.com/silexio-xyz");
     expect(ics).toContain("ORGANIZER;CN=Silexio:mailto:contact@silexio.be");
     expect(ics).toContain("ATTENDEE;CN=Jane Doe;RSVP=TRUE:mailto:jane@example.com");
     expect(ics).toContain("UID:booking-abc@silexio.be");

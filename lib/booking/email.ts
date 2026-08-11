@@ -3,7 +3,7 @@ import { BASE_URL } from "@/lib/metadata";
 import type { Locale } from "@/lib/i18n/config";
 import { t } from "@/lib/i18n/utils";
 import { formatSlotLabel } from "@/lib/booking/format";
-import { buildIcs } from "@/lib/booking/ics";
+import { buildIcs, googleCalendarUrl, type IcsInput } from "@/lib/booking/ics";
 import { meetingUrl } from "@/lib/booking/meeting";
 import type { MeetingMode } from "@/lib/booking/schema";
 import { signAction, type BookingAction } from "@/lib/booking/token";
@@ -85,10 +85,10 @@ type IcsTarget = {
   attendeeEmail: string;
 };
 
-function bookingIcs(target: IcsTarget): MailAttachment {
+function calendarEvent(target: IcsTarget): IcsInput {
   const ics = BOOKING_EMAILS.ics;
   const url = meetingLink(target.meetingType, target.roomSlug);
-  const content = buildIcs({
+  return {
     uid: `${target.id}@silexio.be`,
     start: new Date(target.slotIso),
     durationMinutes: BOOKING.slotMinutes,
@@ -99,8 +99,15 @@ function bookingIcs(target: IcsTarget): MailAttachment {
     organizerEmail: EMAIL,
     attendeeName: target.attendeeName,
     attendeeEmail: target.attendeeEmail,
-  });
-  return { filename: "rendez-vous.ics", content, contentType: "text/calendar; charset=utf-8; method=PUBLISH" };
+  };
+}
+
+function bookingIcs(event: IcsInput): MailAttachment {
+  return {
+    filename: "rendez-vous.ics",
+    content: buildIcs(event),
+    contentType: "text/calendar; charset=utf-8; method=PUBLISH",
+  };
 }
 
 /** Notification to the owner with all client details and signed confirm/decline links. */
@@ -161,9 +168,13 @@ ${buttons}
   return { subject, html, text };
 }
 
-function clientMail(subject: string, text: string, linkify?: string): Mail {
+type MailLink = { url: string; label?: string };
+
+function clientMail(subject: string, text: string, links: MailLink[] = []): Mail {
   let body = nl2br(esc(text));
-  if (linkify) body = body.replace(esc(linkify), `<a href="${linkify}">${linkify}</a>`);
+  for (const { url, label } of links) {
+    body = body.replace(esc(url), `<a href="${esc(url)}">${esc(label ?? url)}</a>`);
+  }
   return { subject, html: shell(`<div style="font-size:14px;">${body}</div>`), text };
 }
 
@@ -177,19 +188,20 @@ export function pendingEmail(data: ClientMailData): Mail {
   return clientMail(subject, text);
 }
 
-/** Confirmation email to the client, with the Jitsi link (video) or call note + an .ics invite. */
+/** Confirmation email to the client, with the kMeet link (video) or call note + an .ics invite. */
 export function confirmedEmail(data: ConfirmedMailData): Mail {
   const tpl = BOOKING_EMAILS.confirmed;
   const slot = formatSlotLabel(data.slotIso, data.locale);
   const url = meetingLink(data.meetingType, data.roomSlug);
   const meetingInfo = url ? fill(t(tpl.meetingVideo, data.locale), { url }) : t(tpl.meetingCall, data.locale);
+  const event = calendarEvent({ ...data, attendeeName: data.name, attendeeEmail: data.email });
+  const calendarUrl = googleCalendarUrl(event);
+  const calendar = fill(t(tpl.calendar, data.locale), { url: calendarUrl });
   const subject = fill(t(tpl.subject, data.locale), { slot });
-  const text = fill(t(tpl.body, data.locale), { name: data.name, slot, meetingInfo });
-  const mail = clientMail(subject, text, url);
-  return {
-    ...mail,
-    attachments: [bookingIcs({ ...data, attendeeName: data.name, attendeeEmail: data.email })],
-  };
+  const text = fill(t(tpl.body, data.locale), { name: data.name, slot, meetingInfo, calendar });
+  const links: MailLink[] = [{ url: calendarUrl, label: t(tpl.calendarLabel, data.locale) }];
+  if (url) links.unshift({ url });
+  return { ...clientMail(subject, text, links), attachments: [bookingIcs(event)] };
 }
 
 /** Confirmation email to the owner (after they confirm), with the meeting details + an .ics invite. */
@@ -200,6 +212,9 @@ export function ownerConfirmedEmail(data: OwnerConfirmedMailData): Mail {
   const meetingInfo = url
     ? fill(t(BOOKING_EMAILS.confirmed.meetingVideo, data.locale), { url })
     : fill(t(tpl.meetingCall, data.locale), { name: data.name });
+  const event = calendarEvent({ ...data, attendeeName: "Silexio", attendeeEmail: data.ownerEmail });
+  const calendarUrl = googleCalendarUrl(event);
+  const calendar = fill(t(BOOKING_EMAILS.confirmed.calendar, data.locale), { url: calendarUrl });
   const subject = fill(t(tpl.subject, data.locale), { slot, name: data.name });
   const text = fill(t(tpl.body, data.locale), {
     name: data.name,
@@ -207,12 +222,13 @@ export function ownerConfirmedEmail(data: OwnerConfirmedMailData): Mail {
     phone: data.phone,
     slot,
     meetingInfo,
+    calendar,
   });
-  const mail = clientMail(subject, text, url);
-  return {
-    ...mail,
-    attachments: [bookingIcs({ ...data, attendeeName: "Silexio", attendeeEmail: data.ownerEmail })],
-  };
+  const links: MailLink[] = [
+    { url: calendarUrl, label: t(BOOKING_EMAILS.confirmed.calendarLabel, data.locale) },
+  ];
+  if (url) links.unshift({ url });
+  return { ...clientMail(subject, text, links), attachments: [bookingIcs(event)] };
 }
 
 /** Decline email to the client; the slot is freed. */

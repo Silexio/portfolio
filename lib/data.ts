@@ -221,9 +221,14 @@ export const BOOKING_EMAILS = {
   confirmed: {
     subject: { fr: "Rendez-vous confirmé — {slot}", en: "Booking confirmed — {slot}" },
     body: {
-      fr: "Bonjour {name},\n\nVotre rendez-vous du {slot} est confirmé.\n\n{meetingInfo}\n\nÀ très vite,\nNicolas — Silexio",
-      en: "Hi {name},\n\nYour booking on {slot} is confirmed.\n\n{meetingInfo}\n\nTalk soon,\nNicolas — Silexio",
+      fr: "Bonjour {name},\n\nVotre rendez-vous du {slot} est confirmé.\n\n{meetingInfo}\n\n{calendar}\n\nÀ très vite,\nNicolas — Silexio",
+      en: "Hi {name},\n\nYour booking on {slot} is confirmed.\n\n{meetingInfo}\n\n{calendar}\n\nTalk soon,\nNicolas — Silexio",
     },
+    calendar: {
+      fr: "Ajoutez-le à votre agenda : {url}\n(Le fichier .ics en pièce jointe fait la même chose dans Apple Calendar, Outlook ou Infomaniak.)",
+      en: "Add it to your calendar: {url}\n(The attached .ics does the same in Apple Calendar, Outlook or Infomaniak.)",
+    },
+    calendarLabel: { fr: "Ajouter à Google Agenda", en: "Add to Google Calendar" },
     meetingVideo: {
       fr: "Lien visio : {url}\n(Je rejoins en premier pour ouvrir la salle.)",
       en: "Video link: {url}\n(I'll join first to open the room.)",
@@ -243,8 +248,8 @@ export const BOOKING_EMAILS = {
   ownerConfirmed: {
     subject: { fr: "RDV confirmé — {slot} — {name}", en: "Booking confirmed — {slot} — {name}" },
     body: {
-      fr: "Tu as confirmé le rendez-vous avec {name} ({email} · {phone}) le {slot}.\n\n{meetingInfo}\n\nL'événement est en pièce jointe (.ics).",
-      en: "You confirmed the booking with {name} ({email} · {phone}) on {slot}.\n\n{meetingInfo}\n\nThe event is attached (.ics).",
+      fr: "Tu as confirmé le rendez-vous avec {name} ({email} · {phone}) le {slot}.\n\n{meetingInfo}\n\n{calendar}\n\nL'événement est aussi en pièce jointe (.ics).",
+      en: "You confirmed the booking with {name} ({email} · {phone}) on {slot}.\n\n{meetingInfo}\n\n{calendar}\n\nThe event is also attached (.ics).",
     },
     meetingCall: {
       fr: "Format : appel. Tu appelles {name} au numéro fourni.",
