@@ -40,7 +40,7 @@ describe("listSlotStarts", () => {
     expect(slots.every((s) => allowed.has(brussels(s).weekday))).toBe(true);
   });
 
-  it("only business hours (08:00–15:30) in Brussels", () => {
+  it("only business hours in Brussels", () => {
     for (const s of slots) {
       const { hour, minute } = brussels(s);
       const minutes = hour * 60 + minute;
@@ -65,15 +65,17 @@ describe("listSlotStarts", () => {
     expect(new Set(slots).size).toBe(slots.length);
   });
 
-  it("includes an 08:00 Brussels slot mapped to 07:00Z in January", () => {
-    expect(slots.some((s) => s.endsWith("T07:00:00.000Z"))).toBe(true);
+  it("maps the first Brussels slot to UTC+1 in January", () => {
+    const winter = String(BOOKING.startHour - 1).padStart(2, "0");
+    expect(slots.some((s) => s.endsWith(`T${winter}:00:00.000Z`))).toBe(true);
   });
 });
 
 describe("listSlotStarts — summer DST offset", () => {
-  it("includes an 08:00 Brussels slot mapped to 06:00Z in July", () => {
+  it("maps the first Brussels slot to UTC+2 in July", () => {
     const slots = listSlotStarts(new Date("2026-07-06T00:00:00Z"));
-    expect(slots.some((s) => s.endsWith("T06:00:00.000Z"))).toBe(true);
+    const summer = String(BOOKING.startHour - 2).padStart(2, "0");
+    expect(slots.some((s) => s.endsWith(`T${summer}:00:00.000Z`))).toBe(true);
   });
 });
 
