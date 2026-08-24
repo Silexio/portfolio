@@ -42,14 +42,14 @@ const nextConfig: NextConfig = {
 // Binds the wrangler.jsonc resources (D1, env) into `next dev`, so the booking flow works locally.
 initOpenNextCloudflareForDev();
 
-// Bugsink (self-hosted, Sentry protocol). tunnelRoute keeps client events same-origin, so connect-src
-// stays 'self' and ad blockers can't drop them. Source maps upload only when a token is provided.
+// Bugsink (self-hosted, Sentry protocol). Pas de tunnelRoute : le rewrite qu'il génère pointe en dur
+// sur ingest.sentry.io. Le relais same-origin est app/monitoring/route.ts, ciblé par le `tunnel`
+// explicite de instrumentation-client.ts. Source maps uploadées seulement si un token est fourni.
 export default withSentryConfig(nextConfig, {
   sentryUrl: process.env.SENTRY_URL,
   org: process.env.SENTRY_ORG,
   project: process.env.SENTRY_PROJECT,
   authToken: process.env.SENTRY_AUTH_TOKEN,
-  tunnelRoute: "/monitoring",
   silent: !process.env.CI,
   widenClientFileUpload: true,
   sourcemaps: { disable: !process.env.SENTRY_AUTH_TOKEN },
