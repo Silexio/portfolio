@@ -27,6 +27,10 @@ type NavClientProps = {
   lang: Locale;
   links: NavLink[];
   labels: NavLabels;
+  /** Préfixe des ancres de section. Vide sur l'accueil, `/{lang}` depuis une autre page. */
+  base?: string;
+  /** Chemin équivalent dans l'autre langue, pour ne pas éjecter le visiteur vers l'accueil. */
+  altPath?: string;
 };
 
 function toggleTheme() {
@@ -42,9 +46,9 @@ function toggleTheme() {
   else apply();
 }
 
-function Brand({ label, onClick }: { label: string; onClick?: () => void }) {
+function Brand({ label, href, onClick }: { label: string; href: string; onClick?: () => void }) {
   return (
-    <a href="#top" className="nav__brand" aria-label={label} onClick={onClick}>
+    <a href={href} className="nav__brand" aria-label={label} onClick={onClick}>
       <Image src="/silexio-mark.png" alt="" width={22} height={22} draggable={false} />
       <span className="nav__brand-text">SILEXIO</span>
     </a>
@@ -70,7 +74,7 @@ function ThemeIcon() {
   );
 }
 
-export function NavClient({ lang, links, labels }: NavClientProps) {
+export function NavClient({ lang, links, labels, base = "", altPath = "" }: NavClientProps) {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const menuRef = useRef<HTMLButtonElement>(null);
@@ -112,7 +116,7 @@ export function NavClient({ lang, links, labels }: NavClientProps) {
 
   const langSwitch = (
     <Link
-      href={`/${otherLang}`}
+      href={`/${otherLang}${altPath}`}
       hrefLang={otherLang}
       scroll={false}
       className="nav__lang"
@@ -126,15 +130,15 @@ export function NavClient({ lang, links, labels }: NavClientProps) {
 
   return (
     <>
-      <nav className="nav" aria-label={labels.home}>
+      <header className="nav" aria-label={labels.home}>
         <div className="nav__bar" data-scrolled={scrolled}>
-          <Brand label={labels.home} />
+          <Brand label={labels.home} href={`${base}#top`} />
 
           <ul className="nav__links">
             {links.map((link) => (
               <li key={link.id}>
                 <a
-                  href={`#${link.id}`}
+                  href={`${base}#${link.id}`}
                   aria-current={link.id === activeId ? "true" : undefined}
                   aria-label={countLabel(link)}
                 >
@@ -166,11 +170,11 @@ export function NavClient({ lang, links, labels }: NavClientProps) {
             </button>
           </div>
         </div>
-      </nav>
+      </header>
 
       <div className="sheet" data-open={open} inert={!open}>
         <div className="sheet__head">
-          <Brand label={labels.home} onClick={() => setOpen(false)} />
+          <Brand label={labels.home} href={`${base}#top`} onClick={() => setOpen(false)} />
           <button type="button" className="nav__tool" onClick={closeSheet} aria-label={labels.close}>
             <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
               <path d="M3 3l12 12M15 3L3 15" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
@@ -180,7 +184,7 @@ export function NavClient({ lang, links, labels }: NavClientProps) {
         <ul className="sheet__links">
           {links.map((link, i) => (
             <li key={link.id}>
-              <a href={`#${link.id}`} onClick={() => setOpen(false)} aria-label={countLabel(link)}>
+              <a href={`${base}#${link.id}`} onClick={() => setOpen(false)} aria-label={countLabel(link)}>
                 <span>
                   {link.label}
                   {link.id === "contact" && count > 0 && (

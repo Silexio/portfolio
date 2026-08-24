@@ -2,7 +2,7 @@ import Image from "next/image";
 import { Btn } from "@/components/ui/Btn";
 import { HeroLines } from "@/components/ui/HeroLines";
 import { Reveal } from "@/components/ui/Reveal";
-import { I18N, MARQUEE } from "@/lib/data";
+import { I18N } from "@/lib/data";
 import type { Locale } from "@/lib/i18n/config";
 import { t } from "@/lib/i18n/utils";
 
@@ -61,19 +61,6 @@ export function Hero({ lang }: { lang: Locale }) {
           <HeroMeta label={t(i18n.metaStatusLabel, lang)} value={t(i18n.metaStatusValue, lang)} live />
         </Reveal>
 
-        <div className="marquee" aria-hidden="true">
-          <div className="marquee__track">
-            {[0, 1].map((half) => (
-              <span key={half}>
-                {MARQUEE.map((item) => (
-                  <span key={item}>
-                    {item} <span className="dot">◆</span>
-                  </span>
-                ))}
-              </span>
-            ))}
-          </div>
-        </div>
       </div>
 
     </section>
