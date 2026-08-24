@@ -17,7 +17,7 @@ export function Contact({ lang }: { lang: Locale }) {
           <div className="contact__inner">
             <Neurons />
             <span className="eyebrow contact__eyebrow">
-              <span className="section-head__num">04</span>
+              <span className="section-head__num">06</span>
               {t(i18n.eyebrow, lang)}
             </span>
             <h2 id="contact-title" className="contact__title">

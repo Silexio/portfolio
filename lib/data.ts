@@ -2,52 +2,85 @@ import type { Bilingual } from "@/lib/i18n/utils";
 
 export const META = {
   title: {
-    fr: "Silexio — Développement full-stack & IT · Belgique",
-    en: "Silexio — Full-stack development & IT · Belgium",
+    fr: "Développeur full-stack, IA & dépannage IT en Belgique",
+    en: "Full-stack developer, AI & IT support in Belgium",
   },
   description: {
-    fr: "Studio indépendant en Belgique. Développement full-stack, backend, infrastructure et support IT. Un seul interlocuteur, de l'idée au serveur en production.",
-    en: "Independent studio based in Belgium. Full-stack development, backend, infrastructure and IT support. One point of contact, from idea to production.",
+    fr: "Développeur full-stack et informaticien dans le Hainaut : sites web, applications, API, IA, automatisation, infrastructure et dépannage IT. Toute la Belgique.",
+    en: "Full-stack developer and IT engineer in Hainaut: websites, web apps, APIs, AI, automation, infrastructure and IT support. Serving all of Belgium.",
   },
 } satisfies Record<string, Bilingual>;
 
 export const EMAIL = "contact@silexio.be";
 
+/** Ancrage géographique du profil service-area : commune de rattachement, pas d'adresse de rue. */
+export const GEO = {
+  locality: "Chapelle-lez-Herlaimont",
+  postalCode: "7160",
+  region: "Hainaut",
+  country: "BE",
+  latitude: 50.4167,
+  longitude: 4.3333,
+  radiusMeters: 45000,
+} as const;
+
+/**
+ * Mentions légales belges. Le siège social et la TVA sont ceux de la coopérative SMartCoop :
+ * ils vivent ici et dans le footer, jamais dans le JSON-LD local, qui doit pointer sur GEO.
+ * `whatsappUrl` est un lien d'invitation : il ouvre la conversation sans publier le numéro,
+ * qui n'a rien à faire dans ce dépôt public. Champs vides = affichage masqué.
+ */
+export const LEGAL: {
+  entity: string;
+  host: string;
+  street: string;
+  city: string;
+  vat: string;
+  whatsappUrl: string;
+} = {
+  entity: "Silexio",
+  host: "Productions Associées asbl (Smart)",
+  street: "Rue Coenraets 72",
+  city: "1060 Bruxelles",
+  vat: "BE 0896.755.397",
+  whatsappUrl: "https://wa.me/message/GWBTZEIIOC4XF1",
+};
+
 export const URLS = {
   email: `mailto:${EMAIL}`,
   linkedin: "https://www.linkedin.com/company/silexio-be",
   github: "https://github.com/Silexio",
+  /** Compte personnel : publié dans `sameAs` pour lier la personne au studio (E-E-A-T). */
+  githubPersonal: "https://github.com/TheSawkit",
   facebook: "https://www.facebook.com/silexio",
   instagram: "https://www.instagram.com/silexio.be",
-  threads: "https://www.threads.net/@silexio.be",
 } as const;
 
 /** Règles d'ouverture du calendrier de rendez-vous (jours/heures en heure de Bruxelles). */
 export const BOOKING = {
   timezone: "Europe/Brussels",
   workdays: [1, 2, 3, 4, 5],
-  startHour: 8,
-  endHour: 16,
+  startHour: 9,
+  endHour: 17,
   slotMinutes: 30,
   horizonDays: 21,
   leadMinutes: 120,
 } as const;
 
-export type SocialId = "linkedin" | "github" | "facebook" | "instagram" | "threads";
+export type SocialId = "linkedin" | "github" | "facebook" | "instagram" | "whatsapp";
 
 export const SOCIALS: { id: SocialId; label: string; url: string }[] = [
   { id: "linkedin", label: "LinkedIn", url: URLS.linkedin },
   { id: "github", label: "GitHub", url: URLS.github },
   { id: "facebook", label: "Facebook", url: URLS.facebook },
   { id: "instagram", label: "Instagram", url: URLS.instagram },
-  { id: "threads", label: "Threads", url: URLS.threads },
 ];
 
 export const I18N = {
   nav: {
     services: { fr: "Services", en: "Services" },
-    work: { fr: "Projets", en: "Work" },
-    stack: { fr: "Stack", en: "Stack" },
+    work: { fr: "Réalisations", en: "Work" },
+    faq: { fr: "Questions", en: "FAQ" },
     contact: { fr: "Contact", en: "Contact" },
   },
   a11y: {
@@ -59,49 +92,61 @@ export const I18N = {
     home: { fr: "Silexio — retour en haut", en: "Silexio — back to top" },
     chapters: { fr: "Chapitres", en: "Chapters" },
     detail: { fr: "Voir le détail", en: "Show detail" },
+    faqToggle: { fr: "Afficher la réponse", en: "Show the answer" },
     newTab: { fr: "ouvre un nouvel onglet", en: "opens in a new tab" },
     remove: { fr: "Retirer de la sélection", en: "Remove from selection" },
     socials: { fr: "Réseaux sociaux", en: "Social media" },
     selected: { fr: "dans votre sélection", en: "in your selection" },
   },
   hero: {
-    eyebrow: { fr: "Studio indépendant · Belgique", en: "Independent studio · Belgium" },
+    eyebrow: { fr: "Chapelle-lez-Herlaimont · Hainaut", en: "Chapelle-lez-Herlaimont · Belgium" },
     status: { fr: "Disponible", en: "Available" },
-    titlePre: { fr: "Une seule personne.", en: "One engineer." },
-    titleA: { fr: "Un produit", en: "A product" },
-    titleB: { fr: "fait", en: "made" },
-    titleC: { fr: "pour durer.", en: "to last." },
-    pitch: {
-      fr: "Je conçois et déploie des applications web, des APIs, et l'infra qui les fait tourner. De l'idée jusqu'au serveur en production — un seul interlocuteur.",
-      en: "I design and ship web apps, APIs, and the infrastructure that runs them. From idea to production — one point of contact.",
+    titlePre: {
+      fr: "Développeur full-stack — sites, logiciels, automatisation.",
+      en: "Full-stack developer — sites, software, automation.",
     },
-    cta1: { fr: "Démarrer un projet", en: "Start a project" },
-    cta2: { fr: "Voir les projets", en: "See the work" },
-    metaBaseLabel: { fr: "BASE", en: "BASE" },
-    metaBaseValue: { fr: "Belgique · UTC+1", en: "Belgium · UTC+1" },
-    metaBaseSub: { fr: "Remote · Sur place", en: "Remote · On-site" },
-    metaStatusLabel: { fr: "DISPO", en: "STATUS" },
-    metaStatusValue: { fr: "Ouvert", en: "Open" },
+    titleA: { fr: "Un informaticien", en: "An engineer" },
+    titleB: { fr: "qui parle", en: "who speaks" },
+    titleC: { fr: "votre langue.", en: "your language." },
+    pitch: {
+      fr: "Je crée des sites internet et des logiciels taillés pour votre métier, j'automatise les tâches qui vous font perdre du temps, et je dépanne votre matériel. Un seul interlocuteur, chez vous dans le Hainaut ou à distance partout en Belgique.",
+      en: "I build websites and software cut for your trade, automate the tasks that eat your time, and fix your hardware. One point of contact — on-site in Hainaut, remote anywhere in Belgium.",
+    },
+    cta1: { fr: "Demander un devis gratuit", en: "Get a free quote" },
+    cta2: { fr: "Voir mes réalisations", en: "See my work" },
+    metaBaseLabel: { fr: "ZONE", en: "AREA" },
+    metaBaseValue: { fr: "Hainaut · Wallonie", en: "Hainaut · Belgium" },
+    metaBaseSub: { fr: "Sur place · À distance", en: "On-site · Remote" },
+    metaStatusLabel: { fr: "RÉPONSE", en: "REPLY" },
+    metaStatusValue: { fr: "Sous 24h", en: "Within 24h" },
   },
   services: {
     eyebrow: { fr: "Services", en: "Services" },
-    title: { fr: "De quoi avez-vous\nbesoin ?", en: "What do you\nneed?" },
+    title: { fr: "Comment\nje vous aide.", en: "How I\nhelp you." },
     subtitle: {
-      fr: "Sélectionnez ce qui vous intéresse — j'arrive préparé à notre premier échange.",
-      en: "Pick what you need — I'll come prepared to our first call.",
+      fr: "Cochez ce qui vous parle — j'arrive préparé à notre premier échange, sans jargon.",
+      en: "Tick what speaks to you — I'll come prepared to our first call, no jargon.",
     },
     add: { fr: "Ajouter", en: "Add" },
     added: { fr: "Sélectionné", en: "Selected" },
   },
   work: {
-    eyebrow: { fr: "Projets", en: "Work" },
-    title: { fr: "Ce qui a été\nlivré.", en: "What has\nshipped." },
+    eyebrow: { fr: "Réalisations", en: "Work" },
+    title: { fr: "Ce qui tourne\ndéjà.", en: "What already\nruns." },
     subtitle: {
-      fr: "L'essentiel, livré et vérifiable. Le reste est en accès libre sur GitHub.",
-      en: "The essentials, shipped and verifiable. The rest is open on GitHub.",
+      fr: "Des projets livrés à de vrais clients. Vous voyez à quoi ça ressemble avant de me confier le vôtre.",
+      en: "Projects delivered to real clients. You see what it looks like before trusting me with yours.",
     },
-    view: { fr: "Voir sur GitHub", en: "View on GitHub" },
-    allGithub: { fr: "Tout le code est sur GitHub", en: "All the code is on GitHub" },
+    site: { fr: "Voir le site", en: "Visit the site" },
+    code: { fr: "Voir le code", en: "View the code" },
+    install: { fr: "Installer", en: "Install" },
+    client: { fr: "Projet client", en: "Client project" },
+    personal: { fr: "Projet personnel", en: "Personal project" },
+    github: { fr: "Voir mon GitHub", en: "View my GitHub" },
+    prev: { fr: "Projet précédent", en: "Previous project" },
+    next: { fr: "Projet suivant", en: "Next project" },
+    goTo: { fr: "Aller au projet {name}", en: "Go to project {name}" },
+    position: { fr: "{name} — projet {n} sur {total}", en: "{name} — project {n} of {total}" },
     status: {
       production: { fr: "En production", en: "In production" },
       shipped: { fr: "Livré", en: "Shipped" },
@@ -109,20 +154,35 @@ export const I18N = {
     },
   },
   stack: {
-    eyebrow: { fr: "Stack", en: "Stack" },
-    title: { fr: "La stack\nau quotidien.", en: "The daily\nstack." },
+    eyebrow: { fr: "Sous le capot", en: "Under the hood" },
+    title: { fr: "Pour les\ncurieux.", en: "For the\ncurious." },
     subtitle: {
-      fr: "Choisis pour la fiabilité, pas pour la mode.",
-      en: "Picked for reliability, not for hype.",
+      fr: "Cette section est le bonus technique — si ces noms ne vous disent rien, c'est parfaitement normal et ça ne change rien pour vous.",
+      en: "This is the technical bonus — if these names mean nothing to you, that's perfectly fine and changes nothing for you.",
     },
+  },
+  faq: {
+    eyebrow: { fr: "Questions fréquentes", en: "FAQ" },
+    title: { fr: "Ce qu'on me\ndemande le plus.", en: "What I get\nasked most." },
+    subtitle: {
+      fr: "Les réponses aux questions que vous vous posez avant même de décrocher votre téléphone.",
+      en: "Answers to the questions you have before you even pick up the phone.",
+    },
+  },
+  proof: {
+    reviewsTitle: { fr: "Ce que disent les clients", en: "What clients say" },
+    reviewsCta: { fr: "Lire les avis", en: "Read the reviews" },
+    reviewsChecked: { fr: "relevé le", en: "checked on" },
+    review: { fr: "avis", en: "review" },
+    reviews: { fr: "avis", en: "reviews" },
   },
   contact: {
     eyebrow: { fr: "Contact", en: "Contact" },
     titleA: { fr: "On en", en: "Let's" },
     titleB: { fr: "parle ?", en: "talk." },
     sub: {
-      fr: "Un projet, une idée, un serveur à configurer. Réponse sous 24h.",
-      en: "A project, an idea, a server to configure. Reply within 24h.",
+      fr: "Un site à créer, un logiciel à imaginer, un ordinateur qui rame. Expliquez-moi avec vos mots — je réponds sous 24h, et le devis est gratuit.",
+      en: "A site to build, software to imagine, a computer that crawls. Tell me in your own words — I reply within 24h, and the quote is free.",
     },
     cal: { fr: "Réserver un appel", en: "Book a call" },
     quote: { fr: "Demander un devis", en: "Request a quote" },
@@ -184,6 +244,18 @@ export const I18N = {
   footer: {
     rights: { fr: "Tous droits réservés", en: "All rights reserved" },
     tag: { fr: "Fait en Belgique", en: "Made in Belgium" },
+    tagline: {
+      fr: "Sites internet, logiciels sur mesure et dépannage informatique. Un seul interlocuteur, dans le Hainaut ou à distance.",
+      en: "Websites, custom software and IT support. One person to talk to, across Hainaut or remotely.",
+    },
+    navTitle: { fr: "Navigation", en: "Navigation" },
+    contactTitle: { fr: "Contact", en: "Contact" },
+    followTitle: { fr: "Suivre", en: "Follow" },
+    legal: { fr: "Mentions légales", en: "Legal" },
+    country: { fr: "Belgique", en: "Belgium" },
+    vatLabel: { fr: "TVA", en: "VAT" },
+    seat: { fr: "Facturation via la coopérative", en: "Invoiced through the cooperative" },
+    whatsapp: { fr: "Écrire sur WhatsApp", en: "Message on WhatsApp" },
   },
 } as const;
 
@@ -297,158 +369,361 @@ export const PACKAGES: Package[] = [
   {
     id: "site",
     num: "01",
-    title: { fr: "Site vitrine", en: "Showcase site" },
+    title: { fr: "Site internet", en: "Website" },
     body: {
-      fr: "Présence en ligne rapide et soignée, optimisée pour le référencement. De la landing page au site multi-pages.",
-      en: "A fast, polished online presence, built for SEO. From a landing page to a multi-page site.",
+      fr: "Un site qui vous ramène des clients au lieu de dormir sur Google. Rapide, impeccable sur téléphone, trouvable par les gens qui cherchent ce que vous faites. De la page unique au site complet avec prise de rendez-vous en ligne.",
+      en: "A site that brings you clients instead of sleeping on Google. Fast, flawless on mobile, findable by the people looking for what you do. From a single page to a full site with online booking.",
     },
-    tags: ["Next.js", "Tailwind", "SEO"],
+    tags: ["Next.js", "SEO", "Mobile"],
   },
   {
     id: "webapp",
     num: "02",
-    title: { fr: "Application web", en: "Web app" },
+    title: { fr: "Logiciel sur mesure", en: "Custom software" },
     body: {
-      fr: "Application sur mesure ou SaaS, typée de bout en bout. Comptes, tableaux de bord, paiements.",
-      en: "Custom web app or SaaS, typed end to end. Accounts, dashboards, payments.",
+      fr: "L'outil qui n'existe nulle part dans le commerce, taillé pour votre métier. Devis, plannings, stocks, fiches clients, tableaux de bord — accessible depuis n'importe quel ordinateur ou téléphone, sans rien installer.",
+      en: "The tool no off-the-shelf product covers, cut for your trade. Quotes, schedules, stock, client records, dashboards — from any computer or phone, nothing to install.",
     },
-    tags: ["Next.js", "TypeScript", "Postgres"],
+    tags: ["TypeScript", "PostgreSQL", "Paiements"],
   },
   {
     id: "api",
     num: "03",
-    title: { fr: "API & Backend", en: "API & Backend" },
+    title: { fr: "Vos outils connectés", en: "Connected tools" },
     body: {
-      fr: "APIs robustes, authentification, intégrations tierces, migration de plateformes legacy.",
-      en: "Robust APIs, authentication, third-party integrations, legacy migration.",
+      fr: "Votre site, votre caisse, votre comptabilité et votre fichier clients qui se parlent enfin. Fini les copier-coller d'un logiciel à l'autre et les erreurs de recopie qui coûtent cher.",
+      en: "Your website, till, accounting and client list finally talking to each other. No more copy-pasting between tools, no more costly typos.",
     },
-    tags: ["Django", "FastAPI", "REST"],
+    tags: ["API", "Webhooks", "FastAPI"],
   },
   {
     id: "infra",
     num: "04",
-    title: { fr: "Infrastructure & DevOps", en: "Infrastructure & DevOps" },
+    title: { fr: "Hébergement & serveurs", en: "Hosting & servers" },
     body: {
-      fr: "Déploiement, conteneurs, serveurs Linux, CI/CD, monitoring. Votre produit tourne sans que vous y pensiez.",
-      en: "Deployment, containers, Linux servers, CI/CD, monitoring. Your product just runs.",
+      fr: "Votre site et vos données hébergés, sauvegardés et surveillés en continu. S'il tombe à trois heures du matin, je le sais avant vous — et c'est déjà réparé quand vous ouvrez les yeux.",
+      en: "Your site and data hosted, backed up and monitored around the clock. If it goes down at 3am, I know before you do — and it's fixed by the time you wake up.",
     },
     tags: ["Docker", "Linux", "Cloudflare"],
   },
   {
     id: "automation",
     num: "05",
-    title: { fr: "Automatisation", en: "Automation" },
+    title: { fr: "Automatisation & IA", en: "Automation & AI" },
     body: {
-      fr: "Scripts, bots, synchronisations, intégrations. Les tâches répétitives disparaissent.",
-      en: "Scripts, bots, syncs, integrations. Repetitive tasks disappear.",
+      fr: "Les tâches répétitives qui vous mangent vos soirées : recopier des données, relancer les factures impayées, trier des mails, produire le même rapport chaque mois. On les confie à une machine, vous récupérez votre temps.",
+      en: "The repetitive work eating your evenings: re-typing data, chasing unpaid invoices, sorting mail, producing the same report every month. Hand it to a machine, get your time back.",
     },
-    tags: ["Python", "Node", "Cron"],
+    tags: ["Python", "IA", "Automatisation"],
   },
   {
     id: "it",
     num: "06",
-    title: { fr: "Support IT", en: "IT support" },
+    title: { fr: "Dépannage informatique", en: "IT support" },
     body: {
-      fr: "Installation, dépannage, configuration postes et réseau. Sur place en Belgique ou à distance.",
-      en: "Setup, troubleshooting, workstations and network. On-site in Belgium or remote.",
+      fr: "Ordinateur qui rame, imprimante capricieuse, wifi qui coupe, boîte mail bloquée, sauvegarde à mettre en place. Je passe chez vous dans le Hainaut ou je prends la main à distance, particuliers comme entreprises.",
+      en: "Slow computer, stubborn printer, dropping wifi, locked mailbox, backups to set up. I come to you in Hainaut or take over remotely — private individuals and businesses alike.",
     },
     tags: ["macOS", "Windows", "Réseau"],
   },
 ];
 
+type FaqEntry = {
+  q: Bilingual;
+  a: Bilingual;
+};
+
+export const FAQ: FaqEntry[] = [
+  {
+    q: { fr: "Combien coûte un site internet ?", en: "How much does a website cost?" },
+    a: {
+      fr: "Cela dépend de ce qu'il doit faire. Une page unique bien faite démarre autour de quelques centaines d'euros ; un site complet avec réservation en ligne ou espace client, c'est un autre budget. Je vous donne un prix ferme et écrit avant de commencer — jamais de facture surprise en cours de route.",
+      en: "It depends on what it has to do. A well-built single page starts around a few hundred euros; a full site with online booking or a client area is a different budget. You get a firm written price before we start — never a surprise invoice along the way.",
+    },
+  },
+  {
+    q: { fr: "Je n'y connais rien en informatique, est-ce un problème ?", en: "I know nothing about IT — is that a problem?" },
+    a: {
+      fr: "C'est même le cas de la plupart de mes clients. Vous m'expliquez votre problème avec vos mots, je traduis en solution. Je ne vous ferai jamais un devis bourré de termes techniques que vous devriez aller chercher sur Google pour comprendre ce que vous payez.",
+      en: "That's true of most of my clients. You explain your problem in your own words, I translate it into a solution. You'll never get a quote stuffed with technical terms you'd have to google to understand what you're paying for.",
+    },
+  },
+  {
+    q: { fr: "Dans quelles communes vous déplacez-vous ?", en: "Which areas do you travel to?" },
+    a: {
+      fr: "Je suis basé à Chapelle-lez-Herlaimont et je me déplace dans tout le Hainaut : Charleroi, La Louvière, Manage, Seneffe, Morlanwelz, Courcelles, Binche, Anderlues, Fontaine-l'Évêque, Mons, Soignies, Thuin, ainsi que le Brabant wallon. Partout ailleurs en Belgique, on travaille à distance.",
+      en: "I'm based in Chapelle-lez-Herlaimont and travel across Hainaut: Charleroi, La Louvière, Manage, Seneffe, Morlanwelz, Courcelles, Binche, Anderlues, Fontaine-l'Évêque, Mons, Soignies, Thuin, plus Walloon Brabant. Anywhere else in Belgium, we work remotely.",
+    },
+  },
+  {
+    q: { fr: "Vous dépannez aussi les particuliers ?", en: "Do you help private individuals too?" },
+    a: {
+      fr: "Oui. Ordinateur lent, virus, écran bleu, imprimante qui refuse de fonctionner, wifi capricieux, photos à récupérer, nouveau PC à configurer : je traite les particuliers exactement comme les entreprises, sans condescendance et sans facturer le temps passé à vous expliquer.",
+      en: "Yes. Slow computer, viruses, blue screens, a printer that refuses to work, flaky wifi, photos to recover, a new PC to set up: I treat private individuals exactly like businesses — no condescension, and no charging for the time spent explaining.",
+    },
+  },
+  {
+    q: { fr: "En combien de temps mon projet sera-t-il prêt ?", en: "How long until my project is ready?" },
+    a: {
+      fr: "Un dépannage se règle souvent dans la journée. Un site vitrine prend généralement deux à quatre semaines. Un logiciel métier, comptez de un à trois mois selon l'ampleur. Dans tous les cas vous voyez une première version fonctionnelle très tôt, pas seulement à la fin.",
+      en: "A repair is often sorted the same day. A showcase site usually takes two to four weeks. Custom business software runs one to three months depending on scope. In every case you see a working first version early, not only at the end.",
+    },
+  },
+  {
+    q: { fr: "Qu'est-ce que l'intelligence artificielle peut m'apporter concrètement ?", en: "What can artificial intelligence actually do for me?" },
+    a: {
+      fr: "Du temps, pas de la magie. Trier automatiquement les demandes qui arrivent par mail, extraire les informations d'un PDF au lieu de les recopier, rédiger un premier jet de réponse, résumer des documents longs. Je ne vous vendrai jamais de l'IA là où un simple script fait le travail pour bien moins cher.",
+      en: "Time, not magic. Automatically sorting incoming email requests, pulling data out of a PDF instead of re-typing it, drafting a first reply, summarising long documents. I'll never sell you AI where a plain script does the job for far less.",
+    },
+  },
+  {
+    q: { fr: "J'ai déjà un site ou un prestataire, pouvez-vous reprendre ?", en: "I already have a site or provider — can you take over?" },
+    a: {
+      fr: "Oui, c'est une demande courante. Je récupère l'existant, je vous dis honnêtement ce qui vaut la peine d'être gardé et ce qui doit être refait, et je m'occupe du transfert du nom de domaine et de l'hébergement. Vous n'avez pas à gérer la transition vous-même.",
+      en: "Yes, that's a common request. I take over what exists, tell you honestly what's worth keeping and what needs rebuilding, and handle the domain and hosting transfer. You don't have to manage the migration yourself.",
+    },
+  },
+  {
+    q: { fr: "Est-ce que je reste propriétaire de mon site et de mes données ?", en: "Do I stay the owner of my site and data?" },
+    a: {
+      fr: "Toujours. Le nom de domaine est à votre nom, le code source vous est livré, vos données restent les vôtres et je vous explique comment tout récupérer si un jour vous partez ailleurs. Vous n'êtes captif de personne, moi compris.",
+      en: "Always. The domain is in your name, the source code is delivered to you, your data stays yours, and I show you how to take everything with you if you ever move on. You're locked into no one — including me.",
+    },
+  },
+];
+
+type CoverageArea = {
+  label: Bilingual;
+  cities: string[];
+};
+
+export const COVERAGE: CoverageArea[] = [
+  {
+    label: { fr: "Autour de Chapelle-lez-Herlaimont", en: "Around Chapelle-lez-Herlaimont" },
+    cities: ["Chapelle-lez-Herlaimont", "Godarville", "Piéton", "Manage", "Seneffe", "Morlanwelz"],
+  },
+  {
+    label: { fr: "Région de Charleroi", en: "Charleroi area" },
+    cities: ["Charleroi", "Courcelles", "Fontaine-l'Évêque", "Anderlues", "Montigny-le-Tilleul", "Gosselies"],
+  },
+  {
+    label: { fr: "Le Centre", en: "La Louvière area" },
+    cities: ["La Louvière", "Binche", "Le Rœulx", "Soignies", "Braine-le-Comte", "Écaussinnes"],
+  },
+  {
+    label: { fr: "Mons & Borinage", en: "Mons & Borinage" },
+    cities: ["Mons", "Jurbise", "Quaregnon", "Boussu", "Frameries", "Saint-Ghislain"],
+  },
+  {
+    label: { fr: "Brabant wallon", en: "Walloon Brabant" },
+    cities: ["Nivelles", "Genappe", "Waterloo", "Ottignies", "Wavre", "Tubize"],
+  },
+  {
+    label: { fr: "Sambre & Namurois", en: "Sambre & Namur area" },
+    cities: ["Namur", "Fleurus", "Sambreville", "Châtelet", "Gembloux", "Thuin"],
+  },
+];
+
+/**
+ * Section « Qui je suis ». `photo` vide masque le portrait sans casser la mise en page —
+ * ne jamais y mettre une image d'illustration générique : un faux visage détruit la confiance
+ * qu'un vrai visage installe. Le texte n'affirme que des faits vérifiables (pas d'ancienneté
+ * inventée) : toute ligne ajoutée ici doit pouvoir être prouvée.
+ */
+export const ABOUT = {
+  eyebrow: { fr: "Qui je suis", en: "Who I am" },
+  title: { fr: "Une personne,\npas un standard.", en: "A person,\nnot a switchboard." },
+  name: "Nicolas Wieckiewicz",
+  role: { fr: "Fondateur de Silexio", en: "Founder of Silexio" },
+  photo: "",
+  photoAlt: { fr: "Portrait de Nicolas Wieckiewicz", en: "Portrait of Nicolas Wieckiewicz" },
+  body: [
+    {
+      fr: "Je suis développeur full-stack et informaticien indépendant, installé à Chapelle-lez-Herlaimont. J'accompagne des PME, des fiduciaires, des indépendants et des particuliers du Hainaut : un site à créer, un logiciel métier à imaginer, un parc informatique à remettre d'aplomb. Le même interlocuteur gère le développement et l'IT au quotidien : installation de postes, réseau, sauvegardes, maintenance, sécurité, et les scripts qui suppriment une corvée récurrente.",
+      en: "I'm an independent full-stack developer and IT engineer based in Chapelle-lez-Herlaimont. I work with small businesses, accounting firms, freelancers and private individuals across Hainaut: a site to build, custom software to design, a computer setup to put back in order. The same person handles the development and the day-to-day IT: workstation setup, network, backups, maintenance, security, and the scripts that remove a recurring chore.",
+    },
+    {
+      fr: "Full-stack veut dire que je prends un projet de bout en bout, sans sous-traiter : l'interface que vous voyez et utilisez (le frontend), le moteur qui la fait tourner et les API qui la relient au reste (le backend), la base de données, l'hébergement et l'infrastructure qui fait tenir le tout debout. L'automatisation et l'intelligence artificielle viennent en plus, quand elles font gagner du temps pour de vrai.",
+      en: "Full-stack means I take a project end to end, with nothing subcontracted: the interface you see and use (the frontend), the engine behind it and the APIs that connect it to everything else (the backend), the database, the hosting and the infrastructure that keeps it all standing. Automation and artificial intelligence come on top, when they genuinely save time.",
+    },
+    {
+      fr: "Il n'y a pas d'équipe derrière moi, et c'est le principe : la personne qui prend votre appel est celle qui écrit le code et celle qui répondra dans six mois quand vous aurez une question. Vous ne serez jamais transféré à quelqu'un qui découvre votre dossier.",
+      en: "There is no team behind me, and that's the point: the person who takes your call is the one who writes the code, and the one who will answer six months from now when you have a question. You will never be handed to someone discovering your file.",
+    },
+    {
+      fr: "Le code que j'écris ne reste pas dans un coffre : une de mes contributions est intégrée à openrazer, le pilote libre du matériel Razer sous Linux, et le code de vos projets vous est livré.",
+      en: "The code I write doesn't stay locked away: one of my contributions is merged into openrazer, the open-source driver for Razer hardware on Linux, and the code for your projects is delivered to you.",
+    },
+  ],
+} satisfies Record<string, unknown>;
+
+type Testimonial = {
+  quote: Bilingual;
+  author: string;
+  role: Bilingual;
+};
+
+/** Témoignages clients réels et autorisés. Vides = section masquée : ne jamais inventer de citation. */
+export const TESTIMONIALS: Testimonial[] = [];
+
+type Review = {
+  id: string;
+  platform: string;
+  url: string;
+  rating: number;
+  count: number;
+  /** Date du relevé manuel (ISO). Affichée telle quelle : une note non datée finit par mentir. */
+  checkedOn: string;
+};
+
+/**
+ * Avis publics agrégés, relevés à la main sur chaque plateforme. Une URL vide ou un compteur à
+ * zéro masque la carte : ne jamais inventer une note ni un nombre d'avis. Ces valeurs restent
+ * hors du JSON-LD — Google refuse le markup aggregateRating construit sur des avis collectés
+ * ailleurs, et un rich snippet refusé coûte plus qu'il ne rapporte.
+ */
+export const REVIEWS: Review[] = [
+  { id: "google", platform: "Google", url: "https://g.page/r/CQS4cLlmMzj6ECE", rating: 5, count: 4, checkedOn: "2026-08-24" },
+  { id: "trustpilot", platform: "Trustpilot", url: "https://fr-be.trustpilot.com/review/silexio.be", rating: 0, count: 0, checkedOn: "2026-08-24" },
+];
+
+/** En dessous de ce nombre d'avis, la plateforme reste masquée : « 1 avis » dessert plus qu'il ne prouve. */
+export const MIN_REVIEWS = 3;
+
 type ProjectStatus = "production" | "shipped" | "wip";
+
+type ProjectShot = {
+  src: string;
+  /** Variante servie sous [data-theme="dark"], quand le projet capturé a lui-même un thème sombre. */
+  srcDark?: string;
+  alt: Bilingual;
+  width: number;
+  height: number;
+};
+
+type ProjectKind = "client" | "personal";
 
 type Project = {
   id: string;
   name: string;
   status: ProjectStatus;
+  kind: ProjectKind;
   year: number;
-  url: string;
+  site: string;
+  repo: string;
+  /** Lien de téléchargement ou d'installation. Vide = bouton masqué. */
+  install: string;
   stack: string[];
   summary: Bilingual;
   detail: Bilingual;
+  shots: ProjectShot[];
 };
 
+/**
+ * Projets livrés, montrés par leurs captures plutôt que par un lien de dépôt : un prospect
+ * non technique ne clique jamais sur GitHub. `site` ou `repo` vide masque le bouton
+ * correspondant — ne jamais publier l'URL d'un outil livré chez un client sans son accord.
+ */
 export const PROJECTS: Project[] = [
   {
     id: "scaleneo",
     name: "SCALENEO",
-    status: "wip",
+    status: "production",
+    kind: "client",
     year: 2026,
-    url: "https://github.com/Silexio/SCALENEO",
+    site: "https://scaleneo.silexio.be",
+    repo: "https://github.com/Silexio/SCALENEO",
+    install: "",
     stack: ["Next.js 16", "TypeScript", "Tailwind 4", "Recharts", "shadcn"],
     summary: {
-      fr: "Plateforme clinique pour kinésithérapeutes. Extraction de rapports lombalgie, suivi longitudinal ODI/CSI/NRS, drapeaux rouges.",
-      en: "Clinical platform for physiotherapists. Low-back-pain report extraction, longitudinal ODI/CSI/NRS tracking, red flags.",
+      fr: "Outil livré à un cabinet de kinésithérapie belge : les rapports patients se remplissent tout seuls, l'évolution se lit en un coup d'œil, et rien ne quitte l'ordinateur du cabinet.",
+      en: "Tool delivered to a Belgian physiotherapy practice: patient reports fill themselves in, progress reads at a glance, and nothing ever leaves the practice's computer.",
     },
     detail: {
       fr: "Livrée pour un cabinet de kinésithérapie belge (10+ thérapeutes). Extraction automatique de 18 sections depuis des rapports texte brut, suivi longitudinal ODI/CSI/NRS avec seuils MCID, détection de drapeaux rouges. Dashboard analytique Recharts, export CSV/XLSX. 100% client-side et localStorage — aucune donnée transmise, RGPD native.",
       en: "Delivered for a Belgian physiotherapy practice (10+ therapists). Automatic extraction of 18 sections from raw text reports, longitudinal ODI/CSI/NRS tracking with MCID thresholds, red-flag detection. Recharts dashboard, CSV/XLSX export. 100% client-side with localStorage — no data transmitted, GDPR-native.",
     },
+    shots: [
+      {
+        src: "/work/scaleneo.webp",
+        width: 1440,
+        height: 810,
+        alt: {
+          fr: "Écran de résultats de SCALENEO : alerte drapeau rouge en rouge, puis hypothèse clinique découpée en dix cartes.",
+          en: "SCALENEO results screen: a red-flag alert in red, then a clinical hypothesis split across ten cards.",
+        },
+      },
+    ],
   },
   {
     id: "reelmark",
     name: "Reelmark",
     status: "production",
+    kind: "personal",
     year: 2026,
-    url: "https://github.com/TheSawkit/reelmark",
+    site: "https://reelmark.silexio.be",
+    repo: "https://github.com/TheSawkit/reelmark",
+    install: "",
     stack: ["Next.js", "TypeScript", "TMDB API"],
     summary: {
-      fr: "Un outil pour suivre films et séries, en construction.",
-      en: "A tool to track films and shows, currently in development.",
+      fr: "Un service en ligne pour suivre et organiser tous les films et séries que vous avez vus.",
+      en: "An online service to track and organise every film and show you have watched.",
     },
     detail: {
-      fr: "Projet personnel en cours — interface soignée, recherche rapide, sync multi-appareils.",
-      en: "Personal project in progress — polished UI, fast search, cross-device sync.",
+      fr: "Projet personnel en production, ouvert à tous : catalogue alimenté par l'API TMDB, recherche instantanée, comptes utilisateurs et synchronisation entre appareils. Développé de la base de données à l'interface.",
+      en: "Personal project in production, open to everyone: catalogue powered by the TMDB API, instant search, user accounts and cross-device sync. Built from the database up to the interface.",
     },
-  },
-  {
-    id: "macos-multiboot",
-    name: "macOS Multiboot Creator",
-    status: "shipped",
-    year: 2025,
-    url: "https://github.com/TheSawkit/macos_multiboot_creator",
-    stack: ["Swift (soon)", "Shell", "macOS"],
-    summary: {
-      fr: "Création de clés USB multi-boot pour macOS, en une commande.",
-      en: "Multi-boot USB keys for macOS, in a single command.",
-    },
-    detail: {
-      fr: "Outil système livré, utilisable aujourd'hui. Prochaine itération : application Swift native avec GUI.",
-      en: "Shipped system tool, usable today. Next: a native Swift app with a GUI.",
-    },
+    shots: [
+      {
+        src: "/work/reelmark-dark.webp",
+        width: 1440,
+        height: 810,
+        alt: {
+          fr: "Page d'accueil de Reelmark : le nom du service en grand sur un mur sombre d'affiches de films et de séries.",
+          en: "Reelmark home page: the service name in large type over a dark wall of film and show posters.",
+        },
+      },
+    ],
   },
   {
     id: "bridgemark",
     name: "BridgeMark",
     status: "shipped",
-    year: 2025,
-    url: "https://github.com/TheSawkit/BridgeMark",
-    stack: ["Swift", "Shell", "macOS"],
+    kind: "personal",
+    year: 2026,
+    site: "",
+    repo: "https://github.com/TheSawkit/BridgeMark",
+    install: "https://github.com/TheSawkit/BridgeMark/releases/latest",
+    stack: ["Swift", "SwiftUI", "macOS 13+"],
     summary: {
-      fr: "Synchronisation bidirectionnelle des favoris entre Brave et Safari.",
-      en: "Two-way bookmark sync between Brave and Safari.",
+      fr: "Une application Mac qui transfère toute votre barre de favoris Safari vers Chrome, Brave ou Edge en un clic.",
+      en: "A Mac app that moves your whole Safari bookmarks bar to Chrome, Brave or Edge in one click.",
     },
     detail: {
-      fr: "Outil livré pour garder ses favoris cohérents entre les deux navigateurs. Prochaine étape : app Swift native pour macOS.",
-      en: "Shipped tool to keep bookmarks consistent. Next: a native Swift macOS app.",
+      fr: "Application macOS native écrite en Swift et SwiftUI. Elle lit les favoris de Safari, reconstitue l'arborescence complète — dossiers compris — et l'exporte au format que lisent tous les navigateurs Chromium. Téléchargement libre, code source ouvert sous licence MIT.",
+      en: "Native macOS app written in Swift and SwiftUI. It reads Safari's bookmarks, rebuilds the full tree — folders included — and exports it in the format every Chromium browser reads. Free download, open source under the MIT licence.",
     },
+    shots: [],
   },
   {
-    id: "openrazer",
-    name: "openrazer",
+    id: "multiboot",
+    name: "macOS Multiboot Creator",
     status: "shipped",
-    year: 2024,
-    url: "https://github.com/openrazer/openrazer/pull/2491",
-    stack: ["C", "Linux", "Open source"],
+    kind: "personal",
+    year: 2026,
+    site: "",
+    repo: "https://github.com/TheSawkit/macos_multiboot_creator",
+    install: "https://github.com/TheSawkit/macos_multiboot_creator/releases",
+    stack: ["Python", "macOS", "Ligne de commande"],
     summary: {
-      fr: "Contribution open source au driver Linux Razer (4 300+ étoiles). PR mergée en upstream.",
-      en: "Open-source contribution to the Razer Linux driver (4,300+ stars). PR merged upstream.",
+      fr: "Un outil qui prépare une clé USB capable d'installer plusieurs versions de macOS depuis un seul disque.",
+      en: "A tool that builds a USB drive able to install several macOS versions from a single disk.",
     },
     detail: {
-      fr: "Patch contribué et accepté sur openrazer, le driver open source du matériel Razer pour GNU/Linux. PR #2491.",
-      en: "Patch contributed and merged into openrazer, the open-source driver for Razer hardware on GNU/Linux. PR #2491.",
+      fr: "Outil en ligne de commande destiné aux techniciens : il détecte les installeurs présents sur la machine, découpe le disque externe en une partition par version de macOS et rend chacune démarrable. Ce qui demande une heure de manipulations se règle en une commande. Licence MIT.",
+      en: "Command-line tool for technicians: it detects the installers present on the machine, splits the external disk into one partition per macOS version and makes each of them bootable. What takes an hour by hand runs as a single command. MIT licence.",
     },
+    shots: [],
   },
 ];
 
@@ -462,15 +737,10 @@ export const STACK_GROUPS: StackGroup[] = [
   { label: { fr: "Frontend", en: "Frontend" }, items: ["Next.js", "React", "Tailwind", "shadcn/ui"] },
   { label: { fr: "Backend", en: "Backend" }, items: ["Django", "FastAPI", "Node", "Supabase"] },
   { label: { fr: "Data", en: "Data" }, items: ["PostgreSQL", "MongoDB", "Redis", "SQLite"] },
-  { label: { fr: "Infra", en: "Infra" }, items: ["Docker", "Linux", "AWS", "Cloudflare"] },
+  { label: { fr: "Infrastructure", en: "Infrastructure" }, items: ["Docker", "Linux", "AWS", "Cloudflare"] },
   { label: { fr: "Outils", en: "Tools" }, items: ["Git", "GitHub Actions", "Figma", "Claude"] },
 ];
 
-export const MARQUEE = [
-  "TYPESCRIPT", "NEXT.JS", "PYTHON", "DJANGO", "FASTAPI",
-  "POSTGRES", "DOCKER", "LINUX", "CLOUDFLARE", "MONGODB",
-  "SUPABASE", "TAILWIND", "REACT", "AWS", "RASPBERRY PI",
-] as const;
 
 type ProcessScene = {
   step: Bilingual;
@@ -611,7 +881,8 @@ export const CHAPTERS: Chapter[] = [
   { id: "top", label: { fr: "Accueil", en: "Home" } },
   { id: "services", label: { fr: "Services", en: "Services" } },
   { id: "process", label: { fr: "Méthode", en: "Method" } },
-  { id: "work", label: { fr: "Projets", en: "Work" } },
+  { id: "work", label: { fr: "Réalisations", en: "Work" } },
+  { id: "faq", label: { fr: "Questions", en: "FAQ" } },
   { id: "stack", label: { fr: "Stack", en: "Stack" } },
   { id: "contact", label: { fr: "Contact", en: "Contact" } },
 ];
