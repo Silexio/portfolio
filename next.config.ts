@@ -31,6 +31,10 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   turbopack: { root: __dirname },
+  // Les visuels sont déjà servis en WebP à la bonne taille. L'optimiseur /_next/image dépend de
+  // Cloudflare Images sur Workers, qu'on ne provisionne pas : il renverrait l'original en payant
+  // une requête Worker de plus, et rouvrirait une surface d'attaque (CVE-2025-55173/57752).
+  images: { unoptimized: true },
   async headers() {
     return [{ source: "/(.*)", headers: securityHeaders }];
   },
