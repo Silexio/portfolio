@@ -29,9 +29,11 @@ export function Process({ lang }: { lang: Locale }) {
         <Reveal>
           <span className="featured__eyebrow">{t(PROCESS.eyebrow, lang)}</span>
           <h2 id="process-title" className="featured__title">
-            {t(PROCESS.title, lang).split("\n").map((line) => (
-              <span key={line}>{line}</span>
-            ))}
+            {t(PROCESS.title, lang)
+              .split("\n")
+              .map((line) => (
+                <span key={line}>{line}</span>
+              ))}
             <em>{t(PROCESS.titleEm, lang)}</em>
           </h2>
           <p className="featured__sub">{t(PROCESS.sub, lang)}</p>
@@ -45,11 +47,20 @@ export function Process({ lang }: { lang: Locale }) {
         </Reveal>
       </div>
 
-      <ProcessScenes captions={captions} chatScenes={chatScenes} online={online}>
+      <ProcessScenes
+        captions={captions}
+        chatScenes={chatScenes}
+        online={online}
+      >
         {captions.map((scene, i) => (
           <Reveal key={scene.step} className="featured__scene" delay={i * 80}>
             <div className="featured__scene-visual">
-              <ChatMock scenes={chatScenes} activeScene={i} online={online} solo />
+              <ChatMock
+                scenes={chatScenes}
+                activeScene={i}
+                online={online}
+                solo
+              />
             </div>
             <div className="featured__scene-text">
               <div className="featured__scene-step">{scene.step}</div>
@@ -61,7 +72,9 @@ export function Process({ lang }: { lang: Locale }) {
       </ProcessScenes>
 
       <div className="featured__outro">
-        <Btn href="#contact" variant="ember">{t(PROCESS.cta, lang)}</Btn>
+        <Btn href="#contact" variant="ember">
+          {t(PROCESS.cta, lang)}
+        </Btn>
       </div>
     </section>
   );

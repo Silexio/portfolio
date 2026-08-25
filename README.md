@@ -4,19 +4,19 @@ One-page portfolio for [Silexio](https://silexio.be), an independent full-stack 
 
 ## Stack
 
-| Layer | Tech |
-| --- | --- |
-| Framework | Next.js 16 (App Router, Turbopack) |
-| UI | React 19, TypeScript strict |
-| Styles | Tailwind CSS 4 (CSS-first) + hand-written OKLCH design system |
-| Animations | Motion + CSS scroll-driven animations |
-| Hosting | Cloudflare Workers via OpenNext |
-| Database | Cloudflare D1 (SQLite) |
-| Email | Brevo HTTP API |
-| Video calls | kMeet (Infomaniak) |
-| Error tracking | Bugsink, self-hosted (Sentry protocol) |
-| Tests | Vitest (unit) + Playwright (e2e) |
-| Package manager | pnpm |
+| Layer           | Tech                                                          |
+| --------------- | ------------------------------------------------------------- |
+| Framework       | Next.js 16 (App Router, Turbopack)                            |
+| UI              | React 19, TypeScript strict                                   |
+| Styles          | Tailwind CSS 4 (CSS-first) + hand-written OKLCH design system |
+| Animations      | Motion + CSS scroll-driven animations                         |
+| Hosting         | Cloudflare Workers via OpenNext                               |
+| Database        | Cloudflare D1 (SQLite)                                        |
+| Email           | Brevo HTTP API                                                |
+| Video calls     | kMeet (Infomaniak)                                            |
+| Error tracking  | Bugsink, self-hosted (Sentry protocol)                        |
+| Tests           | Vitest (unit) + Playwright (e2e)                              |
+| Package manager | pnpm                                                          |
 
 ## Getting started
 

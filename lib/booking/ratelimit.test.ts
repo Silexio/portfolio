@@ -5,17 +5,24 @@ process.env.IP_HASH_SECRET = "test-ip-secret-0123456789abcdef0123456789ab";
 
 describe("clientIp", () => {
   it("prefers cf-connecting-ip, which Cloudflare sets and clients cannot spoof", () => {
-    const h = new Headers({ "cf-connecting-ip": "203.0.113.9", "x-forwarded-for": "1.2.3.4" });
+    const h = new Headers({
+      "cf-connecting-ip": "203.0.113.9",
+      "x-forwarded-for": "1.2.3.4",
+    });
     expect(clientIp(h)).toBe("203.0.113.9");
   });
 
   it("takes the first entry of x-forwarded-for", () => {
-    const h = new Headers({ "x-forwarded-for": "203.0.113.7, 70.41.3.18, 150.172.238.178" });
+    const h = new Headers({
+      "x-forwarded-for": "203.0.113.7, 70.41.3.18, 150.172.238.178",
+    });
     expect(clientIp(h)).toBe("203.0.113.7");
   });
 
   it("falls back to x-real-ip", () => {
-    expect(clientIp(new Headers({ "x-real-ip": "198.51.100.5" }))).toBe("198.51.100.5");
+    expect(clientIp(new Headers({ "x-real-ip": "198.51.100.5" }))).toBe(
+      "198.51.100.5",
+    );
   });
 
   it("falls back to 0.0.0.0 when no header is present", () => {

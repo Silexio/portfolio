@@ -14,9 +14,14 @@ export function signAction(id: string, action: BookingAction): string {
 }
 
 /** Timing-safe verification of an action token. */
-export function verifyAction(id: string, action: BookingAction, token: string): boolean {
+export function verifyAction(
+  id: string,
+  action: BookingAction,
+  token: string,
+): boolean {
   const expected = Buffer.from(signAction(id, action), "hex");
   const provided = Buffer.from(typeof token === "string" ? token : "", "hex");
-  if (expected.length === 0 || expected.length !== provided.length) return false;
+  if (expected.length === 0 || expected.length !== provided.length)
+    return false;
   return timingSafeEqual(expected, provided);
 }

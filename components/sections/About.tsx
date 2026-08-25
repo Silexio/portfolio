@@ -8,7 +8,9 @@ export function About({ lang }: { lang: Locale }) {
   return (
     <section id="about" className="about" aria-labelledby="about-title">
       <div className="wrap">
-        <Reveal className={`about__grid${ABOUT.photo ? " about__grid--portrait" : ""}`}>
+        <Reveal
+          className={`about__grid${ABOUT.photo ? " about__grid--portrait" : ""}`}
+        >
           {ABOUT.photo && (
             <div className="about__portrait">
               <Image

@@ -1,5 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { asLocale, isLocale, localeParam, resolveDict, t, type Bilingual } from "./utils";
+import {
+  asLocale,
+  isLocale,
+  localeParam,
+  resolveDict,
+  t,
+  type Bilingual,
+} from "./utils";
 
 describe("t", () => {
   const node: Bilingual = { fr: "Bonjour", en: "Hello" };
@@ -34,11 +41,15 @@ describe("isLocale", () => {
 
 describe("localeParam", () => {
   it("narrows a valid route param", async () => {
-    await expect(localeParam(Promise.resolve({ lang: "en" }))).resolves.toBe("en");
+    await expect(localeParam(Promise.resolve({ lang: "en" }))).resolves.toBe(
+      "en",
+    );
   });
 
   it("falls back to the default locale on unknown values", async () => {
-    await expect(localeParam(Promise.resolve({ lang: "de" }))).resolves.toBe("fr");
+    await expect(localeParam(Promise.resolve({ lang: "de" }))).resolves.toBe(
+      "fr",
+    );
   });
 });
 

@@ -12,7 +12,9 @@ function subscribe(listener: () => void) {
 }
 
 export function togglePackage(id: PackageId) {
-  selected = selected.includes(id) ? selected.filter((item) => item !== id) : [...selected, id];
+  selected = selected.includes(id)
+    ? selected.filter((item) => item !== id)
+    : [...selected, id];
   for (const notify of listeners) notify();
 }
 

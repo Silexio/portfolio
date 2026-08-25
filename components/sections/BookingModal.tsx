@@ -2,7 +2,11 @@
 
 import { useEffect, useRef } from "react";
 import { BookingClient } from "@/components/sections/BookingClient";
-import { closeBooking, useBookingModalOpen, useBookingSession } from "@/hooks/useBookingModal";
+import {
+  closeBooking,
+  useBookingModalOpen,
+  useBookingSession,
+} from "@/hooks/useBookingModal";
 import type { BookingLabels, PackageId } from "@/lib/data";
 import type { Locale } from "@/lib/i18n/config";
 
@@ -14,7 +18,13 @@ type BookingModalProps = {
   closeLabel: string;
 };
 
-export function BookingModal({ lang, siteKey, labels, packageLabels, closeLabel }: BookingModalProps) {
+export function BookingModal({
+  lang,
+  siteKey,
+  labels,
+  packageLabels,
+  closeLabel,
+}: BookingModalProps) {
   const open = useBookingModalOpen();
   const session = useBookingSession();
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -48,9 +58,25 @@ export function BookingModal({ lang, siteKey, labels, packageLabels, closeLabel 
         if (event.target === dialogRef.current) closeBooking();
       }}
     >
-      <button type="button" className="booking-modal__close" onClick={closeBooking} aria-label={closeLabel}>
-        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
-          <path d="M3 3l12 12M15 3L3 15" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+      <button
+        type="button"
+        className="booking-modal__close"
+        onClick={closeBooking}
+        aria-label={closeLabel}
+      >
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 18 18"
+          fill="none"
+          aria-hidden="true"
+        >
+          <path
+            d="M3 3l12 12M15 3L3 15"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+          />
         </svg>
       </button>
       <div className="booking-modal__inner">
@@ -58,7 +84,14 @@ export function BookingModal({ lang, siteKey, labels, packageLabels, closeLabel 
           {labels.title}
         </h2>
         <p className="booking-modal__tz">{labels.tzNote}</p>
-        <BookingClient key={session} lang={lang} siteKey={siteKey} active={open} labels={labels} packageLabels={packageLabels} />
+        <BookingClient
+          key={session}
+          lang={lang}
+          siteKey={siteKey}
+          active={open}
+          labels={labels}
+          packageLabels={packageLabels}
+        />
       </div>
     </dialog>
   );

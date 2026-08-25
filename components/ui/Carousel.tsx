@@ -17,7 +17,13 @@ type CarouselProps = {
  * les contrôles ne font que piloter ce même scroll. Les slides sont rendues côté serveur et
  * passées en children : elles doivent porter elles-mêmes role="group" + aria-roledescription.
  */
-export function Carousel({ label, prevLabel, nextLabel, dots, children }: CarouselProps) {
+export function Carousel({
+  label,
+  prevLabel,
+  nextLabel,
+  dots,
+  children,
+}: CarouselProps) {
   const viewport = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
   const reduced = useReducedMotion();
@@ -44,7 +50,10 @@ export function Carousel({ label, prevLabel, nextLabel, dots, children }: Carous
       const node = viewport.current;
       const slide = node?.children[index];
       if (!node || !(slide instanceof HTMLElement)) return;
-      node.scrollTo({ left: slide.offsetLeft - node.offsetLeft, behavior: reduced ? "auto" : "smooth" });
+      node.scrollTo({
+        left: slide.offsetLeft - node.offsetLeft,
+        behavior: reduced ? "auto" : "smooth",
+      });
     },
     [reduced],
   );
@@ -52,7 +61,12 @@ export function Carousel({ label, prevLabel, nextLabel, dots, children }: Carous
   const single = dots.length < 2;
 
   return (
-    <div className="carousel" role="group" aria-roledescription="carousel" aria-label={label}>
+    <div
+      className="carousel"
+      role="group"
+      aria-roledescription="carousel"
+      aria-label={label}
+    >
       <div className="carousel__viewport" ref={viewport}>
         {children}
       </div>
@@ -97,8 +111,19 @@ export function Carousel({ label, prevLabel, nextLabel, dots, children }: Carous
 
 function Arrow({ direction }: { direction: "left" | "right" }) {
   return (
-    <svg viewBox="0 0 16 16" fill="none" aria-hidden="true" data-direction={direction}>
-      <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+    <svg
+      viewBox="0 0 16 16"
+      fill="none"
+      aria-hidden="true"
+      data-direction={direction}
+    >
+      <path
+        d="M3 8h10M9 4l4 4-4 4"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
     </svg>
   );
 }

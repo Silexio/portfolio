@@ -46,10 +46,25 @@ function toggleTheme() {
   else apply();
 }
 
-function Brand({ label, href, onClick }: { label: string; href: string; onClick?: () => void }) {
+function Brand({
+  label,
+  href,
+  onClick,
+}: {
+  label: string;
+  href: string;
+  onClick?: () => void;
+}) {
   return (
     <a href={href} className="nav__brand" aria-label={label} onClick={onClick}>
-      <Image src="/silexio-mark.png" alt="" width={22} height={22} loading="eager" draggable={false} />
+      <Image
+        src="/silexio-mark.png"
+        alt=""
+        width={22}
+        height={22}
+        loading="eager"
+        draggable={false}
+      />
       <span className="nav__brand-text">SILEXIO</span>
     </a>
   );
@@ -58,10 +73,29 @@ function Brand({ label, href, onClick }: { label: string; href: string; onClick?
 function ThemeIcon() {
   return (
     <>
-      <svg className="moon" width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-        <path d="M11.5 8.5a4 4 0 01-5-5 4 4 0 106 5z" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round" />
+      <svg
+        className="moon"
+        width="14"
+        height="14"
+        viewBox="0 0 14 14"
+        fill="none"
+        aria-hidden="true"
+      >
+        <path
+          d="M11.5 8.5a4 4 0 01-5-5 4 4 0 106 5z"
+          stroke="currentColor"
+          strokeWidth="1.3"
+          strokeLinejoin="round"
+        />
       </svg>
-      <svg className="sun" width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+      <svg
+        className="sun"
+        width="14"
+        height="14"
+        viewBox="0 0 14 14"
+        fill="none"
+        aria-hidden="true"
+      >
         <circle cx="7" cy="7" r="3" stroke="currentColor" strokeWidth="1.3" />
         <path
           d="M7 1v1.5M7 11.5V13M1 7h1.5M11.5 7H13M2.5 2.5l1 1M10.5 10.5l1 1M11.5 2.5l-1 1M3.5 10.5l-1 1"
@@ -74,7 +108,13 @@ function ThemeIcon() {
   );
 }
 
-export function NavClient({ lang, links, labels, base = "", altPath = "" }: NavClientProps) {
+export function NavClient({
+  lang,
+  links,
+  labels,
+  base = "",
+  altPath = "",
+}: NavClientProps) {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const menuRef = useRef<HTMLButtonElement>(null);
@@ -84,7 +124,9 @@ export function NavClient({ lang, links, labels, base = "", altPath = "" }: NavC
   const otherLang: Locale = lang === "fr" ? "en" : "fr";
 
   const countLabel = (link: NavLink) =>
-    link.id === "contact" && count > 0 ? `${link.label} (${count} ${labels.selected})` : undefined;
+    link.id === "contact" && count > 0
+      ? `${link.label} (${count} ${labels.selected})`
+      : undefined;
 
   const closeSheet = () => {
     setOpen(false);
@@ -144,7 +186,9 @@ export function NavClient({ lang, links, labels, base = "", altPath = "" }: NavC
                 >
                   {link.label}
                   {link.id === "contact" && count > 0 && (
-                    <span className="nav__count" aria-hidden="true">{count}</span>
+                    <span className="nav__count" aria-hidden="true">
+                      {count}
+                    </span>
                   )}
                 </a>
               </li>
@@ -153,7 +197,12 @@ export function NavClient({ lang, links, labels, base = "", altPath = "" }: NavC
 
           <div className="nav__tools">
             {langSwitch}
-            <button type="button" className="nav__tool" onClick={toggleTheme} aria-label={labels.toggleTheme}>
+            <button
+              type="button"
+              className="nav__tool"
+              onClick={toggleTheme}
+              aria-label={labels.toggleTheme}
+            >
               <ThemeIcon />
             </button>
             <button
@@ -162,10 +211,25 @@ export function NavClient({ lang, links, labels, base = "", altPath = "" }: NavC
               className="nav__menu-btn"
               data-count={count > 0}
               onClick={() => setOpen(true)}
-              aria-label={count > 0 ? `${labels.menu} (${count} ${labels.selected})` : labels.menu}
+              aria-label={
+                count > 0
+                  ? `${labels.menu} (${count} ${labels.selected})`
+                  : labels.menu
+              }
             >
-              <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
-                <path d="M2 5h14M2 13h14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 18 18"
+                fill="none"
+                aria-hidden="true"
+              >
+                <path
+                  d="M2 5h14M2 13h14"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                />
               </svg>
             </button>
           </div>
@@ -174,21 +238,47 @@ export function NavClient({ lang, links, labels, base = "", altPath = "" }: NavC
 
       <div className="sheet" data-open={open} inert={!open}>
         <div className="sheet__head">
-          <Brand label={labels.home} href={`${base}#top`} onClick={() => setOpen(false)} />
-          <button type="button" className="nav__tool" onClick={closeSheet} aria-label={labels.close}>
-            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
-              <path d="M3 3l12 12M15 3L3 15" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+          <Brand
+            label={labels.home}
+            href={`${base}#top`}
+            onClick={() => setOpen(false)}
+          />
+          <button
+            type="button"
+            className="nav__tool"
+            onClick={closeSheet}
+            aria-label={labels.close}
+          >
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 18 18"
+              fill="none"
+              aria-hidden="true"
+            >
+              <path
+                d="M3 3l12 12M15 3L3 15"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+              />
             </svg>
           </button>
         </div>
         <ul className="sheet__links">
           {links.map((link, i) => (
             <li key={link.id}>
-              <a href={`${base}#${link.id}`} onClick={() => setOpen(false)} aria-label={countLabel(link)}>
+              <a
+                href={`${base}#${link.id}`}
+                onClick={() => setOpen(false)}
+                aria-label={countLabel(link)}
+              >
                 <span>
                   {link.label}
                   {link.id === "contact" && count > 0 && (
-                    <span className="nav__count" aria-hidden="true">{count}</span>
+                    <span className="nav__count" aria-hidden="true">
+                      {count}
+                    </span>
                   )}
                 </span>
                 <span className="n">{String(i + 1).padStart(2, "0")}</span>
@@ -209,7 +299,12 @@ export function NavClient({ lang, links, labels, base = "", altPath = "" }: NavC
           </button>
           <div className="sheet__foot-row">
             {langSwitch}
-            <button type="button" className="nav__tool" onClick={toggleTheme} aria-label={labels.toggleTheme}>
+            <button
+              type="button"
+              className="nav__tool"
+              onClick={toggleTheme}
+              aria-label={labels.toggleTheme}
+            >
               <ThemeIcon />
             </button>
           </div>

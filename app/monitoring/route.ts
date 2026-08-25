@@ -10,11 +10,14 @@ const MAX_ENVELOPE_BYTES = 1_000_000;
  * self-hosted Bugsink — this replaces it.
  */
 export async function POST(request: Request) {
-  const target = envelopeTarget(process.env.SENTRY_DSN ?? process.env.NEXT_PUBLIC_SENTRY_DSN);
+  const target = envelopeTarget(
+    process.env.SENTRY_DSN ?? process.env.NEXT_PUBLIC_SENTRY_DSN,
+  );
   if (!target) return new Response(null, { status: 404 });
 
   const envelope = await request.arrayBuffer();
-  if (envelope.byteLength > MAX_ENVELOPE_BYTES) return new Response(null, { status: 413 });
+  if (envelope.byteLength > MAX_ENVELOPE_BYTES)
+    return new Response(null, { status: 413 });
 
   try {
     const upstream = await fetch(target.url, {

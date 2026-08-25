@@ -8,8 +8,17 @@ import { meetingUrl } from "@/lib/booking/meeting";
 import type { MeetingMode } from "@/lib/booking/schema";
 import { signAction, type BookingAction } from "@/lib/booking/token";
 
-export type MailAttachment = { filename: string; content: string; contentType: string };
-export type Mail = { subject: string; html: string; text: string; attachments?: MailAttachment[] };
+export type MailAttachment = {
+  filename: string;
+  content: string;
+  contentType: string;
+};
+export type Mail = {
+  subject: string;
+  html: string;
+  text: string;
+  attachments?: MailAttachment[];
+};
 
 export type OwnerMailData = {
   id: string;
@@ -41,7 +50,10 @@ export type ConfirmedMailData = {
   locale: Locale;
 };
 
-export type OwnerConfirmedMailData = ConfirmedMailData & { phone: string; ownerEmail: string };
+export type OwnerConfirmedMailData = ConfirmedMailData & {
+  phone: string;
+  ownerEmail: string;
+};
 
 function esc(value: string): string {
   return value
@@ -52,7 +64,9 @@ function esc(value: string): string {
 }
 
 function fill(template: string, vars: Record<string, string>): string {
-  return template.replace(/\{(\w+)\}/g, (_, key) => (key in vars ? vars[key] : `{${key}}`));
+  return template.replace(/\{(\w+)\}/g, (_, key) =>
+    key in vars ? vars[key] : `{${key}}`,
+  );
 }
 
 const nl2br = (value: string) => value.replace(/\n/g, "<br>");
@@ -63,7 +77,10 @@ function shell(inner: string): string {
 }
 
 function modeLabel(meetingType: MeetingMode, locale: Locale): string {
-  return t(meetingType === "video" ? I18N.booking.modeVideo : I18N.booking.modeCall, locale);
+  return t(
+    meetingType === "video" ? I18N.booking.modeVideo : I18N.booking.modeCall,
+    locale,
+  );
 }
 
 function actionUrl(id: string, action: BookingAction, locale: Locale): string {
@@ -71,7 +88,10 @@ function actionUrl(id: string, action: BookingAction, locale: Locale): string {
   return `${BASE_URL}/${locale}/booking/${action}?id=${encodeURIComponent(id)}&token=${token}`;
 }
 
-function meetingLink(meetingType: MeetingMode, roomSlug?: string): string | undefined {
+function meetingLink(
+  meetingType: MeetingMode,
+  roomSlug?: string,
+): string | undefined {
   return meetingType === "video" && roomSlug ? meetingUrl(roomSlug) : undefined;
 }
 
@@ -93,7 +113,9 @@ function calendarEvent(target: IcsTarget): IcsInput {
     start: new Date(target.slotIso),
     durationMinutes: BOOKING.slotMinutes,
     summary: t(ics.summary, target.locale),
-    description: url ? fill(t(ics.descriptionVideo, target.locale), { url }) : t(ics.descriptionCall, target.locale),
+    description: url
+      ? fill(t(ics.descriptionVideo, target.locale), { url })
+      : t(ics.descriptionCall, target.locale),
     location: url ?? t(ics.locationCall, target.locale),
     organizerName: "Silexio",
     organizerEmail: EMAIL,
@@ -126,10 +148,18 @@ export function ownerEmail(data: OwnerMailData): Mail {
     row(t(f.slot, data.locale), esc(slot)),
     row(t(f.mode, data.locale), esc(mode)),
     row(t(f.name, data.locale), esc(data.name)),
-    row(t(f.email, data.locale), `<a href="mailto:${esc(data.email)}">${esc(data.email)}</a>`),
-    row(t(f.phone, data.locale), `<a href="tel:${esc(data.phone.replace(/\s/g, ""))}">${esc(data.phone)}</a>`),
+    row(
+      t(f.email, data.locale),
+      `<a href="mailto:${esc(data.email)}">${esc(data.email)}</a>`,
+    ),
+    row(
+      t(f.phone, data.locale),
+      `<a href="tel:${esc(data.phone.replace(/\s/g, ""))}">${esc(data.phone)}</a>`,
+    ),
     data.packages.length ? row(t(f.packages, data.locale), esc(packages)) : "",
-    data.message ? row(t(f.message, data.locale), nl2br(esc(data.message))) : "",
+    data.message
+      ? row(t(f.message, data.locale), nl2br(esc(data.message)))
+      : "",
   ].join("");
 
   const confirmHref = actionUrl(data.id, "confirm", data.locale);
@@ -170,12 +200,23 @@ ${buttons}
 
 type MailLink = { url: string; label?: string };
 
-function clientMail(subject: string, text: string, links: MailLink[] = []): Mail {
+function clientMail(
+  subject: string,
+  text: string,
+  links: MailLink[] = [],
+): Mail {
   let body = nl2br(esc(text));
   for (const { url, label } of links) {
-    body = body.replace(esc(url), `<a href="${esc(url)}">${esc(label ?? url)}</a>`);
+    body = body.replace(
+      esc(url),
+      `<a href="${esc(url)}">${esc(label ?? url)}</a>`,
+    );
   }
-  return { subject, html: shell(`<div style="font-size:14px;">${body}</div>`), text };
+  return {
+    subject,
+    html: shell(`<div style="font-size:14px;">${body}</div>`),
+    text,
+  };
 }
 
 /** "Request received, pending confirmation" email to the client. */
@@ -193,15 +234,31 @@ export function confirmedEmail(data: ConfirmedMailData): Mail {
   const tpl = BOOKING_EMAILS.confirmed;
   const slot = formatSlotLabel(data.slotIso, data.locale);
   const url = meetingLink(data.meetingType, data.roomSlug);
-  const meetingInfo = url ? fill(t(tpl.meetingVideo, data.locale), { url }) : t(tpl.meetingCall, data.locale);
-  const event = calendarEvent({ ...data, attendeeName: data.name, attendeeEmail: data.email });
+  const meetingInfo = url
+    ? fill(t(tpl.meetingVideo, data.locale), { url })
+    : t(tpl.meetingCall, data.locale);
+  const event = calendarEvent({
+    ...data,
+    attendeeName: data.name,
+    attendeeEmail: data.email,
+  });
   const calendarUrl = googleCalendarUrl(event);
   const calendar = fill(t(tpl.calendar, data.locale), { url: calendarUrl });
   const subject = fill(t(tpl.subject, data.locale), { slot });
-  const text = fill(t(tpl.body, data.locale), { name: data.name, slot, meetingInfo, calendar });
-  const links: MailLink[] = [{ url: calendarUrl, label: t(tpl.calendarLabel, data.locale) }];
+  const text = fill(t(tpl.body, data.locale), {
+    name: data.name,
+    slot,
+    meetingInfo,
+    calendar,
+  });
+  const links: MailLink[] = [
+    { url: calendarUrl, label: t(tpl.calendarLabel, data.locale) },
+  ];
   if (url) links.unshift({ url });
-  return { ...clientMail(subject, text, links), attachments: [bookingIcs(event)] };
+  return {
+    ...clientMail(subject, text, links),
+    attachments: [bookingIcs(event)],
+  };
 }
 
 /** Confirmation email to the owner (after they confirm), with the meeting details + an .ics invite. */
@@ -212,9 +269,15 @@ export function ownerConfirmedEmail(data: OwnerConfirmedMailData): Mail {
   const meetingInfo = url
     ? fill(t(BOOKING_EMAILS.confirmed.meetingVideo, data.locale), { url })
     : fill(t(tpl.meetingCall, data.locale), { name: data.name });
-  const event = calendarEvent({ ...data, attendeeName: "Silexio", attendeeEmail: data.ownerEmail });
+  const event = calendarEvent({
+    ...data,
+    attendeeName: "Silexio",
+    attendeeEmail: data.ownerEmail,
+  });
   const calendarUrl = googleCalendarUrl(event);
-  const calendar = fill(t(BOOKING_EMAILS.confirmed.calendar, data.locale), { url: calendarUrl });
+  const calendar = fill(t(BOOKING_EMAILS.confirmed.calendar, data.locale), {
+    url: calendarUrl,
+  });
   const subject = fill(t(tpl.subject, data.locale), { slot, name: data.name });
   const text = fill(t(tpl.body, data.locale), {
     name: data.name,
@@ -225,14 +288,22 @@ export function ownerConfirmedEmail(data: OwnerConfirmedMailData): Mail {
     calendar,
   });
   const links: MailLink[] = [
-    { url: calendarUrl, label: t(BOOKING_EMAILS.confirmed.calendarLabel, data.locale) },
+    {
+      url: calendarUrl,
+      label: t(BOOKING_EMAILS.confirmed.calendarLabel, data.locale),
+    },
   ];
   if (url) links.unshift({ url });
-  return { ...clientMail(subject, text, links), attachments: [bookingIcs(event)] };
+  return {
+    ...clientMail(subject, text, links),
+    attachments: [bookingIcs(event)],
+  };
 }
 
 /** Decline email to the client; the slot is freed. */
-export function refusedEmail(data: Pick<ClientMailData, "name" | "slotIso" | "locale">): Mail {
+export function refusedEmail(
+  data: Pick<ClientMailData, "name" | "slotIso" | "locale">,
+): Mail {
   const tpl = BOOKING_EMAILS.refused;
   const slot = formatSlotLabel(data.slotIso, data.locale);
   const subject = t(tpl.subject, data.locale);

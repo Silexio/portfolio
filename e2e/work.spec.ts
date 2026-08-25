@@ -38,7 +38,9 @@ test.describe("Work carousel", () => {
     const count = await slides.count();
     expect(count).toBeGreaterThan(1);
     for (let i = 0; i < count; i++) {
-      await expect(slides.nth(i).locator(".project__actions a")).not.toHaveCount(0);
+      await expect(
+        slides.nth(i).locator(".project__actions a"),
+      ).not.toHaveCount(0);
     }
   });
 });

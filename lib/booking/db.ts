@@ -30,11 +30,17 @@ async function db(): Promise<D1Database> {
 
 /** D1 surfaces constraint violations as plain errors — this is the partial index on slotStart firing. */
 function isSlotTaken(error: unknown): boolean {
-  return error instanceof Error && error.message.includes("UNIQUE constraint failed: Booking.slotStart");
+  return (
+    error instanceof Error &&
+    error.message.includes("UNIQUE constraint failed: Booking.slotStart")
+  );
 }
 
 /** Inserts a booking and returns its id, or null when the slot is already held. */
-export async function insertBooking(input: NewBooking, now: Date = new Date()): Promise<string | null> {
+export async function insertBooking(
+  input: NewBooking,
+  now: Date = new Date(),
+): Promise<string | null> {
   const id = crypto.randomUUID();
   const stamp = now.toISOString();
   const client = await db();
@@ -69,22 +75,34 @@ export async function insertBooking(input: NewBooking, now: Date = new Date()): 
 
 export async function findBooking(id: string): Promise<BookingRecord | null> {
   const client = await db();
-  const row = await client.prepare("SELECT * FROM Booking WHERE id = ?").bind(id).first<BookingRow>();
+  const row = await client
+    .prepare("SELECT * FROM Booking WHERE id = ?")
+    .bind(id)
+    .first<BookingRow>();
   return row ? toRecord(row) : null;
 }
 
 /** Moves a pending booking to its final status. False means another request got there first. */
-export async function settleBooking(id: string, status: BookingStatus, now: Date = new Date()): Promise<boolean> {
+export async function settleBooking(
+  id: string,
+  status: BookingStatus,
+  now: Date = new Date(),
+): Promise<boolean> {
   const client = await db();
   const result = await client
-    .prepare("UPDATE Booking SET status = ?, updatedAt = ? WHERE id = ? AND status = 'pending'")
+    .prepare(
+      "UPDATE Booking SET status = ?, updatedAt = ? WHERE id = ? AND status = 'pending'",
+    )
     .bind(status, now.toISOString(), id)
     .run();
   return result.meta.changes > 0;
 }
 
 /** Slot instants held by a live booking within the window — the ones to grey out. */
-export async function listHeldSlots(fromIso: string, toIso: string): Promise<string[]> {
+export async function listHeldSlots(
+  fromIso: string,
+  toIso: string,
+): Promise<string[]> {
   const client = await db();
   const { results } = await client
     .prepare(
@@ -96,22 +114,35 @@ export async function listHeldSlots(fromIso: string, toIso: string): Promise<str
   return results.map((row) => row.slotStart);
 }
 
-export async function countHits(ipHash: string, sinceIso: string): Promise<number> {
+export async function countHits(
+  ipHash: string,
+  sinceIso: string,
+): Promise<number> {
   const client = await db();
   const row = await client
-    .prepare("SELECT COUNT(*) AS hits FROM RateLimitHit WHERE ipHash = ? AND createdAt >= ?")
+    .prepare(
+      "SELECT COUNT(*) AS hits FROM RateLimitHit WHERE ipHash = ? AND createdAt >= ?",
+    )
     .bind(ipHash, sinceIso)
     .first<{ hits: number }>();
   return row?.hits ?? 0;
 }
 
 /** Records one hit and drops the expired ones in the same round trip. */
-export async function recordHit(ipHash: string, now: Date, expiredBefore: string): Promise<void> {
+export async function recordHit(
+  ipHash: string,
+  now: Date,
+  expiredBefore: string,
+): Promise<void> {
   const client = await db();
   await client.batch([
     client
-      .prepare("INSERT INTO RateLimitHit (id, ipHash, createdAt) VALUES (?, ?, ?)")
+      .prepare(
+        "INSERT INTO RateLimitHit (id, ipHash, createdAt) VALUES (?, ?, ?)",
+      )
       .bind(crypto.randomUUID(), ipHash, now.toISOString()),
-    client.prepare("DELETE FROM RateLimitHit WHERE createdAt < ?").bind(expiredBefore),
+    client
+      .prepare("DELETE FROM RateLimitHit WHERE createdAt < ?")
+      .bind(expiredBefore),
   ]);
 }

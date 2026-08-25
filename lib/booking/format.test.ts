@@ -1,5 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { formatDayLabel, formatSlotLabel, formatTimeLabel } from "@/lib/booking/format";
+import {
+  formatDayLabel,
+  formatSlotLabel,
+  formatTimeLabel,
+} from "@/lib/booking/format";
 
 describe("formatTimeLabel — Brussels DST", () => {
   it("maps the winter offset (07:00Z → 08:00)", () => {
@@ -17,6 +21,8 @@ describe("formatDayLabel / formatSlotLabel", () => {
   });
 
   it("formatSlotLabel includes the Brussels time", () => {
-    expect(formatSlotLabel("2026-01-14T07:00:00.000Z", "en")).toContain("08:00");
+    expect(formatSlotLabel("2026-01-14T07:00:00.000Z", "en")).toContain(
+      "08:00",
+    );
   });
 });

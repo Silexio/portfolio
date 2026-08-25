@@ -2,7 +2,8 @@ import { beforeAll, describe, expect, it } from "vitest";
 import { signAction, verifyAction } from "@/lib/booking/token";
 
 beforeAll(() => {
-  process.env.BOOKING_ACTION_SECRET = "test-secret-0123456789abcdef0123456789abcdef";
+  process.env.BOOKING_ACTION_SECRET =
+    "test-secret-0123456789abcdef0123456789abcdef";
 });
 
 const ID = "ckxyz123";
@@ -18,7 +19,9 @@ describe("signAction / verifyAction", () => {
   });
 
   it("rejects a token for a different id", () => {
-    expect(verifyAction("other", "confirm", signAction(ID, "confirm"))).toBe(false);
+    expect(verifyAction("other", "confirm", signAction(ID, "confirm"))).toBe(
+      false,
+    );
   });
 
   it("rejects a tampered token", () => {

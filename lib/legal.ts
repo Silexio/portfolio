@@ -13,7 +13,10 @@ export type LegalSection = {
  * mailer ou de l'observabilité doit être répercutée ici.
  */
 export const LEGAL_PAGE = {
-  title: { fr: "Mentions légales et vie privée", en: "Legal notice and privacy" },
+  title: {
+    fr: "Mentions légales et vie privée",
+    en: "Legal notice and privacy",
+  },
   intro: {
     fr: "Cette page décrit qui édite ce site, et ce qu'il advient des informations que vous y laissez. Elle est écrite pour être lue, pas pour être contournée.",
     en: "This page sets out who runs this site and what happens to the information you leave on it. It is written to be read, not to be skimmed past.",

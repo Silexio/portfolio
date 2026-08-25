@@ -53,17 +53,27 @@ export function Hero({ lang }: { lang: Locale }) {
         </Reveal>
 
         <Reveal delay={520} className="hero__cta">
-          <Btn href="#contact" variant="ember">{t(i18n.cta1, lang)}</Btn>
-          <Btn href="#work" variant="ghost" icon={false}>{t(i18n.cta2, lang)}</Btn>
+          <Btn href="#contact" variant="ember">
+            {t(i18n.cta1, lang)}
+          </Btn>
+          <Btn href="#work" variant="ghost" icon={false}>
+            {t(i18n.cta2, lang)}
+          </Btn>
         </Reveal>
 
         <Reveal delay={640} className="hero__meta">
-          <HeroMeta label={t(i18n.metaBaseLabel, lang)} value={t(i18n.metaBaseValue, lang)} sub={t(i18n.metaBaseSub, lang)} />
-          <HeroMeta label={t(i18n.metaStatusLabel, lang)} value={t(i18n.metaStatusValue, lang)} live />
+          <HeroMeta
+            label={t(i18n.metaBaseLabel, lang)}
+            value={t(i18n.metaBaseValue, lang)}
+            sub={t(i18n.metaBaseSub, lang)}
+          />
+          <HeroMeta
+            label={t(i18n.metaStatusLabel, lang)}
+            value={t(i18n.metaStatusValue, lang)}
+            live
+          />
         </Reveal>
-
       </div>
-
     </section>
   );
 }

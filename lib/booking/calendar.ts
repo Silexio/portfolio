@@ -40,7 +40,10 @@ function basicAuth(credentials: string): string {
  * prise de rendez-vous sur une panne tierce ; le pire cas ici est une demande à refuser,
  * ce que le flux de confirmation permet déjà.
  */
-export async function listBusyIntervals(windowStart: Date, windowEnd: Date): Promise<BusyInterval[]> {
+export async function listBusyIntervals(
+  windowStart: Date,
+  windowEnd: Date,
+): Promise<BusyInterval[]> {
   const urls = (process.env.BOOKING_CALENDAR_ICS_URL ?? "")
     .split(",")
     .map((u) => u.trim())
@@ -48,7 +51,9 @@ export async function listBusyIntervals(windowStart: Date, windowEnd: Date): Pro
   if (urls.length === 0) return [];
 
   const credentials = process.env.BOOKING_CALENDAR_AUTH?.trim();
-  const results = await Promise.all(urls.map((url) => fetchIntervals(url, credentials, windowStart, windowEnd)));
+  const results = await Promise.all(
+    urls.map((url) => fetchIntervals(url, credentials, windowStart, windowEnd)),
+  );
   return results.flat().sort((a, b) => a.start - b.start);
 }
 
@@ -59,7 +64,9 @@ async function fetchIntervals(
   windowEnd: Date,
 ): Promise<BusyInterval[]> {
   try {
-    const headers: Record<string, string> = { Accept: "text/calendar, text/plain" };
+    const headers: Record<string, string> = {
+      Accept: "text/calendar, text/plain",
+    };
     if (credentials) headers.Authorization = basicAuth(credentials);
 
     const fresh = cache.get(url);
@@ -67,7 +74,11 @@ async function fetchIntervals(
       return parseBusyIntervals(fresh.text, windowStart, windowEnd);
     }
 
-    const res = await fetch(url, { headers, signal: AbortSignal.timeout(FETCH_TIMEOUT_MS), cache: "no-store" });
+    const res = await fetch(url, {
+      headers,
+      signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
+      cache: "no-store",
+    });
     if (!res.ok) return [];
     const text = await res.text();
     if (text.length > MAX_BYTES || !text.includes("BEGIN:VCALENDAR")) return [];

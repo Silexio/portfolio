@@ -9,11 +9,16 @@ const SENDER_NAME = "Silexio";
 export async function sendMail(to: string, mail: Mail): Promise<void> {
   const apiKey = process.env.BREVO_API_KEY;
   const sender = process.env.BREVO_SENDER_EMAIL;
-  if (!apiKey || !sender) throw new Error("BREVO_API_KEY and BREVO_SENDER_EMAIL must be set");
+  if (!apiKey || !sender)
+    throw new Error("BREVO_API_KEY and BREVO_SENDER_EMAIL must be set");
 
   const response = await fetch(ENDPOINT, {
     method: "POST",
-    headers: { "api-key": apiKey, "content-type": "application/json", accept: "application/json" },
+    headers: {
+      "api-key": apiKey,
+      "content-type": "application/json",
+      accept: "application/json",
+    },
     body: JSON.stringify({
       sender: { name: SENDER_NAME, email: sender },
       to: [{ email: to }],
@@ -28,5 +33,6 @@ export async function sendMail(to: string, mail: Mail): Promise<void> {
     }),
   });
 
-  if (!response.ok) throw new Error(`Brevo rejected the email (HTTP ${response.status})`);
+  if (!response.ok)
+    throw new Error(`Brevo rejected the email (HTTP ${response.status})`);
 }

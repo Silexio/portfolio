@@ -7,7 +7,13 @@ import { t } from "@/lib/i18n/utils";
 import "./globals.css";
 
 /** Last-resort boundary: it replaces the root layout, so it renders its own html/body. */
-export default function GlobalError({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
+export default function GlobalError({
+  error,
+  reset,
+}: {
+  error: Error & { digest?: string };
+  reset: () => void;
+}) {
   const [lang] = useState(browserLocale);
 
   useEffect(() => {

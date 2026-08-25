@@ -10,7 +10,8 @@ import { bookingSchema } from "@/lib/booking/schema";
 import { isValidSlot } from "@/lib/booking/slots";
 import { verifyTurnstile } from "@/lib/booking/turnstile";
 
-const json = (error: string, status: number) => NextResponse.json({ error }, { status });
+const json = (error: string, status: number) =>
+  NextResponse.json({ error }, { status });
 
 function isHoneypotFilled(raw: unknown): boolean {
   if (!raw || typeof raw !== "object") return false;
@@ -26,7 +27,8 @@ export async function POST(req: Request) {
     return json("bad_request", 400);
   }
 
-  if (isHoneypotFilled(raw)) return NextResponse.json({ ok: true }, { status: 201 });
+  if (isHoneypotFilled(raw))
+    return NextResponse.json({ ok: true }, { status: 201 });
 
   const parsed = bookingSchema.safeParse(raw);
   if (!parsed.success) return json("validation", 400);
@@ -36,7 +38,8 @@ export async function POST(req: Request) {
   if (!isValidSlot(data.slotStart, now)) return json("invalid_slot", 400);
 
   const ip = clientIp(req.headers);
-  if (!(await verifyTurnstile(data.turnstileToken, ip))) return json("captcha", 400);
+  if (!(await verifyTurnstile(data.turnstileToken, ip)))
+    return json("captcha", 400);
   if (!(await checkRateLimit(ip, now))) return json("rate_limit", 429);
 
   let bookingId: string | null;
@@ -60,7 +63,9 @@ export async function POST(req: Request) {
   }
   if (!bookingId) return json("slot_taken", 409);
 
-  const labelById = new Map<string, string>(PACKAGES.map((p) => [p.id, t(p.title, data.locale)]));
+  const labelById = new Map<string, string>(
+    PACKAGES.map((p) => [p.id, t(p.title, data.locale)]),
+  );
   const packageLabels = data.packages.map((id) => labelById.get(id) ?? id);
 
   const notify = process.env.BOOKING_NOTIFY_EMAIL;
@@ -82,7 +87,12 @@ export async function POST(req: Request) {
   }
   await sendMail(
     data.email,
-    pendingEmail({ name: data.name, slotIso: data.slotStart, meetingType: data.meetingType, locale: data.locale }),
+    pendingEmail({
+      name: data.name,
+      slotIso: data.slotStart,
+      meetingType: data.meetingType,
+      locale: data.locale,
+    }),
   ).catch(() => undefined);
 
   return NextResponse.json({ ok: true }, { status: 201 });

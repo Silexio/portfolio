@@ -2,16 +2,23 @@ import { expect, test } from "@playwright/test";
 
 const openModal = async (page: import("@playwright/test").Page) => {
   await page.goto("/fr");
-  await page.locator("#contact").getByRole("button", { name: "Réserver un appel" }).click();
+  await page
+    .locator("#contact")
+    .getByRole("button", { name: "Réserver un appel" })
+    .click();
   const dialog = page.locator("dialog.booking-modal");
   await expect(dialog).toBeVisible();
   return dialog;
 };
 
 test.describe("Booking modal", () => {
-  test("opens from the contact CTA and shows the calendar", async ({ page }) => {
+  test("opens from the contact CTA and shows the calendar", async ({
+    page,
+  }) => {
     const dialog = await openModal(page);
-    await expect(dialog.getByRole("heading", { name: /Réservez/ })).toBeVisible();
+    await expect(
+      dialog.getByRole("heading", { name: /Réservez/ }),
+    ).toBeVisible();
     await expect(dialog.locator(".booking-cal__day").first()).toBeVisible();
   });
 

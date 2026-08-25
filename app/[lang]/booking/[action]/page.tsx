@@ -43,7 +43,10 @@ function Message({ title, body }: { title: string; body: string }) {
   );
 }
 
-export default async function BookingActionPage({ params, searchParams }: PageProps<"/[lang]/booking/[action]">) {
+export default async function BookingActionPage({
+  params,
+  searchParams,
+}: PageProps<"/[lang]/booking/[action]">) {
   const { lang: langRaw, action } = await params;
   const lang: Locale = asLocale(langRaw);
   if (action !== "confirm" && action !== "refuse") notFound();
@@ -65,7 +68,10 @@ export default async function BookingActionPage({ params, searchParams }: PagePr
   if (!id || !token || !verifyAction(id, act, token)) {
     return (
       <Shell>
-        <Message title={t(BOOKING_ACTION.invalidTitle, lang)} body={t(BOOKING_ACTION.invalidBody, lang)} />
+        <Message
+          title={t(BOOKING_ACTION.invalidTitle, lang)}
+          body={t(BOOKING_ACTION.invalidBody, lang)}
+        />
       </Shell>
     );
   }
@@ -74,22 +80,37 @@ export default async function BookingActionPage({ params, searchParams }: PagePr
   if (!booking) {
     return (
       <Shell>
-        <Message title={t(BOOKING_ACTION.invalidTitle, lang)} body={t(BOOKING_ACTION.invalidBody, lang)} />
+        <Message
+          title={t(BOOKING_ACTION.invalidTitle, lang)}
+          body={t(BOOKING_ACTION.invalidBody, lang)}
+        />
       </Shell>
     );
   }
   if (booking.status !== "pending") {
     return (
       <Shell>
-        <Message title={t(BOOKING_ACTION.alreadyTitle, lang)} body={t(BOOKING_ACTION.alreadyBody, lang)} />
+        <Message
+          title={t(BOOKING_ACTION.alreadyTitle, lang)}
+          body={t(BOOKING_ACTION.alreadyBody, lang)}
+        />
       </Shell>
     );
   }
 
   const slot = formatSlotLabel(booking.slotStart, lang);
-  const mode = t(booking.meetingType === "video" ? I18N.booking.modeVideo : I18N.booking.modeCall, lang);
-  const question = act === "confirm" ? BOOKING_ACTION.confirmQuestion : BOOKING_ACTION.refuseQuestion;
-  const cta = act === "confirm" ? BOOKING_ACTION.confirmCta : BOOKING_ACTION.refuseCta;
+  const mode = t(
+    booking.meetingType === "video"
+      ? I18N.booking.modeVideo
+      : I18N.booking.modeCall,
+    lang,
+  );
+  const question =
+    act === "confirm"
+      ? BOOKING_ACTION.confirmQuestion
+      : BOOKING_ACTION.refuseQuestion;
+  const cta =
+    act === "confirm" ? BOOKING_ACTION.confirmCta : BOOKING_ACTION.refuseCta;
 
   return (
     <Shell>
@@ -97,11 +118,18 @@ export default async function BookingActionPage({ params, searchParams }: PagePr
       <p className="booking-action__summary">
         <strong>{booking.name}</strong> · {slot} · {mode}
       </p>
-      <form method="post" action={`/api/bookings/${act}`} className="booking-action__actions">
+      <form
+        method="post"
+        action={`/api/bookings/${act}`}
+        className="booking-action__actions"
+      >
         <input type="hidden" name="id" value={id} />
         <input type="hidden" name="token" value={token} />
         <input type="hidden" name="lang" value={lang} />
-        <button type="submit" className={`btn ${act === "confirm" ? "btn--ember" : "btn--ghost"}`}>
+        <button
+          type="submit"
+          className={`btn ${act === "confirm" ? "btn--ember" : "btn--ghost"}`}
+        >
           {t(cta, lang)}
         </button>
       </form>

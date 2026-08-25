@@ -1,6 +1,11 @@
 import { describe, expect, it } from "vitest";
 import { BOOKING } from "@/lib/data";
-import { groupByDay, isValidSlot, listSlotStarts, zonedWallToUtc } from "@/lib/booking/slots";
+import {
+  groupByDay,
+  isValidSlot,
+  listSlotStarts,
+  zonedWallToUtc,
+} from "@/lib/booking/slots";
 
 const TZ = "Europe/Brussels";
 
@@ -13,17 +18,26 @@ function brussels(iso: string) {
     minute: "2-digit",
   });
   const map: Record<string, string> = {};
-  for (const part of fmt.formatToParts(new Date(iso))) map[part.type] = part.value;
-  return { weekday: map.weekday, hour: Number(map.hour), minute: Number(map.minute) };
+  for (const part of fmt.formatToParts(new Date(iso)))
+    map[part.type] = part.value;
+  return {
+    weekday: map.weekday,
+    hour: Number(map.hour),
+    minute: Number(map.minute),
+  };
 }
 
 describe("zonedWallToUtc — DST", () => {
   it("maps 08:00 Brussels to 07:00Z in winter (UTC+1)", () => {
-    expect(zonedWallToUtc(2026, 1, 14, 8, 0, TZ).toISOString()).toBe("2026-01-14T07:00:00.000Z");
+    expect(zonedWallToUtc(2026, 1, 14, 8, 0, TZ).toISOString()).toBe(
+      "2026-01-14T07:00:00.000Z",
+    );
   });
 
   it("maps 08:00 Brussels to 06:00Z in summer (UTC+2)", () => {
-    expect(zonedWallToUtc(2026, 7, 14, 8, 0, TZ).toISOString()).toBe("2026-07-14T06:00:00.000Z");
+    expect(zonedWallToUtc(2026, 7, 14, 8, 0, TZ).toISOString()).toBe(
+      "2026-07-14T06:00:00.000Z",
+    );
   });
 });
 
@@ -45,7 +59,9 @@ describe("listSlotStarts", () => {
       const { hour, minute } = brussels(s);
       const minutes = hour * 60 + minute;
       expect(minutes).toBeGreaterThanOrEqual(BOOKING.startHour * 60);
-      expect(minutes).toBeLessThanOrEqual(BOOKING.endHour * 60 - BOOKING.slotMinutes);
+      expect(minutes).toBeLessThanOrEqual(
+        BOOKING.endHour * 60 - BOOKING.slotMinutes,
+      );
     }
   });
 

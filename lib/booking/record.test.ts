@@ -1,5 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { decodePackages, encodePackages, slotKey, toRecord, type BookingRow } from "@/lib/booking/record";
+import {
+  decodePackages,
+  encodePackages,
+  slotKey,
+  toRecord,
+  type BookingRow,
+} from "@/lib/booking/record";
 
 const row: BookingRow = {
   id: "abc",
@@ -19,8 +25,12 @@ const row: BookingRow = {
 
 describe("slotKey", () => {
   it("normalizes any accepted instant to UTC ISO", () => {
-    expect(slotKey("2026-01-14T08:00:00+01:00")).toBe("2026-01-14T07:00:00.000Z");
-    expect(slotKey("2026-01-14T07:00:00.000Z")).toBe("2026-01-14T07:00:00.000Z");
+    expect(slotKey("2026-01-14T08:00:00+01:00")).toBe(
+      "2026-01-14T07:00:00.000Z",
+    );
+    expect(slotKey("2026-01-14T07:00:00.000Z")).toBe(
+      "2026-01-14T07:00:00.000Z",
+    );
   });
 
   it("rejects an unparsable instant", () => {
@@ -30,7 +40,10 @@ describe("slotKey", () => {
 
 describe("packages", () => {
   it("round-trips ids", () => {
-    expect(decodePackages(encodePackages(["site", "api"]))).toEqual(["site", "api"]);
+    expect(decodePackages(encodePackages(["site", "api"]))).toEqual([
+      "site",
+      "api",
+    ]);
   });
 
   it("degrades to none on corrupted or non-array JSON", () => {
@@ -65,7 +78,9 @@ describe("toRecord", () => {
   });
 
   it("rejects values the CHECK constraints forbid", () => {
-    expect(() => toRecord({ ...row, meetingType: "hologram" })).toThrow(TypeError);
+    expect(() => toRecord({ ...row, meetingType: "hologram" })).toThrow(
+      TypeError,
+    );
     expect(() => toRecord({ ...row, status: "maybe" })).toThrow(TypeError);
   });
 });

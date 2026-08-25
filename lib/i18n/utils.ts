@@ -17,15 +17,19 @@ export function t<T>(node: Bilingual<T>, lang: Locale): T {
 }
 
 /** Resolves every bilingual entry of a dictionary to plain strings for one locale. */
-export function resolveDict<T extends Record<string, Bilingual>>(dict: T, lang: Locale): Record<keyof T, string> {
-  return Object.fromEntries(Object.entries(dict).map(([key, value]) => [key, t(value, lang)])) as Record<
-    keyof T,
-    string
-  >;
+export function resolveDict<T extends Record<string, Bilingual>>(
+  dict: T,
+  lang: Locale,
+): Record<keyof T, string> {
+  return Object.fromEntries(
+    Object.entries(dict).map(([key, value]) => [key, t(value, lang)]),
+  ) as Record<keyof T, string>;
 }
 
 /** Narrows the route param to a supported locale, falling back to the default. */
-export async function localeParam(params: Promise<{ lang: string }>): Promise<Locale> {
+export async function localeParam(
+  params: Promise<{ lang: string }>,
+): Promise<Locale> {
   const { lang } = await params;
   return asLocale(lang);
 }

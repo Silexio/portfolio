@@ -1,4 +1,13 @@
-import { COVERAGE, EMAIL, FAQ, GEO, LEGAL, META, PACKAGES, URLS } from "@/lib/data";
+import {
+  COVERAGE,
+  EMAIL,
+  FAQ,
+  GEO,
+  LEGAL,
+  META,
+  PACKAGES,
+  URLS,
+} from "@/lib/data";
 import type { Locale } from "@/lib/i18n/config";
 import { t } from "@/lib/i18n/utils";
 import { BASE_URL } from "@/lib/metadata";
@@ -11,7 +20,10 @@ const OPENING_HOURS = {
 };
 
 function servedCities() {
-  return COVERAGE.flatMap((area) => area.cities).map((city) => ({ "@type": "City", name: city }));
+  return COVERAGE.flatMap((area) => area.cities).map((city) => ({
+    "@type": "City",
+    name: city,
+  }));
 }
 
 function offerCatalog(lang: Locale) {
@@ -48,17 +60,34 @@ export function structuredData(lang: Locale) {
         url: BASE_URL,
         email: EMAIL,
         jobTitle: t(
-          { fr: "Développeur full-stack indépendant", en: "Independent full-stack developer" },
+          {
+            fr: "Développeur full-stack indépendant",
+            en: "Independent full-stack developer",
+          },
           lang,
         ),
         hasOccupation: {
           "@type": "Occupation",
-          name: t({ fr: "Développeur full-stack", en: "Full-stack developer" }, lang),
+          name: t(
+            { fr: "Développeur full-stack", en: "Full-stack developer" },
+            lang,
+          ),
           occupationalCategory: "15-1252 Software Developers",
           occupationLocation: { "@type": "Country", name: "Belgique" },
         },
-        sameAs: [URLS.github, URLS.githubPersonal, URLS.linkedin, URLS.facebook, URLS.instagram],
-        address: { "@type": "PostalAddress", addressLocality: GEO.locality, addressRegion: GEO.region, addressCountry: GEO.country },
+        sameAs: [
+          URLS.github,
+          URLS.githubPersonal,
+          URLS.linkedin,
+          URLS.facebook,
+          URLS.instagram,
+        ],
+        address: {
+          "@type": "PostalAddress",
+          addressLocality: GEO.locality,
+          addressRegion: GEO.region,
+          addressCountry: GEO.country,
+        },
         knowsAbout: [
           "Développement full-stack",
           "Développement web",
@@ -113,10 +142,18 @@ export function structuredData(lang: Locale) {
           addressRegion: GEO.region,
           addressCountry: GEO.country,
         },
-        geo: { "@type": "GeoCoordinates", latitude: GEO.latitude, longitude: GEO.longitude },
+        geo: {
+          "@type": "GeoCoordinates",
+          latitude: GEO.latitude,
+          longitude: GEO.longitude,
+        },
         serviceArea: {
           "@type": "GeoCircle",
-          geoMidpoint: { "@type": "GeoCoordinates", latitude: GEO.latitude, longitude: GEO.longitude },
+          geoMidpoint: {
+            "@type": "GeoCoordinates",
+            latitude: GEO.latitude,
+            longitude: GEO.longitude,
+          },
           geoRadius: GEO.radiusMeters,
         },
         areaServed: [

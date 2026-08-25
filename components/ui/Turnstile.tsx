@@ -2,7 +2,8 @@
 
 import { useEffect, useRef } from "react";
 
-const API_URL = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
+const API_URL =
+  "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
 
 type RenderOptions = {
   sitekey: string;
@@ -83,5 +84,7 @@ export function Turnstile({ siteKey, onToken, label }: TurnstileProps) {
     };
   }, [siteKey]);
 
-  return <div ref={hostRef} className="booking-form__captcha" aria-label={label} />;
+  return (
+    <div ref={hostRef} className="booking-form__captcha" aria-label={label} />
+  );
 }

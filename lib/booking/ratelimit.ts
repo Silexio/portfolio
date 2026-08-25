@@ -21,11 +21,18 @@ export function hashIp(ip: string): string {
 }
 
 /** Records a hit and returns false when the IP exceeded the hourly quota. */
-export async function checkRateLimit(ip: string, now: Date = new Date()): Promise<boolean> {
+export async function checkRateLimit(
+  ip: string,
+  now: Date = new Date(),
+): Promise<boolean> {
   const { countHits, recordHit } = await import("@/lib/booking/db");
   const ipHash = hashIp(ip);
   const windowStart = new Date(now.getTime() - WINDOW_MS).toISOString();
   if ((await countHits(ipHash, windowStart)) >= MAX_PER_WINDOW) return false;
-  await recordHit(ipHash, now, new Date(now.getTime() - RETENTION_MS).toISOString());
+  await recordHit(
+    ipHash,
+    now,
+    new Date(now.getTime() - RETENTION_MS).toISOString(),
+  );
   return true;
 }

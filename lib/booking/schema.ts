@@ -7,7 +7,11 @@ const PACKAGE_IDS: string[] = PACKAGES.map((p) => p.id);
 
 /** Validation du payload du formulaire de réservation (le honeypot est traité hors schéma). */
 export const bookingSchema = z.object({
-  slotStart: z.string().refine((s) => !Number.isNaN(Date.parse(s)), { message: "invalid datetime" }),
+  slotStart: z
+    .string()
+    .refine((s) => !Number.isNaN(Date.parse(s)), {
+      message: "invalid datetime",
+    }),
   name: z.string().trim().min(1).max(100),
   email: z.email().max(200),
   phone: z

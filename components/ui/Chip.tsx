@@ -4,8 +4,16 @@ type ChipProps = {
   live?: boolean;
 };
 
-export function Chip({ children, variant = "default", live = false }: ChipProps) {
-  const classes = ["chip", variant === "ember" && "chip--ember", live && "chip--live"]
+export function Chip({
+  children,
+  variant = "default",
+  live = false,
+}: ChipProps) {
+  const classes = [
+    "chip",
+    variant === "ember" && "chip--ember",
+    live && "chip--live",
+  ]
     .filter(Boolean)
     .join(" ");
   return <span className={classes}>{children}</span>;

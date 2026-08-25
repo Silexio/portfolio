@@ -3,7 +3,10 @@
 import { formatDayLabel, formatTimeLabel } from "@/lib/booking/format";
 import type { Locale } from "@/lib/i18n/config";
 
-export type CalendarDay = { day: string; slots: { start: string; available: boolean }[] };
+export type CalendarDay = {
+  day: string;
+  slots: { start: string; available: boolean }[];
+};
 
 type BookingCalendarProps = {
   days: CalendarDay[];
@@ -29,7 +32,11 @@ export function BookingCalendar({
 
   return (
     <div className="booking-cal">
-      <div className="booking-cal__days" role="tablist" aria-label={labels.pickDay}>
+      <div
+        className="booking-cal__days"
+        role="tablist"
+        aria-label={labels.pickDay}
+      >
         {days.map((day, index) => (
           <button
             key={day.day}
@@ -45,7 +52,11 @@ export function BookingCalendar({
         ))}
       </div>
 
-      <div className="booking-cal__slots" role="group" aria-label={labels.pickSlot}>
+      <div
+        className="booking-cal__slots"
+        role="group"
+        aria-label={labels.pickSlot}
+      >
         {current && hasFree ? (
           current.slots.map((slot) => (
             <button

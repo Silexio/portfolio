@@ -1,14 +1,23 @@
 import { NextResponse } from "next/server";
 import { asLocale } from "@/lib/i18n/utils";
 import { findBooking, settleBooking } from "@/lib/booking/db";
-import { confirmedEmail, ownerConfirmedEmail, refusedEmail } from "@/lib/booking/email";
+import {
+  confirmedEmail,
+  ownerConfirmedEmail,
+  refusedEmail,
+} from "@/lib/booking/email";
 import { sendMail } from "@/lib/booking/mailer";
 import { verifyAction, type BookingAction } from "@/lib/booking/token";
 
-export type ActionState = "confirmed" | "refused" | "already" | "expired" | "invalid";
+export type ActionState =
+  "confirmed" | "refused" | "already" | "expired" | "invalid";
 
 /** Applies an owner action (confirm/refuse) to a booking. Idempotent, token-gated. */
-export async function applyAction(action: BookingAction, id: string, token: string): Promise<ActionState> {
+export async function applyAction(
+  action: BookingAction,
+  id: string,
+  token: string,
+): Promise<ActionState> {
   if (!id || !token || !verifyAction(id, action, token)) return "invalid";
 
   const booking = await findBooking(id);
@@ -22,7 +31,11 @@ export async function applyAction(action: BookingAction, id: string, token: stri
   if (action === "refuse") {
     await sendMail(
       booking.email,
-      refusedEmail({ name: booking.name, slotIso: booking.slotStart, locale: booking.locale }),
+      refusedEmail({
+        name: booking.name,
+        slotIso: booking.slotStart,
+        locale: booking.locale,
+      }),
     ).catch(() => undefined);
     return "refused";
   }
@@ -40,14 +53,21 @@ export async function applyAction(action: BookingAction, id: string, token: stri
 
   const owner = process.env.BOOKING_NOTIFY_EMAIL;
   if (owner) {
-    const ownerMail = ownerConfirmedEmail({ ...base, phone: booking.phone, ownerEmail: owner });
+    const ownerMail = ownerConfirmedEmail({
+      ...base,
+      phone: booking.phone,
+      ownerEmail: owner,
+    });
     await sendMail(owner, ownerMail).catch(() => undefined);
   }
   return "confirmed";
 }
 
 /** Parses the owner action form, applies it, and redirects to the localized result page. */
-export async function runBookingAction(action: BookingAction, req: Request): Promise<Response> {
+export async function runBookingAction(
+  action: BookingAction,
+  req: Request,
+): Promise<Response> {
   const form = await req.formData();
   const id = String(form.get("id") ?? "");
   const token = String(form.get("token") ?? "");

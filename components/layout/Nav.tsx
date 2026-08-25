@@ -5,8 +5,19 @@ import { t } from "@/lib/i18n/utils";
 
 const NAV_SECTIONS = ["services", "work", "faq", "contact"] as const;
 
-export function Nav({ lang, base = "", altPath = "" }: { lang: Locale; base?: string; altPath?: string }) {
-  const links: NavLink[] = NAV_SECTIONS.map((id) => ({ id, label: t(I18N.nav[id], lang) }));
+export function Nav({
+  lang,
+  base = "",
+  altPath = "",
+}: {
+  lang: Locale;
+  base?: string;
+  altPath?: string;
+}) {
+  const links: NavLink[] = NAV_SECTIONS.map((id) => ({
+    id,
+    label: t(I18N.nav[id], lang),
+  }));
   return (
     <NavClient
       lang={lang}

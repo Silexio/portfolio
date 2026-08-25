@@ -48,7 +48,8 @@ function isBookingStatus(value: string): value is BookingStatus {
 /** Canonical UTC form of a slot instant — the value the unique index is enforced on. */
 export function slotKey(iso: string): string {
   const date = new Date(iso);
-  if (Number.isNaN(date.getTime())) throw new RangeError(`Invalid slot instant: ${iso}`);
+  if (Number.isNaN(date.getTime()))
+    throw new RangeError(`Invalid slot instant: ${iso}`);
   return date.toISOString();
 }
 
@@ -60,7 +61,9 @@ export function encodePackages(ids: string[]): string {
 export function decodePackages(raw: string): string[] {
   try {
     const parsed: unknown = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed.filter((id) => typeof id === "string") : [];
+    return Array.isArray(parsed)
+      ? parsed.filter((id) => typeof id === "string")
+      : [];
   } catch {
     return [];
   }
@@ -68,8 +71,10 @@ export function decodePackages(raw: string): string[] {
 
 /** Maps a row to the domain record. Throws on values the CHECK constraints should have rejected. */
 export function toRecord(row: BookingRow): BookingRecord {
-  if (!isMeetingMode(row.meetingType)) throw new TypeError(`Unexpected meetingType: ${row.meetingType}`);
-  if (!isBookingStatus(row.status)) throw new TypeError(`Unexpected status: ${row.status}`);
+  if (!isMeetingMode(row.meetingType))
+    throw new TypeError(`Unexpected meetingType: ${row.meetingType}`);
+  if (!isBookingStatus(row.status))
+    throw new TypeError(`Unexpected status: ${row.status}`);
   return {
     id: row.id,
     slotStart: row.slotStart,

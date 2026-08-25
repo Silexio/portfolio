@@ -36,7 +36,9 @@ describe("buildIcs", () => {
     expect(ics).toContain("SUMMARY:Rendez-vous Silexio");
     expect(ics).toContain("LOCATION:https://kmeet.infomaniak.com/silexio-xyz");
     expect(ics).toContain("ORGANIZER;CN=Silexio:mailto:contact@silexio.be");
-    expect(ics).toContain("ATTENDEE;CN=Jane Doe;RSVP=TRUE:mailto:jane@example.com");
+    expect(ics).toContain(
+      "ATTENDEE;CN=Jane Doe;RSVP=TRUE:mailto:jane@example.com",
+    );
     expect(ics).toContain("UID:booking-abc@silexio.be");
   });
 
@@ -45,7 +47,10 @@ describe("buildIcs", () => {
   });
 
   it("escapes commas and semicolons in text fields", () => {
-    const out = buildIcs({ ...base, description: "Appel; visio, ou autre" }, stamp);
+    const out = buildIcs(
+      { ...base, description: "Appel; visio, ou autre" },
+      stamp,
+    );
     expect(out).toContain("DESCRIPTION:Appel\\; visio\\, ou autre");
   });
 });

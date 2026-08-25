@@ -38,7 +38,14 @@ function partsInTz(date: Date, timeZone: string): TzParts {
 
 function tzOffsetMs(date: Date, timeZone: string): number {
   const p = partsInTz(date, timeZone);
-  const asUtc = Date.UTC(p.year, p.month - 1, p.day, p.hour, p.minute, p.second);
+  const asUtc = Date.UTC(
+    p.year,
+    p.month - 1,
+    p.day,
+    p.hour,
+    p.minute,
+    p.second,
+  );
   return asUtc - date.getTime();
 }
 
@@ -74,7 +81,9 @@ export function listSlotStarts(now: Date): string[] {
   const out: string[] = [];
 
   for (let offset = 0; offset <= BOOKING.horizonDays; offset++) {
-    const cursor = new Date(Date.UTC(today.year, today.month - 1, today.day + offset, 12));
+    const cursor = new Date(
+      Date.UTC(today.year, today.month - 1, today.day + offset, 12),
+    );
     if (!workdays.includes(cursor.getUTCDay())) continue;
     const year = cursor.getUTCFullYear();
     const month = cursor.getUTCMonth() + 1;
@@ -82,7 +91,14 @@ export function listSlotStarts(now: Date): string[] {
 
     for (let hour = BOOKING.startHour; hour < BOOKING.endHour; hour++) {
       for (let minute = 0; minute < 60; minute += BOOKING.slotMinutes) {
-        const start = zonedWallToUtc(year, month, day, hour, minute, tz).getTime();
+        const start = zonedWallToUtc(
+          year,
+          month,
+          day,
+          hour,
+          minute,
+          tz,
+        ).getTime();
         if (start < earliest || start > horizonEnd) continue;
         out.push(new Date(start).toISOString());
       }
@@ -92,7 +108,10 @@ export function listSlotStarts(now: Date): string[] {
 }
 
 /** Groups slot starts by their Brussels calendar day (YYYY-MM-DD), preserving order. */
-export function groupByDay(starts: string[], timeZone: string = BOOKING.timezone): { day: string; starts: string[] }[] {
+export function groupByDay(
+  starts: string[],
+  timeZone: string = BOOKING.timezone,
+): { day: string; starts: string[] }[] {
   const byDay = new Map<string, string[]>();
   for (const iso of starts) {
     const p = partsInTz(new Date(iso), timeZone);

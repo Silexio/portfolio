@@ -14,7 +14,9 @@ export async function register() {
   ].filter((key) => !process.env[key]);
 
   if (degradesSilently.length > 0) {
-    console.warn(`[instrumentation] Missing env, related feature disabled: ${degradesSilently.join(", ")}`);
+    console.warn(
+      `[instrumentation] Missing env, related feature disabled: ${degradesSilently.join(", ")}`,
+    );
   }
 
   await import("./sentry.server.config");

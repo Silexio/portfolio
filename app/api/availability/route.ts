@@ -10,7 +10,10 @@ export const dynamic = "force-dynamic";
 export async function GET() {
   const starts = listSlotStarts(new Date());
   if (starts.length === 0) {
-    return NextResponse.json({ days: [], timezone: BOOKING.timezone }, { headers: { "Cache-Control": "no-store" } });
+    return NextResponse.json(
+      { days: [], timezone: BOOKING.timezone },
+      { headers: { "Cache-Control": "no-store" } },
+    );
   }
 
   const first = starts[0];
@@ -20,7 +23,10 @@ export async function GET() {
   // plutôt que de casser la modale.
   const [held, busy] = await Promise.all([
     listHeldSlots(first, last).catch(() => []),
-    listBusyIntervals(new Date(first), new Date(Date.parse(last) + BOOKING.slotMinutes * 60_000)),
+    listBusyIntervals(
+      new Date(first),
+      new Date(Date.parse(last) + BOOKING.slotMinutes * 60_000),
+    ),
   ]);
   const taken = new Set(held);
 
@@ -28,9 +34,13 @@ export async function GET() {
     day: day.day,
     slots: day.starts.map((start) => ({
       start,
-      available: !taken.has(start) && !isSlotBusy(start, BOOKING.slotMinutes, busy),
+      available:
+        !taken.has(start) && !isSlotBusy(start, BOOKING.slotMinutes, busy),
     })),
   }));
 
-  return NextResponse.json({ days, timezone: BOOKING.timezone }, { headers: { "Cache-Control": "no-store" } });
+  return NextResponse.json(
+    { days, timezone: BOOKING.timezone },
+    { headers: { "Cache-Control": "no-store" } },
+  );
 }

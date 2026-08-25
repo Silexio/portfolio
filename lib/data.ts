@@ -67,7 +67,8 @@ export const BOOKING = {
   leadMinutes: 120,
 } as const;
 
-export type SocialId = "linkedin" | "github" | "facebook" | "instagram" | "whatsapp";
+export type SocialId =
+  "linkedin" | "github" | "facebook" | "instagram" | "whatsapp";
 
 export const SOCIALS: { id: SocialId; label: string; url: string }[] = [
   { id: "linkedin", label: "LinkedIn", url: URLS.linkedin },
@@ -99,7 +100,10 @@ export const I18N = {
     selected: { fr: "dans votre sélection", en: "in your selection" },
   },
   hero: {
-    eyebrow: { fr: "Chapelle-lez-Herlaimont · Hainaut", en: "Chapelle-lez-Herlaimont · Belgium" },
+    eyebrow: {
+      fr: "Chapelle-lez-Herlaimont · Hainaut",
+      en: "Chapelle-lez-Herlaimont · Belgium",
+    },
     status: { fr: "Disponible", en: "Available" },
     titlePre: {
       fr: "Développeur full-stack — sites, logiciels, automatisation.",
@@ -146,7 +150,10 @@ export const I18N = {
     prev: { fr: "Projet précédent", en: "Previous project" },
     next: { fr: "Projet suivant", en: "Next project" },
     goTo: { fr: "Aller au projet {name}", en: "Go to project {name}" },
-    position: { fr: "{name} — projet {n} sur {total}", en: "{name} — project {n} of {total}" },
+    position: {
+      fr: "{name} — projet {n} sur {total}",
+      en: "{name} — project {n} of {total}",
+    },
     status: {
       production: { fr: "En production", en: "In production" },
       shipped: { fr: "Livré", en: "Shipped" },
@@ -163,7 +170,10 @@ export const I18N = {
   },
   faq: {
     eyebrow: { fr: "Questions fréquentes", en: "FAQ" },
-    title: { fr: "Ce qu'on me\ndemande le plus.", en: "What I get\nasked most." },
+    title: {
+      fr: "Ce qu'on me\ndemande le plus.",
+      en: "What I get\nasked most.",
+    },
     subtitle: {
       fr: "Les réponses aux questions que vous vous posez avant même de décrocher votre téléphone.",
       en: "Answers to the questions you have before you even pick up the phone.",
@@ -201,12 +211,24 @@ export const I18N = {
       fr: "Choisissez un créneau, je vous confirme par email. Visio ou appel — comme vous préférez.",
       en: "Pick a slot, I confirm by email. Video or call — your choice.",
     },
-    tzNote: { fr: "Heures affichées en heure de Bruxelles", en: "Times shown in Brussels time" },
+    tzNote: {
+      fr: "Heures affichées en heure de Bruxelles",
+      en: "Times shown in Brussels time",
+    },
     pickDay: { fr: "Choisissez un jour", en: "Pick a day" },
     pickSlot: { fr: "Choisissez un horaire", en: "Pick a time" },
-    noSlots: { fr: "Aucun créneau disponible ce jour", en: "No slots available that day" },
-    loadingSlots: { fr: "Chargement des disponibilités…", en: "Loading availability…" },
-    slotsError: { fr: "Impossible de charger les disponibilités. Réessayez.", en: "Couldn't load availability. Try again." },
+    noSlots: {
+      fr: "Aucun créneau disponible ce jour",
+      en: "No slots available that day",
+    },
+    loadingSlots: {
+      fr: "Chargement des disponibilités…",
+      en: "Loading availability…",
+    },
+    slotsError: {
+      fr: "Impossible de charger les disponibilités. Réessayez.",
+      en: "Couldn't load availability. Try again.",
+    },
     selectedSlot: { fr: "Créneau choisi", en: "Selected slot" },
     change: { fr: "Modifier", en: "Change" },
     formTitle: { fr: "Vos coordonnées", en: "Your details" },
@@ -224,7 +246,10 @@ export const I18N = {
     modeVideo: { fr: "Visio", en: "Video" },
     modeCall: { fr: "Appel", en: "Call" },
     message: { fr: "Message", en: "Message" },
-    messagePlaceholder: { fr: "En une phrase, votre besoin (optionnel)", en: "In one line, your need (optional)" },
+    messagePlaceholder: {
+      fr: "En une phrase, votre besoin (optionnel)",
+      en: "In one line, your need (optional)",
+    },
     optional: { fr: "optionnel", en: "optional" },
     interests: { fr: "Ce qui vous intéresse", en: "What caught your eye" },
     submit: { fr: "Envoyer la demande", en: "Send request" },
@@ -234,12 +259,30 @@ export const I18N = {
       fr: "Merci ! Je vous confirme le rendez-vous par email très vite.",
       en: "Thanks! I'll confirm the booking by email shortly.",
     },
-    errorGeneric: { fr: "Une erreur est survenue. Réessayez.", en: "Something went wrong. Try again." },
-    errorSlotTaken: { fr: "Ce créneau vient d'être pris. Choisissez-en un autre.", en: "This slot was just taken. Please pick another." },
-    errorRate: { fr: "Trop de demandes. Réessayez plus tard.", en: "Too many requests. Try again later." },
-    errorCaptcha: { fr: "Vérification anti-robot échouée. Réessayez.", en: "Anti-bot check failed. Try again." },
-    errorValidation: { fr: "Vérifiez les champs du formulaire.", en: "Please check the form fields." },
-    captchaLabel: { fr: "Vérification anti-robot", en: "Anti-bot verification" },
+    errorGeneric: {
+      fr: "Une erreur est survenue. Réessayez.",
+      en: "Something went wrong. Try again.",
+    },
+    errorSlotTaken: {
+      fr: "Ce créneau vient d'être pris. Choisissez-en un autre.",
+      en: "This slot was just taken. Please pick another.",
+    },
+    errorRate: {
+      fr: "Trop de demandes. Réessayez plus tard.",
+      en: "Too many requests. Try again later.",
+    },
+    errorCaptcha: {
+      fr: "Vérification anti-robot échouée. Réessayez.",
+      en: "Anti-bot check failed. Try again.",
+    },
+    errorValidation: {
+      fr: "Vérifiez les champs du formulaire.",
+      en: "Please check the form fields.",
+    },
+    captchaLabel: {
+      fr: "Vérification anti-robot",
+      en: "Anti-bot verification",
+    },
   },
   footer: {
     rights: { fr: "Tous droits réservés", en: "All rights reserved" },
@@ -254,7 +297,10 @@ export const I18N = {
     legal: { fr: "Mentions légales", en: "Legal" },
     country: { fr: "Belgique", en: "Belgium" },
     vatLabel: { fr: "TVA", en: "VAT" },
-    seat: { fr: "Facturation via la coopérative", en: "Invoiced through the cooperative" },
+    seat: {
+      fr: "Facturation via la coopérative",
+      en: "Invoiced through the cooperative",
+    },
     whatsapp: { fr: "Écrire sur WhatsApp", en: "Message on WhatsApp" },
   },
 } as const;
@@ -265,8 +311,14 @@ export type BookingLabels = Record<keyof typeof I18N.booking, string>;
 /** Templates des emails de réservation (résolus serveur via t(), placeholders remplacés ensuite). */
 export const BOOKING_EMAILS = {
   owner: {
-    subject: { fr: "Nouvelle demande de RDV — {name}", en: "New booking request — {name}" },
-    heading: { fr: "Nouvelle demande de rendez-vous", en: "New booking request" },
+    subject: {
+      fr: "Nouvelle demande de RDV — {name}",
+      en: "New booking request — {name}",
+    },
+    heading: {
+      fr: "Nouvelle demande de rendez-vous",
+      en: "New booking request",
+    },
     fields: {
       slot: { fr: "Créneau", en: "Slot" },
       mode: { fr: "Format", en: "Format" },
@@ -284,14 +336,20 @@ export const BOOKING_EMAILS = {
     },
   },
   pending: {
-    subject: { fr: "Votre demande de rendez-vous — Silexio", en: "Your booking request — Silexio" },
+    subject: {
+      fr: "Votre demande de rendez-vous — Silexio",
+      en: "Your booking request — Silexio",
+    },
     body: {
       fr: "Bonjour {name},\n\nVotre demande de rendez-vous le {slot} ({mode}) a bien été reçue.\nJe la confirme par email très vite — vous recevrez alors le lien visio ou les modalités de l'appel.\n\nÀ très vite,\nNicolas — Silexio",
       en: "Hi {name},\n\nYour booking request for {slot} ({mode}) has been received.\nI'll confirm it by email shortly — you'll then get the video link or the call details.\n\nTalk soon,\nNicolas — Silexio",
     },
   },
   confirmed: {
-    subject: { fr: "Rendez-vous confirmé — {slot}", en: "Booking confirmed — {slot}" },
+    subject: {
+      fr: "Rendez-vous confirmé — {slot}",
+      en: "Booking confirmed — {slot}",
+    },
     body: {
       fr: "Bonjour {name},\n\nVotre rendez-vous du {slot} est confirmé.\n\n{meetingInfo}\n\n{calendar}\n\nÀ très vite,\nNicolas — Silexio",
       en: "Hi {name},\n\nYour booking on {slot} is confirmed.\n\n{meetingInfo}\n\n{calendar}\n\nTalk soon,\nNicolas — Silexio",
@@ -300,7 +358,10 @@ export const BOOKING_EMAILS = {
       fr: "Ajoutez-le à votre agenda : {url}\n(Le fichier .ics en pièce jointe fait la même chose dans Apple Calendar, Outlook ou Infomaniak.)",
       en: "Add it to your calendar: {url}\n(The attached .ics does the same in Apple Calendar, Outlook or Infomaniak.)",
     },
-    calendarLabel: { fr: "Ajouter à Google Agenda", en: "Add to Google Calendar" },
+    calendarLabel: {
+      fr: "Ajouter à Google Agenda",
+      en: "Add to Google Calendar",
+    },
     meetingVideo: {
       fr: "Lien visio : {url}\n(Je rejoins en premier pour ouvrir la salle.)",
       en: "Video link: {url}\n(I'll join first to open the room.)",
@@ -311,14 +372,20 @@ export const BOOKING_EMAILS = {
     },
   },
   refused: {
-    subject: { fr: "À propos de votre demande de rendez-vous", en: "About your booking request" },
+    subject: {
+      fr: "À propos de votre demande de rendez-vous",
+      en: "About your booking request",
+    },
     body: {
       fr: "Bonjour {name},\n\nJe ne peux malheureusement pas honorer le créneau du {slot}.\nN'hésitez pas à en choisir un autre sur silexio.be ou à me répondre directement.\n\nÀ bientôt,\nNicolas — Silexio",
       en: "Hi {name},\n\nUnfortunately I can't take the {slot} slot.\nFeel free to pick another one on silexio.be or reply directly.\n\nBest,\nNicolas — Silexio",
     },
   },
   ownerConfirmed: {
-    subject: { fr: "RDV confirmé — {slot} — {name}", en: "Booking confirmed — {slot} — {name}" },
+    subject: {
+      fr: "RDV confirmé — {slot} — {name}",
+      en: "Booking confirmed — {slot} — {name}",
+    },
     body: {
       fr: "Tu as confirmé le rendez-vous avec {name} ({email} · {phone}) le {slot}.\n\n{meetingInfo}\n\n{calendar}\n\nL'événement est aussi en pièce jointe (.ics).",
       en: "You confirmed the booking with {name} ({email} · {phone}) on {slot}.\n\n{meetingInfo}\n\n{calendar}\n\nThe event is also attached (.ics).",
@@ -330,32 +397,60 @@ export const BOOKING_EMAILS = {
   },
   ics: {
     summary: { fr: "Rendez-vous Silexio", en: "Silexio booking" },
-    descriptionVideo: { fr: "Visio Silexio — lien : {url}", en: "Silexio video call — link: {url}" },
-    descriptionCall: { fr: "Appel téléphonique avec Silexio.", en: "Phone call with Silexio." },
+    descriptionVideo: {
+      fr: "Visio Silexio — lien : {url}",
+      en: "Silexio video call — link: {url}",
+    },
+    descriptionCall: {
+      fr: "Appel téléphonique avec Silexio.",
+      en: "Phone call with Silexio.",
+    },
     locationCall: { fr: "Appel téléphonique", en: "Phone call" },
   },
 } as const;
 
 /** Strings de la page d'action propriétaire (confirmation/refus en deux temps). */
 export const BOOKING_ACTION = {
-  confirmQuestion: { fr: "Confirmer ce rendez-vous ?", en: "Confirm this booking?" },
-  refuseQuestion: { fr: "Refuser ce rendez-vous ?", en: "Decline this booking?" },
+  confirmQuestion: {
+    fr: "Confirmer ce rendez-vous ?",
+    en: "Confirm this booking?",
+  },
+  refuseQuestion: {
+    fr: "Refuser ce rendez-vous ?",
+    en: "Decline this booking?",
+  },
   confirmCta: { fr: "Confirmer", en: "Confirm" },
   refuseCta: { fr: "Refuser", en: "Decline" },
   confirmedTitle: { fr: "Rendez-vous confirmé", en: "Booking confirmed" },
-  confirmedBody: { fr: "Le client a reçu un email avec les modalités.", en: "The client received an email with the details." },
+  confirmedBody: {
+    fr: "Le client a reçu un email avec les modalités.",
+    en: "The client received an email with the details.",
+  },
   refusedTitle: { fr: "Rendez-vous refusé", en: "Booking declined" },
-  refusedBody: { fr: "Le créneau est de nouveau disponible. Le client a été prévenu.", en: "The slot is available again. The client has been notified." },
+  refusedBody: {
+    fr: "Le créneau est de nouveau disponible. Le client a été prévenu.",
+    en: "The slot is available again. The client has been notified.",
+  },
   alreadyTitle: { fr: "Déjà traité", en: "Already handled" },
-  alreadyBody: { fr: "Ce rendez-vous a déjà été traité.", en: "This booking has already been handled." },
+  alreadyBody: {
+    fr: "Ce rendez-vous a déjà été traité.",
+    en: "This booking has already been handled.",
+  },
   expiredTitle: { fr: "Créneau dépassé", en: "Slot in the past" },
-  expiredBody: { fr: "Ce créneau est déjà passé.", en: "This slot is already in the past." },
+  expiredBody: {
+    fr: "Ce créneau est déjà passé.",
+    en: "This slot is already in the past.",
+  },
   invalidTitle: { fr: "Lien invalide", en: "Invalid link" },
-  invalidBody: { fr: "Ce lien est invalide ou a expiré.", en: "This link is invalid or has expired." },
+  invalidBody: {
+    fr: "Ce lien est invalide ou a expiré.",
+    en: "This link is invalid or has expired.",
+  },
   summaryLabel: { fr: "Demande", en: "Request" },
 } as const;
 
-export type PackageId = "site" | "webapp" | "api" | "infra" | "automation" | "it";
+export type PackageId =
+  "site" | "webapp" | "api" | "infra" | "automation" | "it";
 
 type Package = {
   id: PackageId;
@@ -435,56 +530,80 @@ type FaqEntry = {
 
 export const FAQ: FaqEntry[] = [
   {
-    q: { fr: "Combien coûte un site internet ?", en: "How much does a website cost?" },
+    q: {
+      fr: "Combien coûte un site internet ?",
+      en: "How much does a website cost?",
+    },
     a: {
       fr: "Cela dépend de ce qu'il doit faire. Une page unique bien faite démarre autour de quelques centaines d'euros ; un site complet avec réservation en ligne ou espace client, c'est un autre budget. Je vous donne un prix ferme et écrit avant de commencer — jamais de facture surprise en cours de route.",
       en: "It depends on what it has to do. A well-built single page starts around a few hundred euros; a full site with online booking or a client area is a different budget. You get a firm written price before we start — never a surprise invoice along the way.",
     },
   },
   {
-    q: { fr: "Je n'y connais rien en informatique, est-ce un problème ?", en: "I know nothing about IT — is that a problem?" },
+    q: {
+      fr: "Je n'y connais rien en informatique, est-ce un problème ?",
+      en: "I know nothing about IT — is that a problem?",
+    },
     a: {
       fr: "C'est même le cas de la plupart de mes clients. Vous m'expliquez votre problème avec vos mots, je traduis en solution. Je ne vous ferai jamais un devis bourré de termes techniques que vous devriez aller chercher sur Google pour comprendre ce que vous payez.",
       en: "That's true of most of my clients. You explain your problem in your own words, I translate it into a solution. You'll never get a quote stuffed with technical terms you'd have to google to understand what you're paying for.",
     },
   },
   {
-    q: { fr: "Dans quelles communes vous déplacez-vous ?", en: "Which areas do you travel to?" },
+    q: {
+      fr: "Dans quelles communes vous déplacez-vous ?",
+      en: "Which areas do you travel to?",
+    },
     a: {
       fr: "Je suis basé à Chapelle-lez-Herlaimont et je me déplace dans tout le Hainaut : Charleroi, La Louvière, Manage, Seneffe, Morlanwelz, Courcelles, Binche, Anderlues, Fontaine-l'Évêque, Mons, Soignies, Thuin, ainsi que le Brabant wallon. Partout ailleurs en Belgique, on travaille à distance.",
       en: "I'm based in Chapelle-lez-Herlaimont and travel across Hainaut: Charleroi, La Louvière, Manage, Seneffe, Morlanwelz, Courcelles, Binche, Anderlues, Fontaine-l'Évêque, Mons, Soignies, Thuin, plus Walloon Brabant. Anywhere else in Belgium, we work remotely.",
     },
   },
   {
-    q: { fr: "Vous dépannez aussi les particuliers ?", en: "Do you help private individuals too?" },
+    q: {
+      fr: "Vous dépannez aussi les particuliers ?",
+      en: "Do you help private individuals too?",
+    },
     a: {
       fr: "Oui. Ordinateur lent, virus, écran bleu, imprimante qui refuse de fonctionner, wifi capricieux, photos à récupérer, nouveau PC à configurer : je traite les particuliers exactement comme les entreprises, sans condescendance et sans facturer le temps passé à vous expliquer.",
       en: "Yes. Slow computer, viruses, blue screens, a printer that refuses to work, flaky wifi, photos to recover, a new PC to set up: I treat private individuals exactly like businesses — no condescension, and no charging for the time spent explaining.",
     },
   },
   {
-    q: { fr: "En combien de temps mon projet sera-t-il prêt ?", en: "How long until my project is ready?" },
+    q: {
+      fr: "En combien de temps mon projet sera-t-il prêt ?",
+      en: "How long until my project is ready?",
+    },
     a: {
       fr: "Un dépannage se règle souvent dans la journée. Un site vitrine prend généralement deux à quatre semaines. Un logiciel métier, comptez de un à trois mois selon l'ampleur. Dans tous les cas vous voyez une première version fonctionnelle très tôt, pas seulement à la fin.",
       en: "A repair is often sorted the same day. A showcase site usually takes two to four weeks. Custom business software runs one to three months depending on scope. In every case you see a working first version early, not only at the end.",
     },
   },
   {
-    q: { fr: "Qu'est-ce que l'intelligence artificielle peut m'apporter concrètement ?", en: "What can artificial intelligence actually do for me?" },
+    q: {
+      fr: "Qu'est-ce que l'intelligence artificielle peut m'apporter concrètement ?",
+      en: "What can artificial intelligence actually do for me?",
+    },
     a: {
       fr: "Du temps, pas de la magie. Trier automatiquement les demandes qui arrivent par mail, extraire les informations d'un PDF au lieu de les recopier, rédiger un premier jet de réponse, résumer des documents longs. Je ne vous vendrai jamais de l'IA là où un simple script fait le travail pour bien moins cher.",
       en: "Time, not magic. Automatically sorting incoming email requests, pulling data out of a PDF instead of re-typing it, drafting a first reply, summarising long documents. I'll never sell you AI where a plain script does the job for far less.",
     },
   },
   {
-    q: { fr: "J'ai déjà un site ou un prestataire, pouvez-vous reprendre ?", en: "I already have a site or provider — can you take over?" },
+    q: {
+      fr: "J'ai déjà un site ou un prestataire, pouvez-vous reprendre ?",
+      en: "I already have a site or provider — can you take over?",
+    },
     a: {
       fr: "Oui, c'est une demande courante. Je récupère l'existant, je vous dis honnêtement ce qui vaut la peine d'être gardé et ce qui doit être refait, et je m'occupe du transfert du nom de domaine et de l'hébergement. Vous n'avez pas à gérer la transition vous-même.",
       en: "Yes, that's a common request. I take over what exists, tell you honestly what's worth keeping and what needs rebuilding, and handle the domain and hosting transfer. You don't have to manage the migration yourself.",
     },
   },
   {
-    q: { fr: "Est-ce que je reste propriétaire de mon site et de mes données ?", en: "Do I stay the owner of my site and data?" },
+    q: {
+      fr: "Est-ce que je reste propriétaire de mon site et de mes données ?",
+      en: "Do I stay the owner of my site and data?",
+    },
     a: {
       fr: "Toujours. Le nom de domaine est à votre nom, le code source vous est livré, vos données restent les vôtres et je vous explique comment tout récupérer si un jour vous partez ailleurs. Vous n'êtes captif de personne, moi compris.",
       en: "Always. The domain is in your name, the source code is delivered to you, your data stays yours, and I show you how to take everything with you if you ever move on. You're locked into no one — including me.",
@@ -499,20 +618,51 @@ type CoverageArea = {
 
 export const COVERAGE: CoverageArea[] = [
   {
-    label: { fr: "Autour de Chapelle-lez-Herlaimont", en: "Around Chapelle-lez-Herlaimont" },
-    cities: ["Chapelle-lez-Herlaimont", "Godarville", "Piéton", "Manage", "Seneffe", "Morlanwelz"],
+    label: {
+      fr: "Autour de Chapelle-lez-Herlaimont",
+      en: "Around Chapelle-lez-Herlaimont",
+    },
+    cities: [
+      "Chapelle-lez-Herlaimont",
+      "Godarville",
+      "Piéton",
+      "Manage",
+      "Seneffe",
+      "Morlanwelz",
+    ],
   },
   {
     label: { fr: "Région de Charleroi", en: "Charleroi area" },
-    cities: ["Charleroi", "Courcelles", "Fontaine-l'Évêque", "Anderlues", "Montigny-le-Tilleul", "Gosselies"],
+    cities: [
+      "Charleroi",
+      "Courcelles",
+      "Fontaine-l'Évêque",
+      "Anderlues",
+      "Montigny-le-Tilleul",
+      "Gosselies",
+    ],
   },
   {
     label: { fr: "Le Centre", en: "La Louvière area" },
-    cities: ["La Louvière", "Binche", "Le Rœulx", "Soignies", "Braine-le-Comte", "Écaussinnes"],
+    cities: [
+      "La Louvière",
+      "Binche",
+      "Le Rœulx",
+      "Soignies",
+      "Braine-le-Comte",
+      "Écaussinnes",
+    ],
   },
   {
     label: { fr: "Mons & Borinage", en: "Mons & Borinage" },
-    cities: ["Mons", "Jurbise", "Quaregnon", "Boussu", "Frameries", "Saint-Ghislain"],
+    cities: [
+      "Mons",
+      "Jurbise",
+      "Quaregnon",
+      "Boussu",
+      "Frameries",
+      "Saint-Ghislain",
+    ],
   },
   {
     label: { fr: "Brabant wallon", en: "Walloon Brabant" },
@@ -520,7 +670,14 @@ export const COVERAGE: CoverageArea[] = [
   },
   {
     label: { fr: "Sambre & Namurois", en: "Sambre & Namur area" },
-    cities: ["Namur", "Fleurus", "Sambreville", "Châtelet", "Gembloux", "Thuin"],
+    cities: [
+      "Namur",
+      "Fleurus",
+      "Sambreville",
+      "Châtelet",
+      "Gembloux",
+      "Thuin",
+    ],
   },
 ];
 
@@ -532,11 +689,17 @@ export const COVERAGE: CoverageArea[] = [
  */
 export const ABOUT = {
   eyebrow: { fr: "Qui je suis", en: "Who I am" },
-  title: { fr: "Une personne,\npas un standard.", en: "A person,\nnot a switchboard." },
+  title: {
+    fr: "Une personne,\npas un standard.",
+    en: "A person,\nnot a switchboard.",
+  },
   name: "Nicolas Wieckiewicz",
   role: { fr: "Fondateur de Silexio", en: "Founder of Silexio" },
   photo: "",
-  photoAlt: { fr: "Portrait de Nicolas Wieckiewicz", en: "Portrait of Nicolas Wieckiewicz" },
+  photoAlt: {
+    fr: "Portrait de Nicolas Wieckiewicz",
+    en: "Portrait of Nicolas Wieckiewicz",
+  },
   body: [
     {
       fr: "Je suis développeur full-stack et informaticien indépendant, installé à Chapelle-lez-Herlaimont. J'accompagne des PME, des fiduciaires, des indépendants et des particuliers du Hainaut : un site à créer, un logiciel métier à imaginer, un parc informatique à remettre d'aplomb. Le même interlocuteur gère le développement et l'IT au quotidien : installation de postes, réseau, sauvegardes, maintenance, sécurité, et les scripts qui suppriment une corvée récurrente.",
@@ -583,8 +746,22 @@ type Review = {
  * ailleurs, et un rich snippet refusé coûte plus qu'il ne rapporte.
  */
 export const REVIEWS: Review[] = [
-  { id: "google", platform: "Google", url: "https://g.page/r/CQS4cLlmMzj6ECE", rating: 5, count: 4, checkedOn: "2026-08-24" },
-  { id: "trustpilot", platform: "Trustpilot", url: "https://fr-be.trustpilot.com/review/silexio.be", rating: 0, count: 0, checkedOn: "2026-08-24" },
+  {
+    id: "google",
+    platform: "Google",
+    url: "https://g.page/r/CQS4cLlmMzj6ECE",
+    rating: 5,
+    count: 4,
+    checkedOn: "2026-08-24",
+  },
+  {
+    id: "trustpilot",
+    platform: "Trustpilot",
+    url: "https://fr-be.trustpilot.com/review/silexio.be",
+    rating: 0,
+    count: 0,
+    checkedOn: "2026-08-24",
+  },
 ];
 
 /** En dessous de ce nombre d'avis, la plateforme reste masquée : « 1 avis » dessert plus qu'il ne prouve. */
@@ -733,14 +910,31 @@ type StackGroup = {
 };
 
 export const STACK_GROUPS: StackGroup[] = [
-  { label: { fr: "Langages", en: "Languages" }, items: ["TypeScript", "Python", "JavaScript", "SQL", "Bash"] },
-  { label: { fr: "Frontend", en: "Frontend" }, items: ["Next.js", "React", "Tailwind", "shadcn/ui"] },
-  { label: { fr: "Backend", en: "Backend" }, items: ["Django", "FastAPI", "Node", "Supabase"] },
-  { label: { fr: "Data", en: "Data" }, items: ["PostgreSQL", "MongoDB", "Redis", "SQLite"] },
-  { label: { fr: "Infrastructure", en: "Infrastructure" }, items: ["Docker", "Linux", "AWS", "Cloudflare"] },
-  { label: { fr: "Outils", en: "Tools" }, items: ["Git", "GitHub Actions", "Figma", "Claude"] },
+  {
+    label: { fr: "Langages", en: "Languages" },
+    items: ["TypeScript", "Python", "JavaScript", "SQL", "Bash"],
+  },
+  {
+    label: { fr: "Frontend", en: "Frontend" },
+    items: ["Next.js", "React", "Tailwind", "shadcn/ui"],
+  },
+  {
+    label: { fr: "Backend", en: "Backend" },
+    items: ["Django", "FastAPI", "Node", "Supabase"],
+  },
+  {
+    label: { fr: "Data", en: "Data" },
+    items: ["PostgreSQL", "MongoDB", "Redis", "SQLite"],
+  },
+  {
+    label: { fr: "Infrastructure", en: "Infrastructure" },
+    items: ["Docker", "Linux", "AWS", "Cloudflare"],
+  },
+  {
+    label: { fr: "Outils", en: "Tools" },
+    items: ["Git", "GitHub Actions", "Figma", "Claude"],
+  },
 ];
-
 
 type ProcessScene = {
   step: Bilingual;
@@ -765,7 +959,10 @@ export const PROCESS = {
   scenes: [
     {
       step: { fr: "01 · Écoute", en: "01 · Listening" },
-      h: { fr: "On part de ton métier, pas de la techno.", en: "We start from your work, not the tech." },
+      h: {
+        fr: "On part de ton métier, pas de la techno.",
+        en: "We start from your work, not the tech.",
+      },
       p: {
         fr: "Tu m'expliques ton problème avec tes mots. Je pose des questions, je reformule — et je te dis honnêtement si je suis la bonne personne pour le régler.",
         en: "You explain your problem in your own words. I ask questions, I rephrase — and I tell you honestly whether I'm the right person to solve it.",
@@ -773,7 +970,10 @@ export const PROCESS = {
     },
     {
       step: { fr: "02 · Prototype", en: "02 · Prototype" },
-      h: { fr: "Tu vois du concret, vite.", en: "You see something real, fast." },
+      h: {
+        fr: "Tu vois du concret, vite.",
+        en: "You see something real, fast.",
+      },
       p: {
         fr: "Avant de s'engager sur le produit complet, je prototype ton besoin. On valide sur du réel — pas sur des slides ni des promesses.",
         en: "Before committing to the full product, I prototype your need. We validate on something real — not slides, not promises.",
@@ -781,7 +981,10 @@ export const PROCESS = {
     },
     {
       step: { fr: "03 · Construction", en: "03 · Build" },
-      h: { fr: "On construit ensemble, en itérations.", en: "We build together, in iterations." },
+      h: {
+        fr: "On construit ensemble, en itérations.",
+        en: "We build together, in iterations.",
+      },
       p: {
         fr: "Je développe, tu testes, on ajuste. Le même interlocuteur de A à Z, qui connaît ton projet par cœur — et qui répond sous 24h.",
         en: "I build, you test, we adjust. The same person from A to Z, who knows your project by heart — and replies within 24h.",
@@ -789,7 +992,10 @@ export const PROCESS = {
     },
     {
       step: { fr: "04 · Résolu", en: "04 · Solved" },
-      h: { fr: "Ton problème est réglé. Et tu restes libre.", en: "Your problem is solved. And you stay free." },
+      h: {
+        fr: "Ton problème est réglé. Et tu restes libre.",
+        en: "Your problem is solved. And you stay free.",
+      },
       p: {
         fr: "Code source livré, documentation incluse, données en local quand c'est possible. Tu n'es captif de personne — pas même de moi.",
         en: "Source code delivered, documentation included, data kept local when possible. You're locked into nothing — not even me.",
@@ -831,11 +1037,17 @@ export const CHAT: ChatMessage[][] = [
         fr: "Premier prototype. Teste-le avec tes vrais rapports et dis-moi tout.",
         en: "First prototype. Try it with your real reports and tell me everything.",
       },
-      file: { fr: "prototype-v1 · démo en ligne", en: "prototype-v1 · live demo" },
+      file: {
+        fr: "prototype-v1 · démo en ligne",
+        en: "prototype-v1 · live demo",
+      },
     },
     {
       me: false,
-      text: { fr: "C'est exactement ce qu'il me fallait.", en: "This is exactly what I needed." },
+      text: {
+        fr: "C'est exactement ce qu'il me fallait.",
+        en: "This is exactly what I needed.",
+      },
     },
   ],
   [
@@ -848,7 +1060,10 @@ export const CHAT: ChatMessage[][] = [
     },
     {
       me: true,
-      text: { fr: "Déployé. Autre chose à ajuster ?", en: "Deployed. Anything else to adjust?" },
+      text: {
+        fr: "Déployé. Autre chose à ajuster ?",
+        en: "Deployed. Anything else to adjust?",
+      },
       meta: { fr: "v0.4 · en ligne", en: "v0.4 · live" },
     },
   ],
@@ -859,7 +1074,10 @@ export const CHAT: ChatMessage[][] = [
         fr: "Tout est à toi. Je reste joignable si besoin.",
         en: "It's all yours. I'm still around if you need me.",
       },
-      file: { fr: "livraison — code source + documentation", en: "delivery — source code + docs" },
+      file: {
+        fr: "livraison — code source + documentation",
+        en: "delivery — source code + docs",
+      },
     },
     {
       me: false,

@@ -50,11 +50,30 @@ export function Work({ lang }: { lang: Locale }) {
                   <div className="project__shots">
                     {project.shots.map((shot) => {
                       const alt = t(shot.alt, lang);
-                      const size = { width: shot.width, height: shot.height, sizes: "(min-width: 1024px) 640px, 100vw" };
+                      const size = {
+                        width: shot.width,
+                        height: shot.height,
+                        sizes: "(min-width: 1024px) 640px, 100vw",
+                      };
                       return (
-                        <div key={shot.src} className={`project__shot-slot${shot.srcDark ? " project__shot-slot--themed" : ""}`}>
-                          <Image className="project__shot" src={shot.src} alt={alt} {...size} />
-                          {shot.srcDark && <Image className="project__shot project__shot--dark" src={shot.srcDark} alt={alt} {...size} />}
+                        <div
+                          key={shot.src}
+                          className={`project__shot-slot${shot.srcDark ? " project__shot-slot--themed" : ""}`}
+                        >
+                          <Image
+                            className="project__shot"
+                            src={shot.src}
+                            alt={alt}
+                            {...size}
+                          />
+                          {shot.srcDark && (
+                            <Image
+                              className="project__shot project__shot--dark"
+                              src={shot.srcDark}
+                              alt={alt}
+                              {...size}
+                            />
+                          )}
                         </div>
                       );
                     })}
@@ -63,7 +82,10 @@ export function Work({ lang }: { lang: Locale }) {
                 <div className="project__body">
                   <div className="project__name-row">
                     <h3 className="project__name">{project.name}</h3>
-                    <Chip variant="ember" live={project.status === "production"}>
+                    <Chip
+                      variant="ember"
+                      live={project.status === "production"}
+                    >
                       {t(i18n.status[project.status], lang)}
                     </Chip>
                     <Chip>{t(i18n[project.kind], lang)}</Chip>
@@ -83,7 +105,11 @@ export function Work({ lang }: { lang: Locale }) {
                       </Btn>
                     )}
                     {project.install && (
-                      <Btn href={project.install} variant={project.site ? "ghost" : "ember"} srHint={newTab}>
+                      <Btn
+                        href={project.install}
+                        variant={project.site ? "ghost" : "ember"}
+                        srHint={newTab}
+                      >
                         {t(i18n.install, lang)}
                       </Btn>
                     )}

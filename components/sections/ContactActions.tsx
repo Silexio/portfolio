@@ -19,10 +19,16 @@ type ContactActionsProps = {
   };
 };
 
-export function ContactActions({ email, packageLabels, labels }: ContactActionsProps) {
+export function ContactActions({
+  email,
+  packageLabels,
+  labels,
+}: ContactActionsProps) {
   const selected = useSelectedPackages().filter((id) => id in packageLabels);
   const hasPicks = selected.length > 0;
-  const services = hasPicks ? selected.map((id) => packageLabels[id]).join(", ") : labels.servicesEmpty;
+  const services = hasPicks
+    ? selected.map((id) => packageLabels[id]).join(", ")
+    : labels.servicesEmpty;
 
   const subject = hasPicks ? `${labels.subject} - ${services}` : labels.subject;
   const body = labels.emailBody.replace("{services}", services);
@@ -44,7 +50,12 @@ export function ContactActions({ email, packageLabels, labels }: ContactActionsP
               >
                 {packageLabels[id]}
                 <svg viewBox="0 0 12 12" fill="none" aria-hidden="true">
-                  <path d="M3 3l6 6M9 3l-6 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                  <path
+                    d="M3 3l6 6M9 3l-6 6"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                  />
                 </svg>
               </button>
             ))}

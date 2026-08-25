@@ -10,7 +10,11 @@ export function Packages({ lang }: { lang: Locale }) {
   const addedLabel = t(I18N.services.added, lang);
 
   return (
-    <section id="services" className="services" aria-labelledby="services-title">
+    <section
+      id="services"
+      className="services"
+      aria-labelledby="services-title"
+    >
       <div className="wrap">
         <SectionHead
           id="services-title"

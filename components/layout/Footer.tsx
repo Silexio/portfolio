@@ -14,13 +14,25 @@ export function Footer({ lang }: { lang: Locale }) {
     <footer className="footer">
       <div className="footer__grid">
         <div className="footer__brand-col">
-          <a href="#top" className="footer__brand" aria-label={t(I18N.a11y.home, lang)}>
-            <Image src="/silexio-mark.png" alt="" width={22} height={22} loading="eager" draggable={false} />
+          <a
+            href="#top"
+            className="footer__brand"
+            aria-label={t(I18N.a11y.home, lang)}
+          >
+            <Image
+              src="/silexio-mark.png"
+              alt=""
+              width={22}
+              height={22}
+              loading="eager"
+              draggable={false}
+            />
             <span>SILEXIO</span>
           </a>
           <p className="footer__tagline">{t(i18n.tagline, lang)}</p>
           <p className="footer__place">
-            {GEO.locality} ({GEO.postalCode}) · {GEO.region} · {t(i18n.country, lang)}
+            {GEO.locality} ({GEO.postalCode}) · {GEO.region} ·{" "}
+            {t(i18n.country, lang)}
           </p>
         </div>
 
@@ -79,10 +91,17 @@ export function Footer({ lang }: { lang: Locale }) {
       </div>
 
       <div className="footer__bar">
-        <p>© 2026 {LEGAL.entity} · {t(i18n.rights, lang)} · {t(i18n.tag, lang)}</p>
+        <p>
+          © 2026 {LEGAL.entity} · {t(i18n.rights, lang)} · {t(i18n.tag, lang)}
+        </p>
         <p>
           {t(i18n.seat, lang)} : {LEGAL.host}, {LEGAL.street}, {LEGAL.city}
-          {LEGAL.vat && <> · {t(i18n.vatLabel, lang)} {LEGAL.vat}</>}
+          {LEGAL.vat && (
+            <>
+              {" "}
+              · {t(i18n.vatLabel, lang)} {LEGAL.vat}
+            </>
+          )}
         </p>
       </div>
     </footer>

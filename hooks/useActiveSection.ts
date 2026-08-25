@@ -3,7 +3,10 @@
 import { useEffect, useState } from "react";
 
 /** Tracks which section id is currently in view, for nav highlighting. */
-export function useActiveSection(ids: string[], rootMargin = "-40% 0px -50% 0px") {
+export function useActiveSection(
+  ids: string[],
+  rootMargin = "-40% 0px -50% 0px",
+) {
   const [active, setActive] = useState(ids[0]);
 
   useEffect(() => {

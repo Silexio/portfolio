@@ -18,6 +18,8 @@ describe("generateRoomSlug", () => {
 
 describe("meetingUrl", () => {
   it("builds a kmeet.infomaniak.com URL", () => {
-    expect(meetingUrl("silexio-abc")).toBe("https://kmeet.infomaniak.com/silexio-abc");
+    expect(meetingUrl("silexio-abc")).toBe(
+      "https://kmeet.infomaniak.com/silexio-abc",
+    );
   });
 });
