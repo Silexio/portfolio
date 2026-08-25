@@ -49,7 +49,7 @@ function toggleTheme() {
 function Brand({ label, href, onClick }: { label: string; href: string; onClick?: () => void }) {
   return (
     <a href={href} className="nav__brand" aria-label={label} onClick={onClick}>
-      <Image src="/silexio-mark.png" alt="" width={22} height={22} draggable={false} />
+      <Image src="/silexio-mark.png" alt="" width={22} height={22} loading="eager" draggable={false} />
       <span className="nav__brand-text">SILEXIO</span>
     </a>
   );

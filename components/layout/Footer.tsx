@@ -15,7 +15,7 @@ export function Footer({ lang }: { lang: Locale }) {
       <div className="footer__grid">
         <div className="footer__brand-col">
           <a href="#top" className="footer__brand" aria-label={t(I18N.a11y.home, lang)}>
-            <Image src="/silexio-mark.png" alt="" width={22} height={22} draggable={false} />
+            <Image src="/silexio-mark.png" alt="" width={22} height={22} loading="eager" draggable={false} />
             <span>SILEXIO</span>
           </a>
           <p className="footer__tagline">{t(i18n.tagline, lang)}</p>

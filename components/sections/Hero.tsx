@@ -17,6 +17,7 @@ export function Hero({ lang }: { lang: Locale }) {
           width={800}
           height={800}
           sizes="(max-width: 760px) 130vw, 85vw"
+          loading="eager"
           draggable={false}
           priority
         />

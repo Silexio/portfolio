@@ -19,7 +19,7 @@ export function ChatMock({ scenes, online, activeScene = 0, solo = false }: Chat
   return (
     <div className="chat" aria-hidden="true">
       <div className="chat__head">
-        <Image src="/silexio-mark.png" alt="" width={18} height={18} className="chat__mark" draggable={false} />
+        <Image src="/silexio-mark.png" alt="" width={18} height={18} className="chat__mark" loading="eager" draggable={false} />
         <span className="chat__name">SILEXIO</span>
         <span className="chat__status">
           <span className="chat__dot" />
