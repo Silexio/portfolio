@@ -76,6 +76,7 @@ export async function generateMetadata({
 
 export default async function RootLayout({ children, params }: LayoutProps<"/[lang]">) {
   const lang = await localeParam(params);
+  const beaconToken = process.env.NEXT_PUBLIC_CF_BEACON_TOKEN;
   return (
     <html
       lang={lang}
