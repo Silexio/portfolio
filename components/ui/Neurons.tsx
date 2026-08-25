@@ -29,7 +29,9 @@ export function Neurons() {
     const mouse = { x: -9999, y: -9999, active: false };
 
     const computeAccent = () =>
-      getComputedStyle(document.documentElement).getPropertyValue("--accent").trim();
+      getComputedStyle(document.documentElement)
+        .getPropertyValue("--accent")
+        .trim();
     let accent = computeAccent();
 
     function seed(w: number, h: number) {
@@ -103,7 +105,10 @@ export function Neurons() {
             const alpha = 1 - Math.sqrt(dsq) / maxDist;
             let boost = 0;
             if (mouse.active) {
-              const md = Math.hypot(mouse.x - (a.x + b.x) / 2, mouse.y - (a.y + b.y) / 2);
+              const md = Math.hypot(
+                mouse.x - (a.x + b.x) / 2,
+                mouse.y - (a.y + b.y) / 2,
+              );
               if (md < mouseR) boost = (1 - md / mouseR) * 0.8;
             }
             ctx.strokeStyle = `color-mix(in oklch, ${accent} ${(alpha * 0.55 + boost) * 100}%, transparent)`;
@@ -124,7 +129,10 @@ export function Neurons() {
         const r = n.baseR + Math.sin(n.pulse) * 0.4 + glow * 3;
         if (glow > 0.1) {
           const g = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, r * 6);
-          g.addColorStop(0, `color-mix(in oklch, ${accent} ${glow * 70}%, transparent)`);
+          g.addColorStop(
+            0,
+            `color-mix(in oklch, ${accent} ${glow * 70}%, transparent)`,
+          );
           g.addColorStop(1, "transparent");
           ctx.fillStyle = g;
           ctx.fillRect(n.x - r * 6, n.y - r * 6, r * 12, r * 12);
@@ -165,7 +173,10 @@ export function Neurons() {
     const mo = new MutationObserver(() => {
       accent = computeAccent();
     });
-    mo.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+    mo.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["data-theme"],
+    });
 
     canvas.addEventListener("mousemove", onMove);
     canvas.addEventListener("mouseleave", onLeave);

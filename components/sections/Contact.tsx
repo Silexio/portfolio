@@ -1,7 +1,7 @@
 import { ContactActions } from "@/components/sections/ContactActions";
 import { Neurons } from "@/components/ui/Neurons";
 import { Reveal } from "@/components/ui/Reveal";
-import { EMAIL, I18N, PACKAGES, URLS, type PackageId } from "@/lib/data";
+import { EMAIL, I18N, PACKAGES, type PackageId } from "@/lib/data";
 import type { Locale } from "@/lib/i18n/config";
 import { t } from "@/lib/i18n/utils";
 
@@ -17,7 +17,7 @@ export function Contact({ lang }: { lang: Locale }) {
           <div className="contact__inner">
             <Neurons />
             <span className="eyebrow contact__eyebrow">
-              <span className="section-head__num">04</span>
+              <span className="section-head__num">06</span>
               {t(i18n.eyebrow, lang)}
             </span>
             <h2 id="contact-title" className="contact__title">
@@ -26,7 +26,6 @@ export function Contact({ lang }: { lang: Locale }) {
             </h2>
             <p className="contact__sub">{t(i18n.sub, lang)}</p>
             <ContactActions
-              calUrl={URLS.cal}
               email={EMAIL}
               packageLabels={packageLabels}
               labels={{
@@ -36,7 +35,6 @@ export function Contact({ lang }: { lang: Locale }) {
                 subject: t(i18n.subject, lang),
                 servicesEmpty: t(i18n.servicesEmpty, lang),
                 emailBody: t(i18n.emailBody, lang),
-                newTab: t(I18N.a11y.newTab, lang),
                 remove: t(I18N.a11y.remove, lang),
               }}
             />

@@ -33,7 +33,9 @@ export function PackageCard({ pkg, addLabel, addedLabel }: PackageCardProps) {
       <div className="package__foot">
         <div className="package__tags">
           {pkg.tags.map((tag) => (
-            <span key={tag} className="chip">{tag}</span>
+            <span key={tag} className="chip">
+              {tag}
+            </span>
           ))}
         </div>
         <button

@@ -12,7 +12,7 @@ export function Stack({ lang }: { lang: Locale }) {
         <SectionHead
           id="stack-title"
           eyebrow={t(I18N.stack.eyebrow, lang)}
-          num="03"
+          num="04"
           title={t(I18N.stack.title, lang)}
           subtitle={t(I18N.stack.subtitle, lang)}
         />

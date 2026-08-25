@@ -1,17 +1,29 @@
 import { NavClient, type NavLink } from "@/components/layout/NavClient";
-import { I18N, URLS } from "@/lib/data";
+import { I18N } from "@/lib/data";
 import type { Locale } from "@/lib/i18n/config";
 import { t } from "@/lib/i18n/utils";
 
-const NAV_SECTIONS = ["services", "work", "stack", "contact"] as const;
+const NAV_SECTIONS = ["services", "work", "faq", "contact"] as const;
 
-export function Nav({ lang }: { lang: Locale }) {
-  const links: NavLink[] = NAV_SECTIONS.map((id) => ({ id, label: t(I18N.nav[id], lang) }));
+export function Nav({
+  lang,
+  base = "",
+  altPath = "",
+}: {
+  lang: Locale;
+  base?: string;
+  altPath?: string;
+}) {
+  const links: NavLink[] = NAV_SECTIONS.map((id) => ({
+    id,
+    label: t(I18N.nav[id], lang),
+  }));
   return (
     <NavClient
       lang={lang}
+      base={base}
+      altPath={altPath}
       links={links}
-      calUrl={URLS.cal}
       labels={{
         home: t(I18N.a11y.home, lang),
         menu: t(I18N.a11y.menu, lang),
@@ -19,7 +31,6 @@ export function Nav({ lang }: { lang: Locale }) {
         toggleLang: t(I18N.a11y.toggleLang, lang),
         toggleTheme: t(I18N.a11y.toggleTheme, lang),
         cta: t(I18N.contact.cal, lang),
-        newTab: t(I18N.a11y.newTab, lang),
         selected: t(I18N.a11y.selected, lang),
       }}
     />

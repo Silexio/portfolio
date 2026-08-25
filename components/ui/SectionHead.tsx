@@ -8,7 +8,13 @@ type SectionHeadProps = {
   subtitle?: string;
 };
 
-export function SectionHead({ id, eyebrow, num, title, subtitle }: SectionHeadProps) {
+export function SectionHead({
+  id,
+  eyebrow,
+  num,
+  title,
+  subtitle,
+}: SectionHeadProps) {
   return (
     <Reveal className="section-head">
       <div>

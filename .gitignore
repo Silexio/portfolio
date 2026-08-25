@@ -1,5 +1,3 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
 # dependencies
 /node_modules
 /.pnp
@@ -30,15 +28,20 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
+# env files
 .env*
+!.env.example
 
-# cloudflare / opennext
-.open-next/
-.wrangler/
-.dev.vars
+# cloudflare (build OpenNext, état local de wrangler, types générés par `wrangler types`)
+/.open-next
+/.wrangler
 cloudflare-env.d.ts
 
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# playwright
+/test-results
+/playwright-report
+/playwright/.cache

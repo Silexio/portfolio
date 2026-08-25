@@ -1,5 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { isLocale, localeParam, t, type Bilingual } from "./utils";
+import {
+  asLocale,
+  isLocale,
+  localeParam,
+  resolveDict,
+  t,
+  type Bilingual,
+} from "./utils";
 
 describe("t", () => {
   const node: Bilingual = { fr: "Bonjour", en: "Hello" };
@@ -34,10 +41,34 @@ describe("isLocale", () => {
 
 describe("localeParam", () => {
   it("narrows a valid route param", async () => {
-    await expect(localeParam(Promise.resolve({ lang: "en" }))).resolves.toBe("en");
+    await expect(localeParam(Promise.resolve({ lang: "en" }))).resolves.toBe(
+      "en",
+    );
   });
 
   it("falls back to the default locale on unknown values", async () => {
-    await expect(localeParam(Promise.resolve({ lang: "de" }))).resolves.toBe("fr");
+    await expect(localeParam(Promise.resolve({ lang: "de" }))).resolves.toBe(
+      "fr",
+    );
+  });
+});
+
+describe("asLocale", () => {
+  it("returns the locale when valid", () => {
+    expect(asLocale("en")).toBe("en");
+    expect(asLocale("fr")).toBe("fr");
+  });
+
+  it("falls back to the default locale when invalid", () => {
+    expect(asLocale("xx")).toBe("fr");
+    expect(asLocale("")).toBe("fr");
+  });
+});
+
+describe("resolveDict", () => {
+  it("resolves every bilingual entry to one locale and preserves keys", () => {
+    const dict = { a: { fr: "un", en: "one" }, b: { fr: "deux", en: "two" } };
+    expect(resolveDict(dict, "en")).toEqual({ a: "one", b: "two" });
+    expect(resolveDict(dict, "fr")).toEqual({ a: "un", b: "deux" });
   });
 });
