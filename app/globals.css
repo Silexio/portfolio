@@ -223,9 +223,14 @@ section {
 }
 
 /* ── 05 Animations ────────────────────────────────────────── */
+/* Le masque du reveal doit déborder la boîte de ligne, sinon il rogne accents et jambages :
+   .hero__title impose line-height 1.02 alors que la boîte naturelle de Montserrat fait 1.219 em
+   (mesuré : 8 px coupés sur « Un informaticien » à 38 px). overflow-clip-margin étend la zone de
+   clip sans toucher à la mise en page — contrairement à un padding, qui déplacerait les lignes. */
 .line-reveal {
   display: block;
-  overflow: hidden;
+  overflow: clip;
+  overflow-clip-margin: 0.16em;
 }
 .line-reveal > span {
   display: block;
