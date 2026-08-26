@@ -1,6 +1,6 @@
-import Image from "next/image";
 import { Btn } from "@/components/ui/Btn";
 import { HeroLines } from "@/components/ui/HeroLines";
+import { Mark } from "@/components/ui/Mark";
 import { Reveal } from "@/components/ui/Reveal";
 import { I18N } from "@/lib/data";
 import type { Locale } from "@/lib/i18n/config";
@@ -11,16 +11,7 @@ export function Hero({ lang }: { lang: Locale }) {
   return (
     <section id="top" className="hero" aria-label={t(I18N.hero.eyebrow, lang)}>
       <div className="hero__shard" aria-hidden="true">
-        <Image
-          src="/silexio-mark.png"
-          alt=""
-          width={800}
-          height={800}
-          sizes="(max-width: 760px) 130vw, 85vw"
-          loading="eager"
-          draggable={false}
-          priority
-        />
+        <Mark />
       </div>
 
       <div className="wrap hero__inner">

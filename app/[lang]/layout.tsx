@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
+import { MarkSprite } from "@/components/ui/Mark";
 import { LEGAL, META } from "@/lib/data";
 import { LOCALES } from "@/lib/i18n/config";
 import { localeParam, t } from "@/lib/i18n/utils";
@@ -125,7 +126,10 @@ export default async function RootLayout({
           }}
         />
       </head>
-      <body suppressHydrationWarning>{children}</body>
+      <body suppressHydrationWarning>
+        <MarkSprite />
+        {children}
+      </body>
     </html>
   );
 }

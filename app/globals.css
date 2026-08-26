@@ -439,7 +439,7 @@ section {
   gap: 10px;
   padding-right: 4px;
 }
-.nav__brand img {
+.nav__brand svg {
   width: 22px;
   height: 22px;
 }
@@ -448,8 +448,8 @@ section {
   font: 500 12px/1 var(--font-mono);
   letter-spacing: 0.22em;
 }
-[data-theme="dark"] .nav__brand img,
-[data-theme="dark"] .footer__brand img,
+[data-theme="dark"] .nav__brand svg,
+[data-theme="dark"] .footer__brand svg,
 [data-theme="dark"] .chat__mark {
   filter: invert(1) brightness(1.15);
 }
@@ -782,13 +782,12 @@ section {
 [data-theme="dark"] .hero__shard {
   mix-blend-mode: screen;
 }
-[data-theme="dark"] .hero__shard img {
+[data-theme="dark"] .hero__shard svg {
   filter: invert(1) brightness(1.1);
 }
-.hero__shard img {
+.hero__shard svg {
   width: 100%;
   height: 100%;
-  object-fit: contain;
 }
 
 @supports (animation-timeline: scroll()) {
@@ -2363,7 +2362,7 @@ section {
   gap: 10px;
   align-self: flex-start;
 }
-.footer__brand img {
+.footer__brand svg {
   width: 22px;
   height: 22px;
 }

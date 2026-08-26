@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { Mark } from "@/components/ui/Mark";
 import { SocialIcon } from "@/components/ui/SocialIcon";
 import { EMAIL, GEO, I18N, LEGAL, SOCIALS, URLS } from "@/lib/data";
 import type { Locale } from "@/lib/i18n/config";
@@ -19,14 +19,7 @@ export function Footer({ lang }: { lang: Locale }) {
             className="footer__brand"
             aria-label={t(I18N.a11y.home, lang)}
           >
-            <Image
-              src="/silexio-mark.png"
-              alt=""
-              width={22}
-              height={22}
-              loading="eager"
-              draggable={false}
-            />
+            <Mark />
             <span>SILEXIO</span>
           </a>
           <p className="footer__tagline">{t(i18n.tagline, lang)}</p>

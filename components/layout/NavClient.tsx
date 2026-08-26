@@ -1,8 +1,8 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { Mark } from "@/components/ui/Mark";
 import { useActiveSection } from "@/hooks/useActiveSection";
 import { openBooking } from "@/hooks/useBookingModal";
 import { useSelectedPackages } from "@/hooks/usePackages";
@@ -57,14 +57,7 @@ function Brand({
 }) {
   return (
     <a href={href} className="nav__brand" aria-label={label} onClick={onClick}>
-      <Image
-        src="/silexio-mark.png"
-        alt=""
-        width={22}
-        height={22}
-        loading="eager"
-        draggable={false}
-      />
+      <Mark />
       <span className="nav__brand-text">SILEXIO</span>
     </a>
   );

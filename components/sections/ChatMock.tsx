@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { Mark } from "@/components/ui/Mark";
 
 export type ChatLine = {
   me: boolean;
@@ -26,15 +26,7 @@ export function ChatMock({
   return (
     <div className="chat" aria-hidden="true">
       <div className="chat__head">
-        <Image
-          src="/silexio-mark.png"
-          alt=""
-          width={18}
-          height={18}
-          className="chat__mark"
-          loading="eager"
-          draggable={false}
-        />
+        <Mark className="chat__mark" />
         <span className="chat__name">SILEXIO</span>
         <span className="chat__status">
           <span className="chat__dot" />
