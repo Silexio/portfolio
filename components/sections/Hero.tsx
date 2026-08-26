@@ -1,10 +1,12 @@
+import type { CSSProperties } from "react";
 import { Btn } from "@/components/ui/Btn";
 import { HeroLines } from "@/components/ui/HeroLines";
 import { Mark } from "@/components/ui/Mark";
-import { Reveal } from "@/components/ui/Reveal";
 import { I18N } from "@/lib/data";
 import type { Locale } from "@/lib/i18n/config";
 import { t } from "@/lib/i18n/utils";
+
+const revealDelay = (ms: number) => ({ "--d": `${ms}ms` }) as CSSProperties;
 
 export function Hero({ lang }: { lang: Locale }) {
   const i18n = I18N.hero;
@@ -15,12 +17,12 @@ export function Hero({ lang }: { lang: Locale }) {
       </div>
 
       <div className="wrap hero__inner">
-        <Reveal className="hero__eyebrow-row">
+        <div className="hero__eyebrow-row hero-reveal">
           <span className="status-pill">
             <span className="status-pill__dot" aria-hidden="true" />
             {t(i18n.status, lang)} · {t(i18n.eyebrow, lang)}
           </span>
-        </Reveal>
+        </div>
 
         <p className="hero__supertitle">
           <HeroLines lines={t(i18n.titlePre, lang)} baseDelay={150} />
@@ -39,20 +41,20 @@ export function Hero({ lang }: { lang: Locale }) {
           />
         </h1>
 
-        <Reveal delay={400}>
-          <p className="hero__pitch">{t(i18n.pitch, lang)}</p>
-        </Reveal>
+        <p className="hero__pitch hero-reveal" style={revealDelay(400)}>
+          {t(i18n.pitch, lang)}
+        </p>
 
-        <Reveal delay={520} className="hero__cta">
+        <div className="hero__cta hero-reveal" style={revealDelay(520)}>
           <Btn href="#contact" variant="ember">
             {t(i18n.cta1, lang)}
           </Btn>
           <Btn href="#work" variant="ghost" icon={false}>
             {t(i18n.cta2, lang)}
           </Btn>
-        </Reveal>
+        </div>
 
-        <Reveal delay={640} className="hero__meta">
+        <div className="hero__meta hero-reveal" style={revealDelay(640)}>
           <HeroMeta
             label={t(i18n.metaBaseLabel, lang)}
             value={t(i18n.metaBaseValue, lang)}
@@ -63,7 +65,7 @@ export function Hero({ lang }: { lang: Locale }) {
             value={t(i18n.metaStatusValue, lang)}
             live
           />
-        </Reveal>
+        </div>
       </div>
     </section>
   );

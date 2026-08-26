@@ -41,7 +41,34 @@ const luciole = localFont({
   ],
 });
 
-const themeScript = `(function(){try{var t=localStorage.getItem("silex_theme");var d=t==="dark"||(!t&&matchMedia("(prefers-color-scheme: dark)").matches);document.documentElement.dataset.theme=d?"dark":"light"}catch(e){}})()`;
+/* Un seul script inline, dans le <head>, avant le premier paint — les deux effets doivent le
+   précéder. Le thème est dans son propre try/catch : un localStorage indisponible ne doit pas
+   empêcher d'armer les reveals. */
+const themeScript = `try {
+  var stored = localStorage.getItem("silex_theme");
+  var dark = stored === "dark" || (!stored && matchMedia("(prefers-color-scheme: dark)").matches);
+  document.documentElement.dataset.theme = dark ? "dark" : "light";
+} catch (e) {}`;
+
+/* `revealJs` conditionne l'état masqué des blocs [data-reveal] : sans JS l'attribut n'est jamais
+   posé, donc le contenu reste visible. L'observer vit ici plutôt que dans un composant client pour
+   ne coûter ni chunk ni hydratation — voir § Animations de CLAUDE.md. */
+const revealScript = `document.documentElement.dataset.revealJs = "";
+function armReveals() {
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (!entry.isIntersecting) return;
+      entry.target.dataset.in = "";
+      io.unobserve(entry.target);
+    });
+  }, { threshold: 0.12 });
+  document.querySelectorAll("[data-reveal]").forEach(function (el) { io.observe(el); });
+}
+document.readyState === "loading"
+  ? document.addEventListener("DOMContentLoaded", armReveals)
+  : armReveals();`;
+
+const bootScript = `(function(){${themeScript}\n${revealScript}})()`;
 
 export const dynamicParams = false;
 
@@ -118,7 +145,7 @@ export default async function RootLayout({
       className={`${montserrat.variable} ${inter.variable} ${firaCode.variable} ${luciole.variable}`}
     >
       <head>
-        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+        <script dangerouslySetInnerHTML={{ __html: bootScript }} />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{

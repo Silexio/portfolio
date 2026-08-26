@@ -242,6 +242,30 @@ section {
   }
 }
 
+/* Reveals au scroll : masqués uniquement si le script inline a pu poser `revealJs`, sinon la page
+   sans JS afficherait des blocs vides. L'observer se contente de poser data-in. */
+[data-reveal-js] [data-reveal] {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+/* .hero-reveal n'attend pas l'observer : le hero est au-dessus de la ligne de flottaison et porte
+   l'élément LCP, il doit s'animer dès le premier paint. Même keyframe des deux côtés. */
+[data-reveal-js] [data-reveal][data-in],
+.hero-reveal {
+  animation: reveal-rise 0.7s var(--ease-out) var(--d, 0s) both;
+}
+@keyframes reveal-rise {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 @keyframes live-pulse {
   0%,
   100% {
@@ -2584,8 +2608,14 @@ section {
     animation: none;
     opacity: var(--shard-peak);
   }
-  .hero .line-reveal > span {
+  .hero .line-reveal > span,
+  .hero-reveal,
+  [data-reveal-js] [data-reveal] {
     animation: none;
+  }
+  [data-reveal-js] [data-reveal] {
+    opacity: 1;
+    transform: none;
   }
   .scroll-progress {
     display: none;

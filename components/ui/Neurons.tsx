@@ -165,7 +165,19 @@ export function Neurons() {
     };
 
     resize();
-    raf = requestAnimationFrame(tick);
+
+    /* La section Contact est en bas d'une page de ~14 écrans : sans cette garde, la boucle rAF
+       tourne pendant toute la visite pour un canvas jamais à l'écran — du temps CPU pur perte,
+       comptabilisé en Total Blocking Time. */
+    const io = new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting) {
+        cancelAnimationFrame(raf);
+        raf = 0;
+      } else if (!raf) {
+        raf = requestAnimationFrame(tick);
+      }
+    });
+    io.observe(canvas);
 
     const ro = new ResizeObserver(resize);
     ro.observe(container);
@@ -185,6 +197,7 @@ export function Neurons() {
 
     return () => {
       cancelAnimationFrame(raf);
+      io.disconnect();
       ro.disconnect();
       mo.disconnect();
       canvas.removeEventListener("mousemove", onMove);
