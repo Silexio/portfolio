@@ -255,7 +255,12 @@ section {
 }
 
 /* ── 06 Buttons & chips ───────────────────────────────────── */
+/* position: relative n'est pas décoratif : le .sr-only du bouton est en position absolute et,
+   sans bloc contenant ici, il remonte au premier ancêtre positionné — hors du scroller du
+   carrousel, qui ne le clippe donc pas. Le document faisait 1288px de large sur un viewport de
+   390px, et le mobile dézoomait la page entière pour l'afficher. */
 .btn {
+  position: relative;
   display: inline-flex;
   align-items: center;
   gap: 10px;
@@ -507,6 +512,7 @@ section {
   display: none;
 }
 .nav__lang {
+  position: relative;
   display: inline-flex;
   align-items: center;
   gap: 4px;
@@ -2428,6 +2434,7 @@ section {
   gap: 8px;
 }
 .footer__social {
+  position: relative;
   width: 44px;
   height: 44px;
   border-radius: var(--radius-pill);

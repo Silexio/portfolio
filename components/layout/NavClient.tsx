@@ -162,11 +162,13 @@ export function NavClient({
       hrefLang={otherLang}
       scroll={false}
       className="nav__lang"
-      aria-label={labels.toggleLang}
     >
       <span data-active={lang === "fr"}>FR</span>
       <span>·</span>
       <span data-active={lang === "en"}>EN</span>
+      {/* Le libellé complète le texte visible au lieu de le remplacer : un aria-label qui ne
+          contient pas « FR · EN » rend le lien inatteignable à la commande vocale (WCAG 2.5.3). */}
+      <span className="sr-only"> — {labels.toggleLang}</span>
     </Link>
   );
 
