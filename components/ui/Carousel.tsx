@@ -1,6 +1,5 @@
 "use client";
 
-import { useReducedMotion } from "motion/react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 type CarouselProps = {
@@ -26,7 +25,6 @@ export function Carousel({
 }: CarouselProps) {
   const viewport = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
-  const reduced = useReducedMotion();
 
   useEffect(() => {
     const node = viewport.current;
@@ -45,18 +43,16 @@ export function Carousel({
     return () => observer.disconnect();
   }, []);
 
-  const goTo = useCallback(
-    (index: number) => {
-      const node = viewport.current;
-      const slide = node?.children[index];
-      if (!node || !(slide instanceof HTMLElement)) return;
-      node.scrollTo({
-        left: slide.offsetLeft - node.offsetLeft,
-        behavior: reduced ? "auto" : "smooth",
-      });
-    },
-    [reduced],
-  );
+  const goTo = useCallback((index: number) => {
+    const node = viewport.current;
+    const slide = node?.children[index];
+    if (!node || !(slide instanceof HTMLElement)) return;
+    const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    node.scrollTo({
+      left: slide.offsetLeft - node.offsetLeft,
+      behavior: reduced ? "auto" : "smooth",
+    });
+  }, []);
 
   const single = dots.length < 2;
 

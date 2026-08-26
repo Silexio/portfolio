@@ -23,9 +23,13 @@ export async function generateMetadata({
     description: t(LEGAL_PAGE.intro, lang).slice(0, 160),
     alternates: {
       canonical: `${BASE_URL}/${lang}/legal`,
-      languages: Object.fromEntries(
-        LOCALES.map((l) => [l, `${BASE_URL}/${l}/legal`]),
-      ),
+      languages: {
+        ...Object.fromEntries(
+          LOCALES.map((l) => [l, `${BASE_URL}/${l}/legal`]),
+        ),
+        // Aligne le groupe hreflang sur celui de l'accueil, qui déclare déjà un x-default.
+        "x-default": `${BASE_URL}/fr/legal`,
+      },
     },
   };
 }

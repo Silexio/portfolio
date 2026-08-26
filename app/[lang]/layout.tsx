@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
-import { Fira_Code, Inter, Montserrat } from "next/font/google";
 import localFont from "next/font/local";
+import { MarkSprite } from "@/components/ui/Mark";
 import { LEGAL, META } from "@/lib/data";
 import { LOCALES } from "@/lib/i18n/config";
 import { localeParam, t } from "@/lib/i18n/utils";
@@ -8,20 +8,29 @@ import { BASE_URL } from "@/lib/metadata";
 import { structuredData } from "@/lib/seo";
 import "../globals.css";
 
-const montserrat = Montserrat({
-  subsets: ["latin"],
-  weight: ["500", "600"],
+/* Les trois familles Google sont auto-hébergées plutôt que servies par next/font/google. Les
+   fichiers livrés par l'API sont des polices variables couvrant l'axe wght 100-900 alors que le
+   site n'emploie que deux graisses par famille : axe borné aux graisses réellement utilisées,
+   jeu latin, features OpenType inutilisées et hinting retirés — 120 Ko ramenés à 60 Ko, à rendu
+   identique. Effet de bord bienvenu : le build ne télécharge plus rien, donc il passe sans réseau.
+   Régénération : voir app/fonts/README.md. */
+const montserrat = localFont({
+  src: "../fonts/Montserrat-Variable.woff2",
+  weight: "500 600",
   variable: "--font-montserrat",
+  declarations: [{ prop: "font-display", value: "swap" }],
 });
-const inter = Inter({
-  subsets: ["latin"],
-  weight: ["400", "500"],
+const inter = localFont({
+  src: "../fonts/Inter-Variable.woff2",
+  weight: "400 500",
   variable: "--font-inter",
+  declarations: [{ prop: "font-display", value: "swap" }],
 });
-const firaCode = Fira_Code({
-  subsets: ["latin"],
-  weight: ["400", "500"],
+const firaCode = localFont({
+  src: "../fonts/FiraCode-Variable.woff2",
+  weight: "400 500",
   variable: "--font-fira-code",
+  declarations: [{ prop: "font-display", value: "swap" }],
 });
 const luciole = localFont({
   variable: "--font-luciole",
@@ -29,15 +38,37 @@ const luciole = localFont({
     { path: "../fonts/Luciole-Regular.woff2", weight: "400", style: "normal" },
     { path: "../fonts/Luciole-Italic.woff2", weight: "400", style: "italic" },
     { path: "../fonts/Luciole-Bold.woff2", weight: "700", style: "normal" },
-    {
-      path: "../fonts/Luciole-BoldItalic.woff2",
-      weight: "700",
-      style: "italic",
-    },
   ],
 });
 
-const themeScript = `(function(){try{var t=localStorage.getItem("silex_theme");var d=t==="dark"||(!t&&matchMedia("(prefers-color-scheme: dark)").matches);document.documentElement.dataset.theme=d?"dark":"light"}catch(e){}})()`;
+/* Un seul script inline, dans le <head>, avant le premier paint — les deux effets doivent le
+   précéder. Le thème est dans son propre try/catch : un localStorage indisponible ne doit pas
+   empêcher d'armer les reveals. */
+const themeScript = `try {
+  var stored = localStorage.getItem("silex_theme");
+  var dark = stored === "dark" || (!stored && matchMedia("(prefers-color-scheme: dark)").matches);
+  document.documentElement.dataset.theme = dark ? "dark" : "light";
+} catch (e) {}`;
+
+/* `revealJs` conditionne l'état masqué des blocs [data-reveal] : sans JS l'attribut n'est jamais
+   posé, donc le contenu reste visible. L'observer vit ici plutôt que dans un composant client pour
+   ne coûter ni chunk ni hydratation — voir § Animations de CLAUDE.md. */
+const revealScript = `document.documentElement.dataset.revealJs = "";
+function armReveals() {
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (!entry.isIntersecting) return;
+      entry.target.dataset.in = "";
+      io.unobserve(entry.target);
+    });
+  }, { threshold: 0.12 });
+  document.querySelectorAll("[data-reveal]").forEach(function (el) { io.observe(el); });
+}
+document.readyState === "loading"
+  ? document.addEventListener("DOMContentLoaded", armReveals)
+  : armReveals();`;
+
+const bootScript = `(function(){${themeScript}\n${revealScript}})()`;
 
 export const dynamicParams = false;
 
@@ -114,7 +145,7 @@ export default async function RootLayout({
       className={`${montserrat.variable} ${inter.variable} ${firaCode.variable} ${luciole.variable}`}
     >
       <head>
-        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+        <script dangerouslySetInnerHTML={{ __html: bootScript }} />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -122,7 +153,10 @@ export default async function RootLayout({
           }}
         />
       </head>
-      <body suppressHydrationWarning>{children}</body>
+      <body suppressHydrationWarning>
+        <MarkSprite />
+        {children}
+      </body>
     </html>
   );
 }

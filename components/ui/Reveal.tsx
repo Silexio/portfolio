@@ -1,29 +1,23 @@
-"use client";
-
-import { motion, useReducedMotion } from "motion/react";
-import { EASE_OUT } from "@/lib/motion";
+import type { CSSProperties, ReactNode } from "react";
 
 type RevealProps = {
-  children: React.ReactNode;
+  children: ReactNode;
   delay?: number;
   className?: string;
 };
 
+/**
+ * Reveal à l'entrée dans le viewport — composant serveur, zéro JS embarqué : l'animation est un
+ * keyframe CSS et le déclenchement vient de l'IntersectionObserver du script inline du layout.
+ */
 export function Reveal({ children, delay = 0, className }: RevealProps) {
-  const reduced = useReducedMotion();
   return (
-    <motion.div
+    <div
       className={className}
-      initial={reduced ? false : { opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.12 }}
-      transition={
-        reduced
-          ? { duration: 0 }
-          : { duration: 0.7, ease: EASE_OUT, delay: delay / 1000 }
-      }
+      data-reveal=""
+      style={delay ? ({ "--d": `${delay}ms` } as CSSProperties) : undefined}
     >
       {children}
-    </motion.div>
+    </div>
   );
 }

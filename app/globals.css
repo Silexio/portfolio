@@ -223,9 +223,14 @@ section {
 }
 
 /* ── 05 Animations ────────────────────────────────────────── */
+/* Le masque du reveal doit déborder la boîte de ligne, sinon il rogne accents et jambages :
+   .hero__title impose line-height 1.02 alors que la boîte naturelle de Montserrat fait 1.219 em
+   (mesuré : 8 px coupés sur « Un informaticien » à 38 px). overflow-clip-margin étend la zone de
+   clip sans toucher à la mise en page — contrairement à un padding, qui déplacerait les lignes. */
 .line-reveal {
   display: block;
-  overflow: hidden;
+  overflow: clip;
+  overflow-clip-margin: 0.16em;
 }
 .line-reveal > span {
   display: block;
@@ -242,6 +247,30 @@ section {
   }
 }
 
+/* Reveals au scroll : masqués uniquement si le script inline a pu poser `revealJs`, sinon la page
+   sans JS afficherait des blocs vides. L'observer se contente de poser data-in. */
+[data-reveal-js] [data-reveal] {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+/* .hero-reveal n'attend pas l'observer : le hero est au-dessus de la ligne de flottaison et porte
+   l'élément LCP, il doit s'animer dès le premier paint. Même keyframe des deux côtés. */
+[data-reveal-js] [data-reveal][data-in],
+.hero-reveal {
+  animation: reveal-rise 0.7s var(--ease-out) var(--d, 0s) both;
+}
+@keyframes reveal-rise {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 @keyframes live-pulse {
   0%,
   100% {
@@ -255,7 +284,12 @@ section {
 }
 
 /* ── 06 Buttons & chips ───────────────────────────────────── */
+/* position: relative n'est pas décoratif : le .sr-only du bouton est en position absolute et,
+   sans bloc contenant ici, il remonte au premier ancêtre positionné — hors du scroller du
+   carrousel, qui ne le clippe donc pas. Le document faisait 1288px de large sur un viewport de
+   390px, et le mobile dézoomait la page entière pour l'afficher. */
 .btn {
+  position: relative;
   display: inline-flex;
   align-items: center;
   gap: 10px;
@@ -434,7 +468,7 @@ section {
   gap: 10px;
   padding-right: 4px;
 }
-.nav__brand img {
+.nav__brand svg {
   width: 22px;
   height: 22px;
 }
@@ -443,8 +477,8 @@ section {
   font: 500 12px/1 var(--font-mono);
   letter-spacing: 0.22em;
 }
-[data-theme="dark"] .nav__brand img,
-[data-theme="dark"] .footer__brand img,
+[data-theme="dark"] .nav__brand svg,
+[data-theme="dark"] .footer__brand svg,
 [data-theme="dark"] .chat__mark {
   filter: invert(1) brightness(1.15);
 }
@@ -507,6 +541,7 @@ section {
   display: none;
 }
 .nav__lang {
+  position: relative;
   display: inline-flex;
   align-items: center;
   gap: 4px;
@@ -776,13 +811,12 @@ section {
 [data-theme="dark"] .hero__shard {
   mix-blend-mode: screen;
 }
-[data-theme="dark"] .hero__shard img {
+[data-theme="dark"] .hero__shard svg {
   filter: invert(1) brightness(1.1);
 }
-.hero__shard img {
+.hero__shard svg {
   width: 100%;
   height: 100%;
-  object-fit: contain;
 }
 
 @supports (animation-timeline: scroll()) {
@@ -2357,7 +2391,7 @@ section {
   gap: 10px;
   align-self: flex-start;
 }
-.footer__brand img {
+.footer__brand svg {
   width: 22px;
   height: 22px;
 }
@@ -2428,6 +2462,7 @@ section {
   gap: 8px;
 }
 .footer__social {
+  position: relative;
   width: 44px;
   height: 44px;
   border-radius: var(--radius-pill);
@@ -2578,8 +2613,14 @@ section {
     animation: none;
     opacity: var(--shard-peak);
   }
-  .hero .line-reveal > span {
+  .hero .line-reveal > span,
+  .hero-reveal,
+  [data-reveal-js] [data-reveal] {
     animation: none;
+  }
+  [data-reveal-js] [data-reveal] {
+    opacity: 1;
+    transform: none;
   }
   .scroll-progress {
     display: none;

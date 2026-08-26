@@ -1,8 +1,8 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { Mark } from "@/components/ui/Mark";
 import { useActiveSection } from "@/hooks/useActiveSection";
 import { openBooking } from "@/hooks/useBookingModal";
 import { useSelectedPackages } from "@/hooks/usePackages";
@@ -57,14 +57,7 @@ function Brand({
 }) {
   return (
     <a href={href} className="nav__brand" aria-label={label} onClick={onClick}>
-      <Image
-        src="/silexio-mark.png"
-        alt=""
-        width={22}
-        height={22}
-        loading="eager"
-        draggable={false}
-      />
+      <Mark />
       <span className="nav__brand-text">SILEXIO</span>
     </a>
   );
@@ -162,11 +155,13 @@ export function NavClient({
       hrefLang={otherLang}
       scroll={false}
       className="nav__lang"
-      aria-label={labels.toggleLang}
     >
       <span data-active={lang === "fr"}>FR</span>
       <span>·</span>
       <span data-active={lang === "en"}>EN</span>
+      {/* Le libellé complète le texte visible au lieu de le remplacer : un aria-label qui ne
+          contient pas « FR · EN » rend le lien inatteignable à la commande vocale (WCAG 2.5.3). */}
+      <span className="sr-only"> — {labels.toggleLang}</span>
     </Link>
   );
 

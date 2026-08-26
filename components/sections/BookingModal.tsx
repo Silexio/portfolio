@@ -1,7 +1,7 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { useEffect, useRef } from "react";
-import { BookingClient } from "@/components/sections/BookingClient";
 import {
   closeBooking,
   useBookingModalOpen,
@@ -9,6 +9,13 @@ import {
 } from "@/hooks/useBookingModal";
 import type { BookingLabels, PackageId } from "@/lib/data";
 import type { Locale } from "@/lib/i18n/config";
+
+/* Calendrier, formulaire et Turnstile ne servent qu'après un clic : les monter au chargement,
+   c'est payer leur hydratation sur chaque visite. `session` ne s'incrémente qu'à l'ouverture et ne
+   redescend jamais — une fois montée, la modale le reste, y compris pendant sa fermeture animée. */
+const BookingClient = dynamic(() =>
+  import("@/components/sections/BookingClient").then((m) => m.BookingClient),
+);
 
 type BookingModalProps = {
   lang: Locale;
@@ -84,14 +91,16 @@ export function BookingModal({
           {labels.title}
         </h2>
         <p className="booking-modal__tz">{labels.tzNote}</p>
-        <BookingClient
-          key={session}
-          lang={lang}
-          siteKey={siteKey}
-          active={open}
-          labels={labels}
-          packageLabels={packageLabels}
-        />
+        {session > 0 && (
+          <BookingClient
+            key={session}
+            lang={lang}
+            siteKey={siteKey}
+            active={open}
+            labels={labels}
+            packageLabels={packageLabels}
+          />
+        )}
       </div>
     </dialog>
   );

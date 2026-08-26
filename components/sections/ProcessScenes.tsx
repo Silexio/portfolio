@@ -1,7 +1,6 @@
 "use client";
 
-import { useMotionValueEvent, useScroll } from "motion/react";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ChatMock, type ChatLine } from "@/components/sections/ChatMock";
 
 type Caption = {
@@ -25,19 +24,35 @@ export function ProcessScenes({
 }: ProcessScenesProps) {
   const ref = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start start", "end end"],
-  });
+  const count = captions.length;
 
-  useMotionValueEvent(scrollYProgress, "change", (progress) => {
-    setActive(
-      Math.min(
-        captions.length - 1,
-        Math.floor(progress * captions.length * 0.999),
-      ),
-    );
-  });
+  /* Équivaut au useScroll de Motion avec offset ["start start", "end end"] : la progression vaut 0
+     quand le haut du wrapper atteint le haut du viewport, 1 quand son bas atteint le bas. Écrit à
+     la main pour que Motion ne soit plus dans le bundle. */
+  useEffect(() => {
+    const node = ref.current;
+    if (!node) return;
+    let raf = 0;
+    const update = () => {
+      raf = 0;
+      const rect = node.getBoundingClientRect();
+      const travel = rect.height - window.innerHeight;
+      if (travel <= 0) return;
+      const progress = Math.min(1, Math.max(0, -rect.top / travel));
+      setActive(Math.min(count - 1, Math.floor(progress * count * 0.999)));
+    };
+    const schedule = () => {
+      if (!raf) raf = requestAnimationFrame(update);
+    };
+    schedule();
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("scroll", schedule);
+      window.removeEventListener("resize", schedule);
+    };
+  }, [count]);
 
   return (
     <div
