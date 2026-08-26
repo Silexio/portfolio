@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import * as Sentry from "@sentry/nextjs";
+import { reportClientError } from "@/lib/observability/client";
 import { ERROR_PAGE, browserLocale } from "@/lib/i18n/error-page";
 import { t } from "@/lib/i18n/utils";
 import "./globals.css";
@@ -17,7 +17,7 @@ export default function GlobalError({
   const [lang] = useState(browserLocale);
 
   useEffect(() => {
-    Sentry.captureException(error);
+    reportClientError(error);
   }, [error]);
 
   return (
