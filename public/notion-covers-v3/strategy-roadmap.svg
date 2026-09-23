@@ -1,1 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="600" viewBox="0 0 1500 600"><defs><filter id="s"><feDropShadow dx="0" dy="9" stdDeviation="8" flood-color="#777" flood-opacity=".28"/></filter></defs><rect width="1500" height="600" fill="#f3f0e8"/><image href="https://raw.githubusercontent.com/lucide-icons/lucide/main/icons/route.svg" x="690" y="110" width="120" height="120"/><text x="750" y="430" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="74" font-weight="800" letter-spacing="1" fill="#111" filter="url(#s)">STRATEGY & ROADMAP</text></svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="600" viewBox="0 0 1500 600"><defs><filter id="s"><feDropShadow dx="0" dy="9" stdDeviation="8" flood-color="#777" flood-opacity=".28"/></filter></defs><rect width="1500" height="600" fill="#f3f0e8"/><g transform="translate(690 110) scale(5)" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <circle cx="6" cy="19" r="3" />
+  <path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15" />
+  <circle cx="18" cy="5" r="3" />
+</g><text x="750" y="430" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="74" font-weight="800" letter-spacing="1" fill="#111" filter="url(#s)">STRATEGY & ROADMAP</text></svg>
