@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   asLocale,
+  fill,
   isLocale,
   localeParam,
   resolveDict,
@@ -70,5 +71,15 @@ describe("resolveDict", () => {
     const dict = { a: { fr: "un", en: "one" }, b: { fr: "deux", en: "two" } };
     expect(resolveDict(dict, "en")).toEqual({ a: "one", b: "two" });
     expect(resolveDict(dict, "fr")).toEqual({ a: "un", b: "deux" });
+  });
+});
+
+describe("fill", () => {
+  it("replaces every known placeholder", () => {
+    expect(fill("{n} / {total}", { n: "1", total: "4" })).toBe("1 / 4");
+  });
+
+  it("leaves unknown placeholders visible", () => {
+    expect(fill("Hello {name}", {})).toBe("Hello {name}");
   });
 });
