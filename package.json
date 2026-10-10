@@ -11,6 +11,8 @@
     "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
     "smoke": "opennextjs-cloudflare build && node scripts/smoke-worker.mjs",
     "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
+    "deploy:preview": "opennextjs-cloudflare build && opennextjs-cloudflare deploy -- --env preview",
+    "db:migrate:preview": "wrangler d1 migrations apply portfolio-booking-preview --remote --env preview",
     "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
     "db:migrate": "wrangler d1 migrations apply portfolio-booking --local",
     "db:migrate:remote": "wrangler d1 migrations apply portfolio-booking --remote",
