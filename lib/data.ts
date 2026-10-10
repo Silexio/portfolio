@@ -787,6 +787,16 @@ export const FAQ: FaqEntry[] = [
   },
   {
     q: {
+      fr: "Que comprend le suivi mensuel ?",
+      en: "What does the monthly care plan include?",
+    },
+    a: {
+      fr: "Surveillance, sauvegardes, mises à jour contrôlées, petites corrections, vérification du domaine et du certificat, et un rapport synthétique. Le support y est non urgent. Ce forfait ne couvre pas une refonte, une nouvelle fonctionnalité importante ni une astreinte 24 h/24 : ces besoins font l’objet d’un devis à part. Le périmètre exact est écrit dans le contrat.",
+      en: "Monitoring, backups, controlled updates, small fixes, domain and certificate checks, and a short report. Support is non-urgent. The plan does not cover a redesign, a major new feature or round-the-clock standby: those are quoted separately. The exact scope is written into the contract.",
+    },
+  },
+  {
+    q: {
       fr: "Comment savoir si ma tâche peut être automatisée ?",
       en: "How do I know if my task can be automated?",
     },
