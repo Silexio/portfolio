@@ -62,20 +62,36 @@ describe("bookingSchema", () => {
     }
   });
 
-  it("keeps only known package ids", () => {
-    const r = bookingSchema.safeParse({
-      ...base,
-      packages: ["site", "ghost", "api"],
+  it("defaults locale to fr", () => {
+    const r = bookingSchema.safeParse(base);
+    if (r.success) expect(r.data.locale).toBe("fr");
+  });
+});
+
+describe("bookingSchema, nom hostile", () => {
+  const valid = {
+    slotStart: "2026-01-14T07:00:00.000Z",
+    email: "jane@example.com",
+    phone: "+32 470 12 34 56",
+    meetingType: "video",
+    turnstileToken: "token",
+  };
+
+  it("refuse un caractère de contrôle, qui ouvrirait une ligne dans le .ics", () => {
+    const out = bookingSchema.safeParse({
+      ...valid,
+      name: "Pirate\rATTACH:https://evil.example/p",
     });
-    expect(r.success).toBe(true);
-    if (r.success) expect(r.data.packages).toEqual(["site", "api"]);
+    expect(out.success).toBe(false);
   });
 
-  it("defaults locale to fr and packages to empty", () => {
-    const r = bookingSchema.safeParse(base);
-    if (r.success) {
-      expect(r.data.locale).toBe("fr");
-      expect(r.data.packages).toEqual([]);
+  it("accepte les noms composés, accentués et apostrophés", () => {
+    for (const name of [
+      "Jean-Luc O’Brien",
+      "Nguyễn Thị Hoa",
+      "Müller & Fils",
+    ]) {
+      expect(bookingSchema.safeParse({ ...valid, name }).success).toBe(true);
     }
   });
 });

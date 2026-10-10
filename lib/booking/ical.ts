@@ -107,9 +107,44 @@ function parseRrule(value: string): Record<string, string> {
  * avec INTERVAL, COUNT, UNTIL et BYDAY — ce qu'écrivent les agendas grand public. Les formes rares
  * (BYSETPOS, BYMONTHDAY multiple) ne sont pas dépliées : l'occurrence de base reste bloquée.
  */
+/**
+ * Avance le curseur juste avant la fenêtre, par pas entiers d'intervalle pour garder la phase de
+ * la série. Sans ce saut, une récurrence quotidienne commencée il y a plus de MAX_OCCURRENCES pas
+ * n'atteint jamais la fenêtre : elle ne bloque plus rien, sans erreur — l'agenda cesse de faire
+ * foi. Réservé aux séries sans COUNT (compter exige de partir du début) et aux fréquences qui
+ * peuvent épuiser le plafond : MONTHLY et YEARLY ont 33 ans de marge.
+ */
+function skipToWindow(
+  cursor: Date,
+  freq: string,
+  interval: number,
+  byDay: string[] | null,
+  windowStart: number,
+): void {
+  if (cursor.getTime() >= windowStart) return;
+  if (freq === "DAILY") {
+    const periods = Math.floor(
+      (windowStart - cursor.getTime()) / (interval * DAY_MS),
+    );
+    if (periods > 1)
+      cursor.setUTCDate(cursor.getUTCDate() + (periods - 1) * interval);
+    return;
+  }
+  if (freq !== "WEEKLY") return;
+  const weeks = Math.floor(
+    (weekStart(windowStart) - weekStart(cursor.getTime())) / (7 * DAY_MS),
+  );
+  const whole = weeks - (weeks % interval);
+  if (whole > interval) {
+    const step = byDay ? whole - interval : whole;
+    cursor.setUTCDate(cursor.getUTCDate() + step * 7);
+  }
+}
+
 function expand(
   startMs: number,
   rule: Record<string, string>,
+  windowStart: number,
   windowEnd: number,
 ): number[] {
   const freq = (rule.FREQ || "").toUpperCase();
@@ -127,6 +162,8 @@ function expand(
   const cursor = new Date(startMs);
   const anchorWeek = weekStart(startMs);
   let emitted = 0;
+  if (count === Infinity)
+    skipToWindow(cursor, freq, interval, byDay, windowStart);
 
   for (let i = 0; i < MAX_OCCURRENCES && emitted < count; i++) {
     const ms = cursor.getTime();
@@ -231,7 +268,7 @@ function eventToIntervals(
 
   const rrule = find("RRULE");
   const starts = rrule
-    ? expand(start.ms, parseRrule(rrule.value), to)
+    ? expand(start.ms, parseRrule(rrule.value), from, to)
     : [start.ms];
 
   return starts

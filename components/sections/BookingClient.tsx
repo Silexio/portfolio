@@ -1,16 +1,20 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { Icon } from "@/components/ui/Icon";
+import { useEffect, useRef, useState } from "react";
 import {
   BookingCalendar,
   type CalendarDay,
 } from "@/components/ui/BookingCalendar";
+import { Btn } from "@/components/ui/Btn";
+import { Honeypot } from "@/components/ui/Honeypot";
+import { Notice } from "@/components/ui/Notice";
 import { Turnstile } from "@/components/ui/Turnstile";
-import { closeBooking } from "@/hooks/useBookingModal";
-import { useSelectedPackages } from "@/hooks/usePackages";
+import { useDoneFocus } from "@/hooks/useDoneFocus";
+import { useFormSubmit } from "@/hooks/useFormSubmit";
 import { formatSlotLabel } from "@/lib/booking/format";
 import type { MeetingMode } from "@/lib/booking/schema";
-import type { BookingLabels, PackageId } from "@/lib/data";
+import type { BookingLabels } from "@/lib/data";
 import type { Locale } from "@/lib/i18n/config";
 
 type BookingClientProps = {
@@ -18,10 +22,8 @@ type BookingClientProps = {
   siteKey: string;
   active: boolean;
   labels: BookingLabels;
-  packageLabels: Record<PackageId, string>;
 };
 
-type Status = "idle" | "submitting" | "success" | "error";
 type ErrorKey =
   | "errorGeneric"
   | "errorSlotTaken"
@@ -42,7 +44,6 @@ export function BookingClient({
   siteKey,
   active,
   labels,
-  packageLabels,
 }: BookingClientProps) {
   const [days, setDays] = useState<CalendarDay[] | null>(null);
   const [loadError, setLoadError] = useState(false);
@@ -54,14 +55,14 @@ export function BookingClient({
   const [meetingType, setMeetingType] = useState<MeetingMode>("video");
   const [message, setMessage] = useState("");
   const [company, setCompany] = useState("");
-  const [token, setToken] = useState<string | null>(null);
-  const [status, setStatus] = useState<Status>("idle");
-  const [errorKey, setErrorKey] = useState<ErrorKey | null>(null);
   const fieldsRef = useRef<HTMLFieldSetElement>(null);
-
-  const selectedPackages = useSelectedPackages().filter(
-    (id) => id in packageLabels,
-  );
+  const { status, errorKey, token, attempt, onToken, send } =
+    useFormSubmit<ErrorKey>({
+      url: "/api/bookings",
+      errorByCode: ERROR_BY_CODE,
+      genericError: "errorGeneric",
+    });
+  const doneRef = useDoneFocus(status === "success");
 
   useEffect(() => {
     if (!active) return;
@@ -92,14 +93,6 @@ export function BookingClient({
     });
   }, [slot]);
 
-  useEffect(() => {
-    if (status !== "success") return;
-    const id = window.setTimeout(() => closeBooking(), 2500);
-    return () => window.clearTimeout(id);
-  }, [status]);
-
-  const onToken = useCallback((value: string | null) => setToken(value), []);
-
   const canSubmit =
     Boolean(slot) &&
     Boolean(token) &&
@@ -108,71 +101,47 @@ export function BookingClient({
     phone.trim() !== "" &&
     status !== "submitting";
 
-  const submit = async (event: React.FormEvent) => {
+  const submit = (event: React.FormEvent) => {
     event.preventDefault();
-    if (!slot || !token || status === "submitting") return;
-    setStatus("submitting");
-    setErrorKey(null);
-    try {
-      const res = await fetch("/api/bookings", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          slotStart: slot,
-          name,
-          email,
-          phone,
-          meetingType,
-          message,
-          company,
-          packages: selectedPackages,
-          locale: lang,
-          turnstileToken: token,
-        }),
-      });
-      if (res.ok) {
-        setStatus("success");
-        return;
-      }
-      const body = (await res.json().catch(() => null)) as {
-        error?: string;
-      } | null;
-      setErrorKey(
-        body?.error && body.error in ERROR_BY_CODE
-          ? ERROR_BY_CODE[body.error]
-          : "errorGeneric",
-      );
-      setStatus("error");
-    } catch {
-      setErrorKey("errorGeneric");
-      setStatus("error");
-    }
+    if (!canSubmit) return;
+    void send({
+      slotStart: slot,
+      name,
+      email,
+      phone,
+      meetingType,
+      message,
+      company,
+      locale: lang,
+      turnstileToken: token,
+    });
   };
 
   if (status === "success") {
     return (
-      <div className="booking-form__success" role="status">
-        <h3>{labels.successTitle}</h3>
-        <p>{labels.successBody}</p>
+      <div ref={doneRef} tabIndex={-1}>
+        <Notice tone="success" title={labels.successTitle}>
+          {labels.successBody}
+        </Notice>
       </div>
     );
   }
 
   if (loadError) {
+    return <Notice tone="error">{labels.slotsError}</Notice>;
+  }
+
+  if (!days) {
     return (
-      <p className="booking-form__error" role="alert">
-        {labels.slotsError}
+      <p className="form__status" role="status">
+        {labels.loadingSlots}
       </p>
     );
   }
 
-  if (!days) {
-    return <p className="booking-form__loading">{labels.loadingSlots}</p>;
-  }
-
   return (
     <form
-      className="booking-form"
+      className="form booking-form"
       data-picked={slot ? "true" : "false"}
       onSubmit={submit}
       noValidate
@@ -192,7 +161,9 @@ export function BookingClient({
           }}
         />
       ) : (
-        <p className="booking-form__loading">{labels.noSlots}</p>
+        <p className="form__status" role="status">
+          {labels.noSlots}
+        </p>
       )}
 
       {slot && (
@@ -204,19 +175,17 @@ export function BookingClient({
               </span>
               <strong>{formatSlotLabel(slot, lang)}</strong>
             </span>
-            <button
-              type="button"
-              className="booking-form__change"
-              onClick={() => setSlot(null)}
-            >
+            <Btn variant="accent" onClick={() => setSlot(null)}>
               {labels.change}
-            </button>
+            </Btn>
           </div>
 
           <fieldset ref={fieldsRef} className="booking-form__fields">
-            <legend className="booking-form__legend">{labels.formTitle}</legend>
+            <legend className="heading-sm booking-form__legend">
+              {labels.formTitle}
+            </legend>
 
-            <div className="booking-form__field">
+            <div className="field">
               <label htmlFor="bk-name">{labels.name}</label>
               <input
                 id="bk-name"
@@ -230,7 +199,7 @@ export function BookingClient({
               />
             </div>
 
-            <div className="booking-form__field">
+            <div className="field">
               <label htmlFor="bk-email">{labels.email}</label>
               <input
                 id="bk-email"
@@ -244,7 +213,7 @@ export function BookingClient({
               />
             </div>
 
-            <div className="booking-form__field">
+            <div className="field">
               <label htmlFor="bk-phone">{labels.phone}</label>
               <input
                 id="bk-phone"
@@ -256,18 +225,18 @@ export function BookingClient({
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
               />
-              <span className="booking-form__hint">{labels.phoneNote}</span>
+              <span className="field__hint">{labels.phoneNote}</span>
             </div>
 
-            <div className="booking-form__field">
-              <span className="booking-form__field-label">{labels.mode}</span>
+            <div className="field">
+              <span className="field__label">{labels.mode}</span>
               <div
                 className="booking-form__modes"
                 role="radiogroup"
                 aria-label={labels.mode}
               >
                 <label
-                  className="booking-form__mode"
+                  className="pill booking-form__mode"
                   data-active={meetingType === "video"}
                 >
                   <input
@@ -277,10 +246,11 @@ export function BookingClient({
                     checked={meetingType === "video"}
                     onChange={() => setMeetingType("video")}
                   />
+                  <Icon name="video" />
                   {labels.modeVideo}
                 </label>
                 <label
-                  className="booking-form__mode"
+                  className="pill booking-form__mode"
                   data-active={meetingType === "call"}
                 >
                   <input
@@ -290,17 +260,16 @@ export function BookingClient({
                     checked={meetingType === "call"}
                     onChange={() => setMeetingType("call")}
                   />
+                  <Icon name="phone" />
                   {labels.modeCall}
                 </label>
               </div>
             </div>
 
-            <div className="booking-form__field">
+            <div className="field">
               <label htmlFor="bk-message">
                 {labels.message}{" "}
-                <span className="booking-form__optional">
-                  ({labels.optional})
-                </span>
+                <span className="field__optional">({labels.optional})</span>
               </label>
               <textarea
                 id="bk-message"
@@ -312,53 +281,20 @@ export function BookingClient({
               />
             </div>
 
-            {selectedPackages.length > 0 && (
-              <div className="booking-form__field">
-                <span className="booking-form__field-label">
-                  {labels.interests}
-                </span>
-                <div className="booking-form__chips">
-                  {selectedPackages.map((id) => (
-                    <span key={id} className="chip chip--ember">
-                      {packageLabels[id]}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            <div className="booking-form__honeypot" aria-hidden="true">
-              <label htmlFor="bk-company">Company</label>
-              <input
-                id="bk-company"
-                name="company"
-                type="text"
-                tabIndex={-1}
-                autoComplete="off"
-                value={company}
-                onChange={(e) => setCompany(e.target.value)}
-              />
-            </div>
+            <Honeypot id="bk-company" value={company} onChange={setCompany} />
 
             <Turnstile
+              key={attempt}
               siteKey={siteKey}
               onToken={onToken}
               label={labels.captchaLabel}
             />
 
-            {errorKey && (
-              <p className="booking-form__error" role="alert">
-                {labels[errorKey]}
-              </p>
-            )}
+            {errorKey && <Notice tone="error">{labels[errorKey]}</Notice>}
 
-            <button
-              type="submit"
-              className="btn btn--ember booking-form__submit"
-              disabled={!canSubmit}
-            >
+            <Btn type="submit" disabled={!canSubmit}>
               {status === "submitting" ? labels.submitting : labels.submit}
-            </button>
+            </Btn>
           </fieldset>
         </>
       )}

@@ -16,7 +16,6 @@ export type BookingRow = {
   meetingType: string;
   message: string | null;
   locale: string;
-  packages: string;
   meetingRoom: string | null;
   status: string;
   createdAt: string;
@@ -32,7 +31,6 @@ export type BookingRecord = {
   meetingType: MeetingMode;
   message: string | null;
   locale: Locale;
-  packages: string[];
   meetingRoom: string | null;
   status: BookingStatus;
 };
@@ -53,22 +51,6 @@ export function slotKey(iso: string): string {
   return date.toISOString();
 }
 
-export function encodePackages(ids: string[]): string {
-  return JSON.stringify(ids);
-}
-
-/** Package ids are cosmetic (email labels only), so a corrupted column degrades to none. */
-export function decodePackages(raw: string): string[] {
-  try {
-    const parsed: unknown = JSON.parse(raw);
-    return Array.isArray(parsed)
-      ? parsed.filter((id) => typeof id === "string")
-      : [];
-  } catch {
-    return [];
-  }
-}
-
 /** Maps a row to the domain record. Throws on values the CHECK constraints should have rejected. */
 export function toRecord(row: BookingRow): BookingRecord {
   if (!isMeetingMode(row.meetingType))
@@ -84,7 +66,6 @@ export function toRecord(row: BookingRow): BookingRecord {
     meetingType: row.meetingType,
     message: row.message,
     locale: asLocale(row.locale),
-    packages: decodePackages(row.packages),
     meetingRoom: row.meetingRoom,
     status: row.status,
   };

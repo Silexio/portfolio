@@ -1,11 +1,5 @@
 import { describe, expect, it } from "vitest";
-import {
-  decodePackages,
-  encodePackages,
-  slotKey,
-  toRecord,
-  type BookingRow,
-} from "@/lib/booking/record";
+import { slotKey, toRecord, type BookingRow } from "@/lib/booking/record";
 
 const row: BookingRow = {
   id: "abc",
@@ -16,7 +10,6 @@ const row: BookingRow = {
   meetingType: "video",
   message: null,
   locale: "fr",
-  packages: '["site","api"]',
   meetingRoom: "silexio-xyz",
   status: "pending",
   createdAt: "2026-01-10T09:00:00.000Z",
@@ -38,24 +31,6 @@ describe("slotKey", () => {
   });
 });
 
-describe("packages", () => {
-  it("round-trips ids", () => {
-    expect(decodePackages(encodePackages(["site", "api"]))).toEqual([
-      "site",
-      "api",
-    ]);
-  });
-
-  it("degrades to none on corrupted or non-array JSON", () => {
-    expect(decodePackages("{oops")).toEqual([]);
-    expect(decodePackages('{"a":1}')).toEqual([]);
-  });
-
-  it("keeps only string entries", () => {
-    expect(decodePackages('["site",42,null]')).toEqual(["site"]);
-  });
-});
-
 describe("toRecord", () => {
   it("maps a row to the domain record", () => {
     expect(toRecord(row)).toEqual({
@@ -67,7 +42,6 @@ describe("toRecord", () => {
       meetingType: "video",
       message: null,
       locale: "fr",
-      packages: ["site", "api"],
       meetingRoom: "silexio-xyz",
       status: "pending",
     });

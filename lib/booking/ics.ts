@@ -1,3 +1,5 @@
+export type IcsStatus = "CONFIRMED" | "TENTATIVE";
+
 export type IcsInput = {
   uid: string;
   start: Date;
@@ -9,6 +11,10 @@ export type IcsInput = {
   organizerEmail: string;
   attendeeName: string;
   attendeeEmail: string;
+  /** TENTATIVE pour une demande pas encore confirmee : l'agenda tient le creneau sans le donner pour sur. */
+  status?: IcsStatus;
+  /** Incremente quand le meme UID repart mis a jour : un client conforme remplace au lieu de dupliquer. */
+  sequence?: number;
 };
 
 const pad = (n: number) => String(n).padStart(2, "0");
@@ -20,12 +26,26 @@ function toUtc(date: Date): string {
   );
 }
 
+/**
+ * Échappement d'une valeur de propriété (RFC 5545 §3.3.11). Les sauts de ligne sont traités avant
+ * les retours chariot seuls : un `\r` laissé tel quel serait lu comme une fin de ligne par un
+ * analyseur tolérant, qui verrait alors une propriété forgée dans l'événement.
+ */
 function escapeText(value: string): string {
   return value
     .replace(/\\/g, "\\\\")
     .replace(/;/g, "\\;")
     .replace(/,/g, "\\,")
-    .replace(/\r?\n/g, "\\n");
+    .replace(/\r\n|\n|\r/g, "\\n");
+}
+
+/**
+ * Valeur d'un paramètre de propriété (`CN=`). Elle vit avant le `:` qui ouvre la valeur, donc un
+ * `:` ou un guillemet non filtré y ouvrirait une propriété de son choix. La RFC autorise la forme
+ * entre guillemets, à condition que la valeur n'en contienne aucun.
+ */
+function escapeParam(value: string): string {
+  return `"${value.replace(/[\\";:\r\n]/g, " ")}"`;
 }
 
 function fold(line: string): string {
@@ -74,9 +94,10 @@ export function buildIcs(input: IcsInput, stamp: Date = new Date()): string {
     `SUMMARY:${escapeText(input.summary)}`,
     `DESCRIPTION:${escapeText(input.description)}`,
     `LOCATION:${escapeText(input.location)}`,
-    `ORGANIZER;CN=${escapeText(input.organizerName)}:mailto:${input.organizerEmail}`,
-    `ATTENDEE;CN=${escapeText(input.attendeeName)};RSVP=TRUE:mailto:${input.attendeeEmail}`,
-    "STATUS:CONFIRMED",
+    `ORGANIZER;CN=${escapeParam(input.organizerName)}:mailto:${input.organizerEmail}`,
+    `ATTENDEE;CN=${escapeParam(input.attendeeName)};RSVP=TRUE:mailto:${input.attendeeEmail}`,
+    `SEQUENCE:${input.sequence ?? 0}`,
+    `STATUS:${input.status ?? "CONFIRMED"}`,
     "END:VEVENT",
     "END:VCALENDAR",
   ];

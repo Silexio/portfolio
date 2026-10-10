@@ -1,9 +1,15 @@
+import { BRAND } from "@/lib/brand";
 import { BOOKING, BOOKING_EMAILS, EMAIL, I18N } from "@/lib/data";
 import { BASE_URL } from "@/lib/metadata";
 import type { Locale } from "@/lib/i18n/config";
-import { t } from "@/lib/i18n/utils";
+import { fill, t } from "@/lib/i18n/utils";
 import { formatSlotLabel } from "@/lib/booking/format";
-import { buildIcs, googleCalendarUrl, type IcsInput } from "@/lib/booking/ics";
+import {
+  buildIcs,
+  googleCalendarUrl,
+  type IcsInput,
+  type IcsStatus,
+} from "@/lib/booking/ics";
 import { meetingUrl } from "@/lib/booking/meeting";
 import type { MeetingMode } from "@/lib/booking/schema";
 import { signAction, type BookingAction } from "@/lib/booking/token";
@@ -17,6 +23,8 @@ export type Mail = {
   subject: string;
   html: string;
   text: string;
+  /** Adresse de réponse. Absente = l'adresse de contact publique. */
+  replyTo?: string;
   attachments?: MailAttachment[];
 };
 
@@ -27,7 +35,6 @@ export type OwnerMailData = {
   phone: string;
   meetingType: MeetingMode;
   message?: string;
-  packages: string[];
   slotIso: string;
   locale: Locale;
 };
@@ -50,12 +57,9 @@ export type ConfirmedMailData = {
   locale: Locale;
 };
 
-export type OwnerConfirmedMailData = ConfirmedMailData & {
-  phone: string;
-  ownerEmail: string;
-};
+export type OwnerConfirmedMailData = ConfirmedMailData & { phone: string };
 
-function esc(value: string): string {
+export function esc(value: string): string {
   return value
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
@@ -63,17 +67,36 @@ function esc(value: string): string {
     .replace(/"/g, "&quot;");
 }
 
-function fill(template: string, vars: Record<string, string>): string {
-  return template.replace(/\{(\w+)\}/g, (_, key) =>
-    key in vars ? vars[key] : `{${key}}`,
-  );
+export const nl2br = (value: string) => value.replace(/\n/g, "<br>");
+
+/** Ligne d'un tableau d'email ; `value` est inséré tel quel, donc déjà échappé par l'appelant. */
+export const row = (label: string, value: string) =>
+  `<tr><td style="padding:6px 12px 6px 0;color:${BRAND.muted};vertical-align:top;white-space:nowrap;">${esc(label)}</td><td style="padding:6px 0;">${value}</td></tr>`;
+
+export function shell(inner: string): string {
+  return `<!doctype html><html lang="en"><body style="margin:0;background:${BRAND.bg};padding:24px;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:${BRAND.text};line-height:1.5;">
+<div style="max-width:560px;margin:0 auto;background:${BRAND.raised};border-radius:14px;padding:28px;">${inner}</div></body></html>`;
 }
 
-const nl2br = (value: string) => value.replace(/\n/g, "<br>");
+const BUTTON =
+  "display:inline-block;padding:12px 20px;border-radius:8px;text-decoration:none;font-weight:600;margin:0 8px 8px 0;";
 
-function shell(inner: string): string {
-  return `<!doctype html><html lang="en"><body style="margin:0;background:#f4f1ea;padding:24px;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:#1a1a1a;line-height:1.5;">
-<div style="max-width:560px;margin:0 auto;background:#ffffff;border-radius:14px;padding:28px;">${inner}</div></body></html>`;
+/** Lien d'email : les clients mail n'heritent d'aucune feuille de style, la couleur se pose a la main. */
+function mailLink(href: string, label: string): string {
+  return `<a href="${esc(href)}" style="color:${BRAND.accent};">${esc(label)}</a>`;
+}
+
+/** Bouton d'email : un `<a>` style en ligne, la seule forme de bouton que tous les clients mail rendent. */
+function mailButton(
+  href: string,
+  label: string,
+  tone: "accent" | "ghost" = "accent",
+): string {
+  const skin =
+    tone === "accent"
+      ? `background:${BRAND.accent};color:${BRAND.onAccent};border-left:3px solid ${BRAND.spark};`
+      : `border:1px solid ${BRAND.border};color:${BRAND.heading};`;
+  return `<a href="${esc(href)}" style="${BUTTON}${skin}">${esc(label)}</a>`;
 }
 
 function modeLabel(meetingType: MeetingMode, locale: Locale): string {
@@ -103,25 +126,65 @@ type IcsTarget = {
   locale: Locale;
   attendeeName: string;
   attendeeEmail: string;
+  /** Titre vu dans l'agenda du destinataire ; par defaut celui du client. */
+  summary?: string;
+  /** Ajoute a la description : les coordonnees du client dans l'agenda du proprietaire. */
+  contact?: string;
+  status?: IcsStatus;
+  sequence?: number;
 };
 
 function calendarEvent(target: IcsTarget): IcsInput {
   const ics = BOOKING_EMAILS.ics;
   const url = meetingLink(target.meetingType, target.roomSlug);
+  const video = target.meetingType === "video";
+  const detail = url
+    ? fill(t(ics.descriptionVideo, target.locale), { url })
+    : t(
+        video ? ics.descriptionVideoPending : ics.descriptionCall,
+        target.locale,
+      );
   return {
     uid: `${target.id}@silexio.be`,
     start: new Date(target.slotIso),
     durationMinutes: BOOKING.slotMinutes,
-    summary: t(ics.summary, target.locale),
-    description: url
-      ? fill(t(ics.descriptionVideo, target.locale), { url })
-      : t(ics.descriptionCall, target.locale),
-    location: url ?? t(ics.locationCall, target.locale),
+    summary: target.summary ?? t(ics.summary, target.locale),
+    description: target.contact ? `${detail}\n${target.contact}` : detail,
+    location:
+      url ?? t(video ? ics.locationVideo : ics.locationCall, target.locale),
     organizerName: "Silexio",
     organizerEmail: EMAIL,
     attendeeName: target.attendeeName,
     attendeeEmail: target.attendeeEmail,
+    status: target.status,
+    sequence: target.sequence,
   };
+}
+
+/** Invitation pour l'agenda du proprietaire : le client en participant, ses coordonnees dans la description. */
+function ownerEvent(
+  data: Pick<
+    OwnerMailData,
+    "id" | "name" | "email" | "phone" | "meetingType" | "slotIso" | "locale"
+  > & { roomSlug?: string; pending: boolean },
+): IcsInput {
+  const ics = BOOKING_EMAILS.ics;
+  return calendarEvent({
+    id: data.id,
+    slotIso: data.slotIso,
+    meetingType: data.meetingType,
+    roomSlug: data.roomSlug,
+    locale: data.locale,
+    attendeeName: data.name,
+    attendeeEmail: data.email,
+    summary: fill(
+      t(data.pending ? ics.ownerSummaryPending : ics.ownerSummary, data.locale),
+      { name: data.name },
+    ),
+    contact: `${data.email} \u00b7 ${data.phone}`,
+    status: data.pending ? "TENTATIVE" : "CONFIRMED",
+    sequence: data.pending ? 0 : 1,
+  });
 }
 
 function bookingIcs(event: IcsInput): MailAttachment {
@@ -137,26 +200,18 @@ export function ownerEmail(data: OwnerMailData): Mail {
   const tpl = BOOKING_EMAILS.owner;
   const slot = formatSlotLabel(data.slotIso, data.locale);
   const mode = modeLabel(data.meetingType, data.locale);
-  const packages = data.packages.join(", ");
   const subject = fill(t(tpl.subject, data.locale), { name: data.name });
   const f = tpl.fields;
-
-  const row = (label: string, value: string) =>
-    `<tr><td style="padding:6px 12px 6px 0;color:#6b6b6b;vertical-align:top;white-space:nowrap;">${esc(label)}</td><td style="padding:6px 0;">${value}</td></tr>`;
 
   const rows = [
     row(t(f.slot, data.locale), esc(slot)),
     row(t(f.mode, data.locale), esc(mode)),
     row(t(f.name, data.locale), esc(data.name)),
-    row(
-      t(f.email, data.locale),
-      `<a href="mailto:${esc(data.email)}">${esc(data.email)}</a>`,
-    ),
+    row(t(f.email, data.locale), mailLink(`mailto:${data.email}`, data.email)),
     row(
       t(f.phone, data.locale),
-      `<a href="tel:${esc(data.phone.replace(/\s/g, ""))}">${esc(data.phone)}</a>`,
+      mailLink(`tel:${data.phone.replace(/\s/g, "")}`, data.phone),
     ),
-    data.packages.length ? row(t(f.packages, data.locale), esc(packages)) : "",
     data.message
       ? row(t(f.message, data.locale), nl2br(esc(data.message)))
       : "",
@@ -164,16 +219,13 @@ export function ownerEmail(data: OwnerMailData): Mail {
 
   const confirmHref = actionUrl(data.id, "confirm", data.locale);
   const refuseHref = actionUrl(data.id, "refuse", data.locale);
-  const buttons = `<div style="margin-top:24px;">
-<a href="${confirmHref}" style="display:inline-block;padding:12px 20px;border-radius:8px;background:#c2410c;color:#fff;text-decoration:none;font-weight:600;margin-right:8px;">${esc(t(tpl.confirm, data.locale))}</a>
-<a href="${refuseHref}" style="display:inline-block;padding:12px 20px;border-radius:8px;border:1px solid #d4d0c8;color:#1a1a1a;text-decoration:none;">${esc(t(tpl.refuse, data.locale))}</a>
-</div>`;
+  const buttons = `<div style="margin-top:24px;">${mailButton(confirmHref, t(tpl.confirm, data.locale))}${mailButton(refuseHref, t(tpl.refuse, data.locale), "ghost")}</div>`;
 
   const html = shell(
     `<h1 style="font-size:18px;margin:0 0 16px;">${esc(t(tpl.heading, data.locale))}</h1>
 <table style="border-collapse:collapse;font-size:14px;">${rows}</table>
 ${buttons}
-<p style="margin-top:20px;font-size:12px;color:#6b6b6b;">${esc(t(tpl.hint, data.locale))}</p>`,
+<p style="margin-top:20px;font-size:12px;color:${BRAND.muted};">${nl2br(esc(t(tpl.hint, data.locale)))}</p>`,
   );
 
   const text = [
@@ -184,7 +236,6 @@ ${buttons}
     `${t(f.name, data.locale)}: ${data.name}`,
     `${t(f.email, data.locale)}: ${data.email}`,
     `${t(f.phone, data.locale)}: ${data.phone}`,
-    data.packages.length ? `${t(f.packages, data.locale)}: ${packages}` : "",
     data.message ? `${t(f.message, data.locale)}: ${data.message}` : "",
     "",
     `${t(tpl.confirm, data.locale)}: ${confirmHref}`,
@@ -195,10 +246,15 @@ ${buttons}
     .filter((line) => line !== "")
     .join("\n");
 
-  return { subject, html, text };
+  return {
+    subject,
+    html,
+    text,
+    attachments: [bookingIcs(ownerEvent({ ...data, pending: true }))],
+  };
 }
 
-type MailLink = { url: string; label?: string };
+type MailLink = { url: string; label?: string; button?: boolean };
 
 function clientMail(
   subject: string,
@@ -206,11 +262,11 @@ function clientMail(
   links: MailLink[] = [],
 ): Mail {
   let body = nl2br(esc(text));
-  for (const { url, label } of links) {
-    body = body.replace(
-      esc(url),
-      `<a href="${esc(url)}">${esc(label ?? url)}</a>`,
-    );
+  for (const { url, label, button } of links) {
+    const anchor = button
+      ? mailButton(url, label ?? url)
+      : mailLink(url, label ?? url);
+    body = body.replace(esc(url), () => anchor);
   }
   return {
     subject,
@@ -252,7 +308,11 @@ export function confirmedEmail(data: ConfirmedMailData): Mail {
     calendar,
   });
   const links: MailLink[] = [
-    { url: calendarUrl, label: t(tpl.calendarLabel, data.locale) },
+    {
+      url: calendarUrl,
+      label: t(tpl.calendarLabel, data.locale),
+      button: true,
+    },
   ];
   if (url) links.unshift({ url });
   return {
@@ -269,11 +329,7 @@ export function ownerConfirmedEmail(data: OwnerConfirmedMailData): Mail {
   const meetingInfo = url
     ? fill(t(BOOKING_EMAILS.confirmed.meetingVideo, data.locale), { url })
     : fill(t(tpl.meetingCall, data.locale), { name: data.name });
-  const event = calendarEvent({
-    ...data,
-    attendeeName: "Silexio",
-    attendeeEmail: data.ownerEmail,
-  });
+  const event = ownerEvent({ ...data, pending: false });
   const calendarUrl = googleCalendarUrl(event);
   const calendar = fill(t(BOOKING_EMAILS.confirmed.calendar, data.locale), {
     url: calendarUrl,
@@ -291,6 +347,7 @@ export function ownerConfirmedEmail(data: OwnerConfirmedMailData): Mail {
     {
       url: calendarUrl,
       label: t(BOOKING_EMAILS.confirmed.calendarLabel, data.locale),
+      button: true,
     },
   ];
   if (url) links.unshift({ url });

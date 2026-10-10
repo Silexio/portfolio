@@ -1,3 +1,4 @@
+import { reportServerError } from "@/lib/observability/server";
 import { parseBusyIntervals, type BusyInterval } from "@/lib/booking/ical";
 
 /** Au-delà, on rend la main : un agenda lent ne doit pas retarder l'ouverture de la modale. */
@@ -80,13 +81,19 @@ async function fetchIntervals(
       cache: "no-store",
     });
     if (!res.ok) return [];
+    // Le plafond doit être lu avant le corps : vérifié après `text()`, il ne borne plus la mémoire.
+    const declared = Number(res.headers.get("content-length"));
+    if (Number.isFinite(declared) && declared > MAX_BYTES) return [];
     const text = await res.text();
     if (text.length > MAX_BYTES || !text.includes("BEGIN:VCALENDAR")) return [];
 
     // Seuls les succès sont mémorisés : un échec doit pouvoir se rétablir au coup suivant.
     cache.set(url, { at: Date.now(), text });
     return parseBusyIntervals(text, windowStart, windowEnd);
-  } catch {
+  } catch (error) {
+    // La dégradation reste ouverte — tous les créneaux restent réservables — mais elle cesse
+    // d'être muette : un agenda injoignable se voit dans Bugsink, pas au premier double rendez-vous.
+    reportServerError(error, "calendar-fetch");
     return [];
   }
 }

@@ -214,3 +214,69 @@ describe("isSlotBusy", () => {
     expect(isSlotBusy("2026-09-02T08:30:00.000Z", 30, [])).toBe(false);
   });
 });
+
+/**
+ * L'agenda branché est l'agenda principal du studio : il porte des séries anciennes. Le dépliage
+ * part du DTSTART et est borné, donc une série qui a plus de pas que ce plafond n'atteignait
+ * jamais la fenêtre et cessait de bloquer — en silence, et dans le sens dangereux : le créneau
+ * restait réservable alors qu'il est pris.
+ */
+describe("récurrences anciennes", () => {
+  it("bloque encore une série quotidienne commencée trois ans plus tôt", () => {
+    const out = busy(
+      "BEGIN:VEVENT\nDTSTART:20230901T080000Z\nDTEND:20230901T090000Z\nRRULE:FREQ=DAILY\nEND:VEVENT",
+    );
+    expect(out.length).toBeGreaterThan(0);
+    expect(isSlotBusy("2026-09-02T08:00:00.000Z", 30, out)).toBe(true);
+  });
+
+  it("bloque encore une série hebdomadaire par jours nommés du même âge", () => {
+    const out = busy(
+      "BEGIN:VEVENT\nDTSTART:20230904T080000Z\nDTEND:20230904T090000Z\nRRULE:FREQ=WEEKLY;BYDAY=MO,WE\nEND:VEVENT",
+    );
+    // 2026-09-02 est un mercredi, 2026-09-07 un lundi.
+    expect(isSlotBusy("2026-09-02T08:00:00.000Z", 30, out)).toBe(true);
+    expect(isSlotBusy("2026-09-07T08:00:00.000Z", 30, out)).toBe(true);
+    expect(isSlotBusy("2026-09-03T08:00:00.000Z", 30, out)).toBe(false);
+  });
+
+  it("garde la phase d'un intervalle de deux semaines", () => {
+    // Depuis le 2026-08-24 (lundi), une semaine sur deux : 24/08, 07/09, 21/09.
+    const out = busy(
+      "BEGIN:VEVENT\nDTSTART:20260824T080000Z\nDTEND:20260824T090000Z\nRRULE:FREQ=WEEKLY;INTERVAL=2;BYDAY=MO\nEND:VEVENT",
+    );
+    expect(isSlotBusy("2026-09-07T08:00:00.000Z", 30, out)).toBe(true);
+    expect(isSlotBusy("2026-09-14T08:00:00.000Z", 30, out)).toBe(false);
+  });
+
+  it("garde la phase d'une série ancienne tous les trois jours", () => {
+    // Jours écoulés depuis le 2023-09-01, calculés à part : 1098 le 2026-09-03 et 1101 le 09-06
+    // sont multiples de 3, 1097 (le 09-02) et 1100 (le 09-05) non.
+    const out = busy(
+      "BEGIN:VEVENT\nDTSTART:20230901T080000Z\nDTEND:20230901T090000Z\nRRULE:FREQ=DAILY;INTERVAL=3\nEND:VEVENT",
+    );
+    expect(isSlotBusy("2026-09-03T08:00:00.000Z", 30, out)).toBe(true);
+    expect(isSlotBusy("2026-09-06T08:00:00.000Z", 30, out)).toBe(true);
+    expect(isSlotBusy("2026-09-02T08:00:00.000Z", 30, out)).toBe(false);
+    expect(isSlotBusy("2026-09-05T08:00:00.000Z", 30, out)).toBe(false);
+  });
+
+  it("garde la phase d'une série ancienne une semaine sur deux", () => {
+    // Depuis le lundi 2023-09-04 : le 2026-09-07 est la semaine 157 (impaire, donc sautée) et le
+    // 2026-09-14 la 158e. Comptage fait à part, pas depuis le code.
+    const out = busy(
+      "BEGIN:VEVENT\nDTSTART:20230904T080000Z\nDTEND:20230904T090000Z\nRRULE:FREQ=WEEKLY;INTERVAL=2;BYDAY=MO\nEND:VEVENT",
+    );
+    expect(isSlotBusy("2026-09-14T08:00:00.000Z", 30, out)).toBe(true);
+    expect(isSlotBusy("2026-09-07T08:00:00.000Z", 30, out)).toBe(false);
+  });
+
+  it("respecte COUNT sans sauter la fenêtre", () => {
+    const out = busy(
+      "BEGIN:VEVENT\nDTSTART:20260831T080000Z\nDTEND:20260831T090000Z\nRRULE:FREQ=DAILY;COUNT=3\nEND:VEVENT",
+    );
+    expect(isSlotBusy("2026-09-01T08:00:00.000Z", 30, out)).toBe(true);
+    expect(isSlotBusy("2026-09-02T08:00:00.000Z", 30, out)).toBe(true);
+    expect(isSlotBusy("2026-09-03T08:00:00.000Z", 30, out)).toBe(false);
+  });
+});

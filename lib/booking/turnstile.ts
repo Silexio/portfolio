@@ -1,3 +1,5 @@
+import { reportServerError } from "@/lib/observability/server";
+
 const SITEVERIFY = "https://challenges.cloudflare.com/turnstile/v0/siteverify";
 
 /** Server-side Cloudflare Turnstile validation. Not subject to the browser CSP. */
@@ -14,7 +16,9 @@ export async function verifyTurnstile(
     if (!res.ok) return false;
     const data = (await res.json()) as { success?: boolean };
     return data.success === true;
-  } catch {
+  } catch (error) {
+    // Échec fermé, et signalé : si siteverify est injoignable, plus aucun formulaire ne part.
+    reportServerError(error, "turnstile-verify");
     return false;
   }
 }

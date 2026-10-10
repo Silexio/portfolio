@@ -85,6 +85,6 @@ export function Turnstile({ siteKey, onToken, label }: TurnstileProps) {
   }, [siteKey]);
 
   return (
-    <div ref={hostRef} className="booking-form__captcha" aria-label={label} />
+    <div ref={hostRef} className="captcha" role="group" aria-label={label} />
   );
 }
