@@ -687,7 +687,7 @@ export const ART = {
 };
 
 export type OfferId =
-  "intro" | "diagnostic" | "site" | "automation" | "software" | "care";
+  "intro" | "audit" | "site" | "automation" | "software" | "care";
 
 type Offer = {
   id: OfferId;
@@ -714,7 +714,7 @@ export const OFFERS: Offer[] = [
     },
   },
   {
-    id: "diagnostic",
+    id: "audit",
     name: { fr: "Audit", en: "Audit" },
     price: { amount: 600, from: true, monthly: false },
     summary: {
@@ -781,8 +781,8 @@ export const FAQ: FaqEntry[] = [
   {
     q: { fr: "Combien ça coûte ?", en: "How much does it cost?" },
     a: {
-      fr: "Le premier échange est gratuit. Les étapes suivantes ont un prix affiché, du diagnostic à l’outil métier : voyez les tarifs plus haut. Le montant exact est fixé par écrit avant de commencer — jamais de facture surprise en cours de route.",
-      en: "The first conversation is free. Each following step has a published price, from the diagnostic to the business tool: see pricing above. The exact amount is set in writing before we start — never a surprise invoice along the way.",
+      fr: "Le premier échange est gratuit. Les étapes suivantes ont un prix affiché, de l’audit au logiciel métier : voyez les tarifs plus haut. Le montant exact est fixé par écrit avant de commencer — jamais de facture surprise en cours de route.",
+      en: "The first conversation is free. Each following step has a published price, from the audit to the business software: see pricing above. The exact amount is set in writing before we start — never a surprise invoice along the way.",
     },
   },
   {
@@ -801,8 +801,8 @@ export const FAQ: FaqEntry[] = [
       en: "I know nothing about IT — is that a problem?",
     },
     a: {
-      fr: "C’est même le cas de la plupart de mes clients. Vous m’expliquez votre problème avec vos mots, je traduis en solution. Je ne vous ferai jamais un devis bourré de termes techniques que vous devriez aller chercher sur Google pour comprendre ce que vous payez.",
-      en: "That’s true of most of my clients. You explain your problem in your own words, I translate it into a solution. You’ll never get a quote stuffed with technical terms you’d have to google to understand what you’re paying for.",
+      fr: "C’est même la situation la plus courante. Vous m’expliquez votre problème avec vos mots, je traduis en solution. Je ne vous ferai jamais un devis bourré de termes techniques que vous devriez aller chercher sur Google pour comprendre ce que vous payez.",
+      en: "That is in fact the most common situation. You explain your problem in your own words, I translate it into a solution. You’ll never get a quote stuffed with technical terms you’d have to google to understand what you’re paying for.",
     },
   },
   {
