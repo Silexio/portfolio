@@ -1343,6 +1343,9 @@ button {
 .domain-art--connect .art-hub {
   fill: url(#art-lit-connect);
 }
+.domain-art--repair .art-paper {
+  fill: url(#art-lit-repair);
+}
 .art-paper {
   fill: var(--raised);
   stroke: var(--border);

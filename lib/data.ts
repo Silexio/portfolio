@@ -541,6 +541,9 @@ export const LEAD_EMAILS = {
 
 export type DomainId = "automate" | "connect" | "build";
 
+/** Les planches disponibles. « repair » n'a pas de panneau sur l'accueil, seulement sa page. */
+export type ArtId = DomainId | "repair";
+
 type Domain = {
   id: DomainId;
   title: Bilingual;

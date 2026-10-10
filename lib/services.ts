@@ -1,5 +1,5 @@
 import { PEPPOL_FAQ } from "@/lib/data";
-import type { DomainId, FaqEntry, OfferId, ServicePageId } from "@/lib/data";
+import type { ArtId, FaqEntry, OfferId, ServicePageId } from "@/lib/data";
 import type { Locale } from "@/lib/i18n/config";
 import { t, type Bilingual } from "@/lib/i18n/utils";
 
@@ -24,7 +24,7 @@ export type ServicePage = {
   lead: Bilingual;
   cta: Bilingual;
   /** Illustration du hero, partagée avec le panneau de l’accueil. Absente = hero sur une colonne. */
-  art?: DomainId;
+  art?: ArtId;
   situationsTitle: Bilingual;
   situations: Bilingual[];
   stepsTitle: Bilingual;
@@ -325,6 +325,7 @@ export const SERVICE_PAGES: ServicePage[] = [
   },
   {
     id: "support",
+    art: "repair",
     slug: { fr: "depannage", en: "it-support" },
     name: { fr: "Dépannage informatique", en: "IT support" },
     meta: {

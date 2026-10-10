@@ -1,10 +1,10 @@
 import { Fragment, type ReactNode } from "react";
-import { ART, type DomainId } from "@/lib/data";
+import { ART, type ArtId } from "@/lib/data";
 import type { Locale } from "@/lib/i18n/config";
 import { cssVars } from "@/lib/css";
 import { t } from "@/lib/i18n/utils";
 
-type DomainArtProps = { id: DomainId; lang: Locale };
+type DomainArtProps = { id: ArtId; lang: Locale };
 
 /** Illustration d'une famille de solutions, partagée par l'accueil et les pages dédiées. Décorative. */
 export function DomainArt({ id, lang }: DomainArtProps) {
@@ -48,12 +48,12 @@ function ArtLight({ id }: { id: string }) {
   );
 }
 
-const ART_BY_DOMAIN: Record<DomainId, (props: { lang: Locale }) => ReactNode> =
-  {
-    automate: AutomateArt,
-    connect: ConnectArt,
-    build: BuildArt,
-  };
+const ART_BY_DOMAIN: Record<ArtId, (props: { lang: Locale }) => ReactNode> = {
+  automate: AutomateArt,
+  connect: ConnectArt,
+  build: BuildArt,
+  repair: RepairArt,
+};
 
 const PAGE_LINES = [118, 104, 112, 90, 116, 70, 100];
 const CELL_TEXT = [
@@ -166,6 +166,87 @@ function AutomateArt() {
     </svg>
   );
 }
+
+/* Dépanner : l'éclat frappe le poste, l'écran se repeuple ligne à ligne et la liaison vers la
+   box repart. Les barres portent `art-cell`, donc elles héritent du remplissage progressif des
+   autres planches — un seul mouvement à entretenir pour tout le site. */
+function RepairArt() {
+  return (
+    <svg viewBox="11 0 684 420" fill="none">
+      <ArtLight id="repair" />
+      <path className="art-spoke" d="M520 192H566" />
+      <path className="art-pulse" d="M566 192H520" />
+      <rect
+        className="art-paper"
+        x="566"
+        y="140"
+        width="84"
+        height="104"
+        rx="10"
+      />
+      <rect
+        className="art-muted"
+        x="584"
+        y="164"
+        width="48"
+        height="7"
+        rx="2"
+      />
+      <rect
+        className="art-muted"
+        x="584"
+        y="182"
+        width="32"
+        height="7"
+        rx="2"
+      />
+      <circle className="art-accent" cx="590" cy="214" r="6" />
+      <rect
+        className="art-paper"
+        x="188"
+        y="62"
+        width="332"
+        height="214"
+        rx="12"
+      />
+      <rect
+        className="art-accent-soft"
+        x="206"
+        y="80"
+        width="296"
+        height="160"
+        rx="5"
+      />
+      {SCREEN_LINES.map((width, index) => (
+        <rect
+          key={width}
+          className="art-muted art-cell"
+          style={cssVars({ "--i": index })}
+          x="226"
+          y={104 + index * 26}
+          width={width}
+          height="8"
+          rx="2"
+        />
+      ))}
+      <polygon className="art-paper" points="316,276 392,276 406,320 302,320" />
+      <rect
+        className="art-paper"
+        x="272"
+        y="320"
+        width="164"
+        height="14"
+        rx="5"
+      />
+      <polygon
+        className="art-accent"
+        points="56,178 110,160 148,186 110,214 56,196 70,187"
+      />
+    </svg>
+  );
+}
+
+const SCREEN_LINES = [228, 196, 244, 168, 212];
 
 const HUB = { x: 342, y: 210 };
 const NODES = [
