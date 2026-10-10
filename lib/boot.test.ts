@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { BOOT_SCRIPT } from "@/lib/boot";
 import { MARK_CENTER } from "@/components/ui/Mark";
 
@@ -119,6 +119,8 @@ function expectedOffset() {
 }
 
 describe("script d'amorçage", () => {
+  afterEach(() => vi.unstubAllGlobals());
+
   it("s'exécute sans erreur et arme tout pendant le chargement", () => {
     const boot = install("loading");
     expect(boot.run).not.toThrow();
@@ -126,7 +128,6 @@ describe("script d'amorçage", () => {
     expect(boot.document.documentElement.dataset.revealJs).toBe("");
     expect(boot.documentListeners.has("DOMContentLoaded")).toBe(true);
     expect(boot.documentListeners.has("click")).toBe(true);
-    vi.unstubAllGlobals();
   });
 
   it("vise chaque volume depuis le centre du tracé de la marque", () => {
@@ -136,7 +137,6 @@ describe("script d'amorçage", () => {
     const { dx, dy } = expectedOffset();
     expect(boot.part.style.setProperty).toHaveBeenCalledWith("--dx", dx);
     expect(boot.part.style.setProperty).toHaveBeenCalledWith("--dy", dy);
-    vi.unstubAllGlobals();
   });
 
   it("retaille la pierre au clic tant que la physique n'a pas pris la main", () => {
@@ -148,7 +148,6 @@ describe("script d'amorçage", () => {
     });
     expect(() => click?.({ target })).not.toThrow();
     expect(boot.stone.hasAttribute("data-knapped")).toBe(true);
-    vi.unstubAllGlobals();
   });
 
   it("installe la physique et déplace les volumes au passage du curseur", () => {
@@ -168,6 +167,5 @@ describe("script d'amorçage", () => {
     expect(boot.part.style.translate).toMatch(/^-?\d+\.\d\dpx -?\d+\.\d\dpx$/);
     // Les deux axes doivent avoir bougé : un seul ressort cassé passerait sinon.
     expect(boot.part.style.translate).not.toMatch(/(^|\s)0\.00px/);
-    vi.unstubAllGlobals();
   });
 });

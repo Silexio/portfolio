@@ -11,7 +11,6 @@ import type { CSSProperties } from "react";
  */
 export function cssVars(vars: Record<string, string | number>): CSSProperties {
   const style: Record<string, string> = {};
-  for (const [name, value] of Object.entries(vars))
-    style[name] = typeof value === "number" ? String(value) : value;
+  for (const [name, value] of Object.entries(vars)) style[name] = String(value);
   return style as CSSProperties;
 }

@@ -1,16 +1,7 @@
 import { expect, test, type Page } from "@playwright/test";
+import { stubTurnstile } from "./stub-turnstile";
 
-/* Même bouchon que le formulaire de demande : un jeton délivré tout de suite, aucun appel chez
-   Cloudflare, et l'envoi intercepté avant Brevo. */
-const stubTurnstile = (page: Page) =>
-  page.route("https://challenges.cloudflare.com/turnstile/**", (route) =>
-    route.fulfill({
-      contentType: "application/javascript",
-      body: "window.turnstile={render:function(el,o){setTimeout(function(){o.callback('e2e-token')});return 'w'},reset:function(){},remove:function(){}};",
-    }),
-  );
-
-const openModal = async (page: import("@playwright/test").Page) => {
+const openModal = async (page: Page) => {
   await page.goto("/fr");
   await page
     .locator("#contact")

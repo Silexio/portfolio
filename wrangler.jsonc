@@ -16,6 +16,25 @@
       "database_id": "b9206700-92af-4782-9c71-a17b2a464ced",
     },
   ],
+  "env": {
+    // Déploiement de préproduction : même code, autre Worker, autre base. Les branches autres que
+    // `main` doivent se déployer ici (Workers Builds → contrôle des branches → `--env preview`),
+    // sinon un push sur `dev` remplace la production, ce qui est arrivé.
+    "preview": {
+      "name": "portfolio-preview",
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_name": "portfolio-booking-preview",
+          "database_id": "c4394d6d-c72c-4da2-bf35-927ae2647b65",
+        },
+      ],
+      "observability": {
+        "enabled": true,
+        "head_sampling_rate": 1,
+      },
+    },
+  },
   "observability": {
     "enabled": true,
     "head_sampling_rate": 1,
