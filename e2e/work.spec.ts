@@ -9,11 +9,11 @@ const openWork = async (page: import("@playwright/test").Page) => {
 };
 
 test.describe("Work carousel", () => {
-  test("exposes the APG carousel semantics", async ({ page }) => {
+  test("exposes the APG carousel semantics, localised", async ({ page }) => {
     const carousel = await openWork(page);
-    await expect(carousel).toHaveAttribute("aria-roledescription", "carousel");
+    await expect(carousel).toHaveAttribute("aria-roledescription", "carrousel");
     const first = carousel.locator(".carousel__viewport > *").first();
-    await expect(first).toHaveAttribute("aria-roledescription", "slide");
+    await expect(first).toHaveAttribute("aria-roledescription", "diapositive");
     await expect(first).toHaveAttribute("aria-label", /projet 1 sur \d+/);
   });
 
@@ -21,15 +21,19 @@ test.describe("Work carousel", () => {
     const carousel = await openWork(page);
     const current = carousel.locator('.carousel__dot[aria-current="true"]');
     const firstLabel = await current.getAttribute("aria-label");
-    await carousel.locator(".carousel__arrow").last().click();
+    await carousel.getByRole("button", { name: "Projet suivant" }).click();
     await expect(current).not.toHaveAttribute("aria-label", firstLabel ?? "");
   });
 
   test("arrows are disabled at both ends", async ({ page }) => {
     const carousel = await openWork(page);
-    await expect(carousel.locator(".carousel__arrow").first()).toBeDisabled();
+    await expect(
+      carousel.getByRole("button", { name: "Projet précédent" }),
+    ).toBeDisabled();
     await carousel.locator(".carousel__dot").last().click();
-    await expect(carousel.locator(".carousel__arrow").last()).toBeDisabled();
+    await expect(
+      carousel.getByRole("button", { name: "Projet suivant" }),
+    ).toBeDisabled();
   });
 
   test("every project keeps a reachable action", async ({ page }) => {

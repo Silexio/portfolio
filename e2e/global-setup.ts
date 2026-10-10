@@ -8,7 +8,14 @@
  */
 async function globalSetup() {
   const base = process.env.PLAYWRIGHT_BASE_URL ?? "http://localhost:3000";
-  for (const path of ["/fr", "/en", "/api/availability"]) {
+  for (const path of [
+    "/fr",
+    "/en",
+    "/fr/automatisation",
+    "/fr/logiciel-metier",
+    "/fr/depannage",
+    "/api/availability",
+  ]) {
     await fetch(`${base}${path}`).catch(() => {});
   }
 }
