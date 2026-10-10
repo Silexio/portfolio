@@ -6,6 +6,10 @@ import type { Mail } from "@/lib/booking/email";
 const ENDPOINT = "https://api.brevo.com/v3/smtp/email";
 const SENDER_NAME = "Silexio";
 
+/** Plus large que les 4 s de l’agenda : un envoi porte une pièce jointe, et son échec coûte
+ *  une notification perdue ou un 502 au prospect. */
+const TIMEOUT_MS = 10_000;
+
 /**
  * Adresse qui reçoit les notifications du studio. Le repli sur l'adresse publique est le point
  * important : sans lui, une variable d'environnement oubliée fait disparaître la notification
@@ -39,6 +43,7 @@ export async function sendMail(to: string, mail: Mail): Promise<void> {
         content: Buffer.from(file.content, "utf8").toString("base64"),
       })),
     }),
+    signal: AbortSignal.timeout(TIMEOUT_MS),
   });
 
   if (!response.ok)

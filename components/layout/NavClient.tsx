@@ -105,6 +105,10 @@ export function NavClient({
       href={`/${otherLang}${altPath}`}
       hrefLang={otherLang}
       scroll={false}
+      /* Mesuré en production : ce lien est le seul `next/link` du site, il est rendu deux fois
+         (en-tête et menu) et il préchargeait /en — charge RSC comprise — à chaque page vue, soit
+         3 requêtes Worker observées pour un lien que presque personne ne clique. */
+      prefetch={false}
       className="lang-switch"
     >
       <span data-active={lang === "fr"}>FR</span>
