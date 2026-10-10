@@ -45,3 +45,33 @@ jobs:
 
       - name: Build
         run: pnpm build
+
+  # `lint`, `test` et `build` étaient tous verts le jour où le site entier a répondu 404 : ils
+  # vérifient le code et la sortie de Next, jamais ce que le Worker sert. Ce travail sert ce qui
+  # sera déployé, dans workerd, et le relit.
+  smoke:
+    name: Servi par workerd
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      NEXT_TELEMETRY_DISABLED: "1"
+      # Figée dans le bundle au moment du build : absente, la réservation part morte en production.
+      NEXT_PUBLIC_TURNSTILE_SITE_KEY: ${{ vars.NEXT_PUBLIC_TURNSTILE_SITE_KEY }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Smoke test
+        run: pnpm smoke
