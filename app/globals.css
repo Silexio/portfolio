@@ -1753,6 +1753,19 @@ button {
     align-self: end;
     margin-top: calc(var(--s-2) - var(--s-1) / 2);
   }
+  /* Le résumé est cloué sur la dernière ligne de la sous-grille. Une offre gratuite n'a pas de
+     mention hors TVA : sans ce placement, son résumé remonte d'une ligne et sa colonne entière
+     se désaligne. `start` aligne les hauts, sinon un résumé d'une ligne se centre dans une
+     rangée dimensionnée par un résumé de deux lignes. */
+  .offer__summary {
+    grid-row: 5;
+    align-self: start;
+  }
+  /* Le seul prix mensuel tient sur deux lignes : aligné par le haut, son montant reste à la
+     hauteur des autres et le suffixe déborde sous lui, plutôt que de tout remonter. */
+  .offer__price {
+    align-self: start;
+  }
   /* Un trait d'une étape à la précédente : rien à masquer, donc l'échelle tient sur tout fond. */
   .offer:not(:first-child)::before {
     content: "";

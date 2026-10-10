@@ -174,7 +174,7 @@ export const I18N = {
     },
     free: { fr: "Gratuit", en: "Free" },
     from: { fr: "dès", en: "from" },
-    perMonth: { fr: "/ mois", en: "/ month" },
+    perMonth: { fr: "/mois", en: "/month" },
     net: {
       fr: "soit {amount} hors TVA pour un professionnel",
       en: "i.e. {amount} excl. VAT for a business",

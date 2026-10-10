@@ -4,13 +4,13 @@ import { priceParts, VAT_RATE, type PriceLabels } from "@/lib/price";
 const fr: PriceLabels = {
   free: "Gratuit",
   from: "dès",
-  perMonth: "/ mois",
+  perMonth: "/mois",
   net: "soit {amount} hors TVA pour un professionnel",
 };
 const en: PriceLabels = {
   free: "Free",
   from: "from",
-  perMonth: "/ month",
+  perMonth: "/month",
   net: "i.e. {amount} excl. VAT for a business",
 };
 const nbsp = /[\u00a0\u202f]/g;
@@ -55,7 +55,7 @@ describe("priceParts", () => {
       "fr",
       fr,
     );
-    expect(parts.tail).toBe("/ mois");
+    expect(parts.tail).toBe("/mois");
     expect(plain(parts.amount)).toBe("120 €");
   });
 
