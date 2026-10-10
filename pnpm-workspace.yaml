@@ -23,3 +23,5 @@ minimumReleaseAgeExclude:
   - eslint-config-next@16.2.9
   - next@16.2.9
   - eslint@10.9.1
+  - '@opennextjs/aws@4.1.9'
+  - '@opennextjs/cloudflare@1.20.10'
