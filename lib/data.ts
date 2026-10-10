@@ -175,9 +175,13 @@ export const I18N = {
     free: { fr: "Gratuit", en: "Free" },
     from: { fr: "dès", en: "from" },
     perMonth: { fr: "/ mois", en: "/ month" },
+    net: {
+      fr: "soit {amount} hors TVA pour un professionnel",
+      en: "i.e. {amount} excl. VAT for a business",
+    },
     note: {
-      fr: "Prix hors TVA : un particulier ajoute 21 % de TVA. Le montant exact est fixé par écrit avant de commencer.",
-      en: "Prices exclude VAT: a private individual adds 21% VAT. The exact amount is set in writing before we start.",
+      fr: "Montants TVA comprise, à partir de. Le périmètre exact et le montant définitif sont fixés par écrit avant de commencer, et vous ne payez rien à la commande.",
+      en: "Amounts include VAT, starting from. The exact scope and final amount are set in writing before we start, and you pay nothing on order.",
     },
   },
   faq: {
@@ -682,7 +686,8 @@ export const ART = {
   },
 };
 
-export type OfferId = "intro" | "diagnostic" | "sprint" | "tool" | "care";
+export type OfferId =
+  "intro" | "diagnostic" | "site" | "automation" | "software" | "care";
 
 type Offer = {
   id: OfferId;
@@ -693,9 +698,10 @@ type Offer = {
 };
 
 /**
- * L’échelle d’offres, dans l’ordre où un client la gravit. Prix HTVA de lancement : ils sont à
- * réviser dès que les premiers chiffres réels de conversion sont connus — c’est le seul endroit
- * où ils vivent (la FAQ et le JSON-LD en dérivent ou y renvoient).
+ * L’échelle d’offres, dans l’ordre où un client la gravit. **Montants hors TVA** : c’est la base
+ * de calcul commerciale et celle du JSON-LD ; l’affichage, lui, montre le total TVA comprise
+ * (`lib/price.ts`). Les planchers viennent du catalogue « Offres & tarifs » du Notion, réconcilié
+ * avec le Business Plan quand les deux se recoupent — c’est le seul endroit où ils vivent.
  */
 export const OFFERS: Offer[] = [
   {
@@ -709,35 +715,44 @@ export const OFFERS: Offer[] = [
   },
   {
     id: "diagnostic",
-    name: { fr: "Diagnostic", en: "Diagnostic" },
-    price: { amount: 490, from: false, monthly: false },
+    name: { fr: "Audit", en: "Audit" },
+    price: { amount: 600, from: true, monthly: false },
     summary: {
-      fr: "Un plan d’action chiffré",
-      en: "A costed action plan",
+      fr: "Ce qui coince, chiffré",
+      en: "What is broken, costed",
     },
   },
   {
-    id: "sprint",
-    name: { fr: "Sprint automatisation", en: "Automation sprint" },
-    price: { amount: 1500, from: true, monthly: false },
+    id: "site",
+    name: { fr: "Site internet", en: "Website" },
+    price: { amount: 900, from: true, monthly: false },
+    summary: {
+      fr: "Une vitrine qui travaille",
+      en: "A site that does its job",
+    },
+  },
+  {
+    id: "automation",
+    name: { fr: "Automatisation", en: "Automation" },
+    price: { amount: 900, from: true, monthly: false },
     summary: {
       fr: "Une tâche supprimée",
       en: "One task gone for good",
     },
   },
   {
-    id: "tool",
-    name: { fr: "Outil métier", en: "Business tool" },
-    price: { amount: 4500, from: true, monthly: false },
+    id: "software",
+    name: { fr: "Logiciel métier", en: "Business software" },
+    price: { amount: 5000, from: true, monthly: false },
     summary: {
-      fr: "Votre logiciel sur mesure",
-      en: "Your custom software",
+      fr: "Votre outil sur mesure",
+      en: "Your custom tool",
     },
   },
   {
     id: "care",
     name: { fr: "Suivi", en: "Care plan" },
-    price: { amount: 150, from: true, monthly: true },
+    price: { amount: 99, from: true, monthly: true },
     summary: {
       fr: "Hébergé, surveillé, entretenu",
       en: "Hosted, monitored, maintained",

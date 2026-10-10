@@ -154,7 +154,7 @@ export const SERVICE_PAGES: ServicePage[] = [
         },
       },
     ],
-    offers: ["intro", "diagnostic", "sprint", "care"],
+    offers: ["intro", "diagnostic", "automation", "care"],
     faq: [
       {
         q: {
@@ -281,7 +281,7 @@ export const SERVICE_PAGES: ServicePage[] = [
         },
       },
     ],
-    offers: ["intro", "diagnostic", "tool", "care"],
+    offers: ["intro", "diagnostic", "software", "care"],
     faq: [
       {
         q: {

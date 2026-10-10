@@ -36,6 +36,7 @@ export function OfferLadder({ lang, ids }: OfferLadderProps) {
                 <strong>{price.amount}</strong>
                 {price.tail && <span> {price.tail}</span>}
               </p>
+              {price.net && <p className="offer__net">{price.net}</p>}
               <p className="offer__summary">{t(offer.summary, lang)}</p>
             </div>
           </li>

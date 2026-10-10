@@ -1,5 +1,10 @@
 import { defineConfig, devices } from "@playwright/test";
 
+/* `PORT` permet de lancer la suite à côté d'une autre application déjà sur le 3000 : sans ça,
+   `reuseExistingServer` réutilise ce serveur-là et les tests parlent au mauvais site. */
+const PORT = process.env.PORT ?? "3000";
+const BASE_URL = `http://localhost:${PORT}`;
+
 export default defineConfig({
   testDir: "./e2e",
   fullyParallel: true,
@@ -15,7 +20,7 @@ export default defineConfig({
   globalSetup: "./e2e/global-setup.ts",
   timeout: 60_000,
   use: {
-    baseURL: "http://localhost:3000",
+    baseURL: BASE_URL,
     navigationTimeout: 60_000,
     trace: "on-first-retry",
   },
@@ -24,8 +29,8 @@ export default defineConfig({
     { name: "mobile", use: { ...devices["iPhone 13"] } },
   ],
   webServer: {
-    command: "pnpm dev",
-    url: "http://localhost:3000",
+    command: `pnpm dev --port ${PORT}`,
+    url: BASE_URL,
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,
   },

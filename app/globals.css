@@ -1719,6 +1719,10 @@ button {
 .offer__price[data-free="true"] strong {
   color: var(--accent-ink);
 }
+.offer__net {
+  font-size: var(--fs-small);
+  color: var(--muted);
+}
 .offer__summary {
   font-size: var(--fs-small);
 }
@@ -1726,13 +1730,13 @@ button {
   .ladder {
     display: grid;
     grid-template-columns: repeat(var(--count, 5), minmax(0, 1fr));
-    grid-template-rows: auto auto auto auto;
+    grid-template-rows: auto auto auto auto auto;
     column-gap: var(--s-2);
     row-gap: calc(var(--s-1) / 2);
   }
   .offer {
     position: relative;
-    grid-row: span 4;
+    grid-row: span 5;
     grid-template-columns: none;
     grid-template-rows: subgrid;
     gap: calc(var(--s-1) / 2);

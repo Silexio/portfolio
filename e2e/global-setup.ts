@@ -7,7 +7,9 @@
  * réseau vers celui-ci. Le premier test échouait pour cette seule raison.
  */
 async function globalSetup() {
-  const base = process.env.PLAYWRIGHT_BASE_URL ?? "http://localhost:3000";
+  const base =
+    process.env.PLAYWRIGHT_BASE_URL ??
+    `http://localhost:${process.env.PORT ?? "3000"}`;
   for (const path of [
     "/fr",
     "/en",
