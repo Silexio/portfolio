@@ -687,7 +687,7 @@ export const ART = {
 };
 
 export type OfferId =
-  "intro" | "audit" | "site" | "automation" | "software" | "care";
+  "intro" | "diagnostic" | "site" | "automation" | "software" | "care";
 
 type Offer = {
   id: OfferId;
@@ -714,8 +714,8 @@ export const OFFERS: Offer[] = [
     },
   },
   {
-    id: "audit",
-    name: { fr: "Audit", en: "Audit" },
+    id: "diagnostic",
+    name: { fr: "Diagnostic", en: "Diagnostic" },
     price: { amount: 600, from: true, monthly: false },
     summary: {
       fr: "Ce qui coince, chiffré",
@@ -781,8 +781,8 @@ export const FAQ: FaqEntry[] = [
   {
     q: { fr: "Combien ça coûte ?", en: "How much does it cost?" },
     a: {
-      fr: "Le premier échange est gratuit. Les étapes suivantes ont un prix affiché, de l’audit au logiciel métier : voyez les tarifs plus haut. Le montant exact est fixé par écrit avant de commencer — jamais de facture surprise en cours de route.",
-      en: "The first conversation is free. Each following step has a published price, from the audit to the business software: see pricing above. The exact amount is set in writing before we start — never a surprise invoice along the way.",
+      fr: "Le premier échange est gratuit. Les étapes suivantes ont un prix affiché, du diagnostic au logiciel métier : voyez les tarifs plus haut. Le montant exact est fixé par écrit avant de commencer — jamais de facture surprise en cours de route.",
+      en: "The first conversation is free. Each following step has a published price, from the diagnostic to the business software: see pricing above. The exact amount is set in writing before we start — never a surprise invoice along the way.",
     },
   },
   {

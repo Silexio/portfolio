@@ -57,7 +57,7 @@ const GLYPHS: Record<OfferId, Glyph> = {
       [66, 80],
     ],
   },
-  audit: {
+  diagnostic: {
     outline:
       "M30 70C24 48 40 28 62 30L86 36L92 70C88 88 70 96 52 92C38 89 33 82 30 70Z",
     facets: [

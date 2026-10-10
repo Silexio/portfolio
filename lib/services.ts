@@ -154,7 +154,7 @@ export const SERVICE_PAGES: ServicePage[] = [
         },
       },
     ],
-    offers: ["intro", "audit", "automation", "care"],
+    offers: ["intro", "diagnostic", "automation", "care"],
     faq: [
       {
         q: {
@@ -172,8 +172,8 @@ export const SERVICE_PAGES: ServicePage[] = [
           en: "What if my software can’t connect to anything else?",
         },
         a: {
-          fr: "Il existe presque toujours un chemin : un export de fichier, une boîte mail, un dossier partagé, une base de données. L’audit dit précisément ce qui est faisable proprement, avant d’engager quoi que ce soit.",
-          en: "There is almost always a way in: a file export, a mailbox, a shared folder, a database. The audit says exactly what can be done cleanly, before anything is committed.",
+          fr: "Il existe presque toujours un chemin : un export de fichier, une boîte mail, un dossier partagé, une base de données. Le diagnostic dit précisément ce qui est faisable proprement, avant d’engager quoi que ce soit.",
+          en: "There is almost always a way in: a file export, a mailbox, a shared folder, a database. The diagnostic says exactly what can be done cleanly, before anything is committed.",
         },
       },
       PEPPOL_FAQ,
@@ -281,7 +281,7 @@ export const SERVICE_PAGES: ServicePage[] = [
         },
       },
     ],
-    offers: ["intro", "audit", "software", "care"],
+    offers: ["intro", "diagnostic", "software", "care"],
     faq: [
       {
         q: {
@@ -289,8 +289,8 @@ export const SERVICE_PAGES: ServicePage[] = [
           en: "How much does custom software cost?",
         },
         a: {
-          fr: "Ça dépend de ce qu’il doit faire. Le prix de départ est affiché plus haut ; le montant exact est fixé par écrit après l’audit, avant la moindre ligne de code.",
-          en: "It depends on what it has to do. The starting price is shown above; the exact amount is set in writing after the audit, before a single line of code.",
+          fr: "Ça dépend de ce qu’il doit faire. Le prix de départ est affiché plus haut ; le montant exact est fixé par écrit après le diagnostic, avant la moindre ligne de code.",
+          en: "It depends on what it has to do. The starting price is shown above; the exact amount is set in writing after the diagnostic, before a single line of code.",
         },
       },
       {
