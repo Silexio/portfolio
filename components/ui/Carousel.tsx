@@ -1,9 +1,11 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { Icon } from "@/components/ui/Icon";
 
 type CarouselProps = {
   label: string;
+  roleDescription: string;
   prevLabel: string;
   nextLabel: string;
   dots: { id: string; label: string }[];
@@ -11,13 +13,14 @@ type CarouselProps = {
 };
 
 /**
- * Carrousel horizontal accessible (motif APG « basic carousel », sans rotation automatique).
- * Le défilement reste du scroll-snap natif — swipe, molette et clavier fonctionnent sans JS ;
- * les contrôles ne font que piloter ce même scroll. Les slides sont rendues côté serveur et
- * passées en children : elles doivent porter elles-mêmes role="group" + aria-roledescription.
+ * Carrousel accessible (motif APG « basic carousel », sans rotation automatique). Le défilement
+ * reste du scroll-snap natif — swipe, molette et clavier fonctionnent sans JS ; flèches et points
+ * ne font que piloter ce même scroll. Les diapositives sont rendues côté serveur et passées en
+ * children : elles portent elles-mêmes role="group" et aria-roledescription.
  */
 export function Carousel({
   label,
+  roleDescription,
   prevLabel,
   nextLabel,
   dots,
@@ -37,45 +40,43 @@ export function Carousel({
           .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
         if (closest) setActive(slides.indexOf(closest.target));
       },
-      { root: node, threshold: [0.5, 0.75, 1] },
+      { root: node, threshold: [0.6, 0.8, 1] },
     );
     slides.forEach((slide) => observer.observe(slide));
     return () => observer.disconnect();
   }, []);
 
   const goTo = useCallback((index: number) => {
-    const node = viewport.current;
-    const slide = node?.children[index];
-    if (!node || !(slide instanceof HTMLElement)) return;
+    const slide = viewport.current?.children[index];
+    if (!(slide instanceof HTMLElement)) return;
     const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
-    node.scrollTo({
-      left: slide.offsetLeft - node.offsetLeft,
+    slide.scrollIntoView({
+      inline: "center",
+      block: "nearest",
       behavior: reduced ? "auto" : "smooth",
     });
   }, []);
-
-  const single = dots.length < 2;
 
   return (
     <div
       className="carousel"
       role="group"
-      aria-roledescription="carousel"
+      aria-roledescription={roleDescription}
       aria-label={label}
     >
       <div className="carousel__viewport" ref={viewport}>
         {children}
       </div>
-      {!single && (
+      {dots.length > 1 && (
         <div className="carousel__controls">
           <button
             type="button"
-            className="carousel__arrow"
+            className="icon-btn"
             onClick={() => goTo(active - 1)}
             disabled={active === 0}
             aria-label={prevLabel}
           >
-            <Arrow direction="left" />
+            <Icon name="prev" />
           </button>
           <ol className="carousel__dots">
             {dots.map((dot, i) => (
@@ -90,36 +91,20 @@ export function Carousel({
               </li>
             ))}
           </ol>
+          <span className="carousel__count" aria-hidden="true">
+            {active + 1} / {dots.length}
+          </span>
           <button
             type="button"
-            className="carousel__arrow"
+            className="icon-btn"
             onClick={() => goTo(active + 1)}
             disabled={active === dots.length - 1}
             aria-label={nextLabel}
           >
-            <Arrow direction="right" />
+            <Icon name="next" />
           </button>
         </div>
       )}
     </div>
-  );
-}
-
-function Arrow({ direction }: { direction: "left" | "right" }) {
-  return (
-    <svg
-      viewBox="0 0 16 16"
-      fill="none"
-      aria-hidden="true"
-      data-direction={direction}
-    >
-      <path
-        d="M3 8h10M9 4l4 4-4 4"
-        stroke="currentColor"
-        strokeWidth="1.6"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
   );
 }

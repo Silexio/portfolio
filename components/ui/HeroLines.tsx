@@ -1,4 +1,5 @@
-import type { CSSProperties, ReactNode } from "react";
+import type { ReactNode } from "react";
+import { revealDelay } from "@/components/ui/Reveal";
 
 type HeroLinesProps = {
   lines: ReactNode | ReactNode[];
@@ -16,11 +17,7 @@ export function HeroLines({
     <>
       {items.map((line, i) => (
         <span key={i} className="line-reveal">
-          <span
-            style={{ "--d": `${baseDelay + i * stagger}ms` } as CSSProperties}
-          >
-            {line}
-          </span>
+          <span style={revealDelay(baseDelay + i * stagger)}>{line}</span>
           {i < items.length - 1 && " "}
         </span>
       ))}

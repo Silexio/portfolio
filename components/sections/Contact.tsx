@@ -1,43 +1,71 @@
-import { ContactActions } from "@/components/sections/ContactActions";
-import { Neurons } from "@/components/ui/Neurons";
+import { LeadForm } from "@/components/sections/LeadForm";
+import { BookingButton } from "@/components/ui/BookingButton";
+import { Btn } from "@/components/ui/Btn";
 import { Reveal } from "@/components/ui/Reveal";
-import { EMAIL, I18N, PACKAGES, type PackageId } from "@/lib/data";
+import { SocialIcon } from "@/components/ui/SocialIcon";
+import { SectionHead } from "@/components/ui/SectionHead";
+import { I18N, LEGAL } from "@/lib/data";
+import type { LeadSource } from "@/lib/leads/constants";
 import type { Locale } from "@/lib/i18n/config";
-import { t } from "@/lib/i18n/utils";
+import { resolveDict, t } from "@/lib/i18n/utils";
+import type { ServiceContact } from "@/lib/services";
 
-export function Contact({ lang }: { lang: Locale }) {
+type ContactProps = {
+  lang: Locale;
+  source?: LeadSource;
+  askHours?: boolean;
+  /** Textes propres à une page dédiée. Absent = ceux de l'accueil. */
+  copy?: ServiceContact;
+};
+
+export function Contact({
+  lang,
+  source = "home",
+  askHours = true,
+  copy,
+}: ContactProps) {
   const i18n = I18N.contact;
-  const packageLabels = Object.fromEntries(
-    PACKAGES.map((pkg) => [pkg.id, t(pkg.title, lang)]),
-  ) as Record<PackageId, string>;
   return (
-    <section id="contact" className="contact" aria-labelledby="contact-title">
+    <section
+      id="contact"
+      className="panel contact"
+      aria-labelledby="contact-title"
+    >
       <div className="wrap">
-        <Reveal>
-          <div className="contact__inner">
-            <Neurons />
-            <span className="eyebrow contact__eyebrow">
-              <span className="section-head__num">06</span>
-              {t(i18n.eyebrow, lang)}
-            </span>
-            <h2 id="contact-title" className="contact__title">
-              <span>{t(i18n.titleA, lang)}</span>
-              <em>{t(i18n.titleB, lang)}</em>
-            </h2>
-            <p className="contact__sub">{t(i18n.sub, lang)}</p>
-            <ContactActions
-              email={EMAIL}
-              packageLabels={packageLabels}
-              labels={{
-                cal: t(i18n.cal, lang),
-                quote: t(i18n.quote, lang),
-                interests: t(i18n.interests, lang),
-                subject: t(i18n.subject, lang),
-                servicesEmpty: t(i18n.servicesEmpty, lang),
-                emailBody: t(i18n.emailBody, lang),
-                remove: t(I18N.a11y.remove, lang),
-              }}
-            />
+        <SectionHead
+          id="contact-title"
+          title={t(copy?.title ?? i18n.title, lang)}
+          lead={t(copy?.sub ?? i18n.sub, lang)}
+        />
+        <Reveal className="contact__body" delay={60}>
+          <LeadForm
+            lang={lang}
+            source={source}
+            askHours={askHours}
+            siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? ""}
+            taskLabel={t(copy?.task ?? i18n.task, lang)}
+            taskPlaceholder={t(
+              copy?.taskPlaceholder ?? i18n.taskPlaceholder,
+              lang,
+            )}
+            legalHref={`/${lang}/legal`}
+            labels={{
+              ...resolveDict(I18N.form, lang),
+              ...resolveDict(I18N.lead, lang),
+            }}
+          />
+          <div className="contact__alt">
+            <BookingButton variant="link">{t(i18n.cal, lang)}</BookingButton>
+            {LEGAL.whatsappUrl && (
+              <Btn
+                href={LEGAL.whatsappUrl}
+                variant="link"
+                srHint={t(I18N.a11y.newTab, lang)}
+              >
+                <SocialIcon id="whatsapp" />
+                {t(I18N.footer.whatsapp, lang)}
+              </Btn>
+            )}
           </div>
         </Reveal>
       </div>

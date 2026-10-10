@@ -13,11 +13,41 @@ export function clientIp(headers: Headers): string {
   return headers.get("x-real-ip")?.trim() || "0.0.0.0";
 }
 
-/** HMAC of the IP — never store raw IPs (GDPR). */
+/**
+ * Ramène une adresse à ce qu'un même abonné contrôle : une IPv4 telle quelle, une IPv6 à son
+ * préfixe /64. Un abonné reçoit couramment un /64 entier, soit 2^64 adresses : hacher l'adresse
+ * complète rendrait le quota horaire contournable en changeant d'hôte dans son propre réseau.
+ */
+export function ipKey(ip: string): string {
+  if (!ip.includes(":")) return ip;
+  const [head, tail] = ip.split("::");
+  const parts =
+    tail === undefined
+      ? ip.split(":")
+      : (() => {
+          const left = head ? head.split(":") : [];
+          const right = tail ? tail.split(":") : [];
+          const missing = Math.max(0, 8 - left.length - right.length);
+          return [...left, ...Array<string>(missing).fill("0"), ...right];
+        })();
+  // Une IPv6 qui finit par une IPv4 (::ffff:198.51.100.7) désigne un hôte v4 précis : son préfixe
+  // est le même pour tout le monde, c'est l'adresse v4 qui identifie.
+  const last = parts[parts.length - 1];
+  if (last && last.includes(".")) return last;
+  const prefix = parts
+    .slice(0, 4)
+    .map((part) => part.toLowerCase().replace(/^0+(?=.)/, ""))
+    .join(":");
+  // Un préfixe entièrement nul désigne une adresse encapsulée (::ffff:c633:6407) : le préfixe est
+  // le même pour tout le monde, c'est la fin de l'adresse qui identifie.
+  return prefix === "0:0:0:0" ? parts.join(":").toLowerCase() : prefix;
+}
+
+/** HMAC de l'adresse — jamais d'IP en clair (RGPD). */
 export function hashIp(ip: string): string {
   const secret = process.env.IP_HASH_SECRET;
   if (!secret) throw new Error("IP_HASH_SECRET is not set");
-  return createHmac("sha256", secret).update(ip).digest("hex");
+  return createHmac("sha256", secret).update(ipKey(ip)).digest("hex");
 }
 
 /** Records a hit and returns false when the IP exceeded the hourly quota. */

@@ -37,7 +37,7 @@ function Shell({ children }: { children: ReactNode }) {
 function Message({ title, body }: { title: string; body: string }) {
   return (
     <>
-      <h1 className="booking-action__title">{title}</h1>
+      <h1 className="subtitle booking-action__title">{title}</h1>
       <p className="booking-action__body">{body}</p>
     </>
   );
@@ -114,7 +114,7 @@ export default async function BookingActionPage({
 
   return (
     <Shell>
-      <h1 className="booking-action__title">{t(question, lang)}</h1>
+      <h1 className="subtitle booking-action__title">{t(question, lang)}</h1>
       <p className="booking-action__summary">
         <strong>{booking.name}</strong> · {slot} · {mode}
       </p>
@@ -128,7 +128,7 @@ export default async function BookingActionPage({
         <input type="hidden" name="lang" value={lang} />
         <button
           type="submit"
-          className={`btn ${act === "confirm" ? "btn--ember" : "btn--ghost"}`}
+          className={act === "confirm" ? "btn" : "link link--action"}
         >
           {t(cta, lang)}
         </button>

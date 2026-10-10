@@ -2,7 +2,6 @@ import { getCloudflareContext } from "@opennextjs/cloudflare";
 import type { Locale } from "@/lib/i18n/config";
 import type { MeetingMode } from "@/lib/booking/schema";
 import {
-  encodePackages,
   slotKey,
   toRecord,
   type BookingRecord,
@@ -18,7 +17,6 @@ export type NewBooking = {
   meetingType: MeetingMode;
   message: string | null;
   locale: Locale;
-  packages: string[];
   meetingRoom: string;
 };
 
@@ -48,8 +46,8 @@ export async function insertBooking(
     await client
       .prepare(
         `INSERT INTO Booking
-           (id, slotStart, name, email, phone, meetingType, message, locale, packages, meetingRoom, createdAt, updatedAt)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+           (id, slotStart, name, email, phone, meetingType, message, locale, meetingRoom, createdAt, updatedAt)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       )
       .bind(
         id,
@@ -60,7 +58,6 @@ export async function insertBooking(
         input.meetingType,
         input.message,
         input.locale,
-        encodePackages(input.packages),
         input.meetingRoom,
         stamp,
         stamp,

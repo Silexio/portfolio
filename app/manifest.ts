@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { BRAND } from "@/lib/brand";
 import { META } from "@/lib/data";
 
 export default function manifest(): MetadataRoute.Manifest {
@@ -8,8 +9,8 @@ export default function manifest(): MetadataRoute.Manifest {
     description: META.description.fr,
     start_url: "/fr",
     display: "browser",
-    background_color: "#F4F1EA",
-    theme_color: "#C8501B",
+    background_color: BRAND.bg,
+    theme_color: BRAND.accent,
     icons: [
       { src: "/icon_x48.png", sizes: "48x48", type: "image/png" },
       { src: "/icon_x72.png", sizes: "72x72", type: "image/png" },

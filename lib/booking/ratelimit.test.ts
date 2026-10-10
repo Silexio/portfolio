@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { clientIp, hashIp } from "@/lib/booking/ratelimit";
+import { clientIp, hashIp, ipKey } from "@/lib/booking/ratelimit";
 
 process.env.IP_HASH_SECRET = "test-ip-secret-0123456789abcdef0123456789ab";
 
@@ -41,5 +41,44 @@ describe("hashIp", () => {
 
   it("differs for different IPs", () => {
     expect(hashIp("203.0.113.7")).not.toBe(hashIp("203.0.113.8"));
+  });
+});
+
+/**
+ * Le quota horaire se compte par abonné, pas par adresse : un /64 IPv6 est l'allocation courante
+ * d'une seule ligne, et le parcourir ne doit pas rendre cinq envois par heure illimités.
+ */
+describe("ipKey", () => {
+  it("laisse une IPv4 intacte", () => {
+    expect(ipKey("203.0.113.9")).toBe("203.0.113.9");
+  });
+
+  it("ramène une IPv6 à son préfixe /64", () => {
+    expect(ipKey("2001:0db8:85a3:0000:1319:8a2e:0370:7344")).toBe(
+      "2001:db8:85a3:0",
+    );
+    expect(ipKey("2001:db8:85a3::8a2e:370:7334")).toBe("2001:db8:85a3:0");
+  });
+
+  it("met tout un /64 dans le même seau", () => {
+    const a = ipKey("2001:db8:85a3:1::1");
+    const b = ipKey("2001:db8:85a3:1:ffff:ffff:ffff:ffff");
+    expect(a).toBe(b);
+    expect(a).not.toBe(ipKey("2001:db8:85a3:2::1"));
+  });
+
+  it("identifie une IPv4 encapsulée par son adresse v4", () => {
+    expect(ipKey("::ffff:198.51.100.7")).toBe("198.51.100.7");
+  });
+
+  it("ne met pas toutes les adresses encapsulées dans le même seau", () => {
+    // Même adresse que ci-dessus, écrite en hexadécimal : le préfixe /64 y est nul pour tout le
+    // monde, donc il ne peut pas servir de clé.
+    expect(ipKey("::ffff:c633:6407")).not.toBe(ipKey("::ffff:c633:6408"));
+  });
+
+  it("donne la même empreinte à deux adresses du même /64", () => {
+    expect(hashIp("2001:db8:1:2::5")).toBe(hashIp("2001:db8:1:2::99"));
+    expect(hashIp("2001:db8:1:2::5")).not.toBe(hashIp("2001:db8:1:3::5"));
   });
 });

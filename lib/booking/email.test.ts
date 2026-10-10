@@ -20,7 +20,6 @@ describe("ownerEmail", () => {
     phone: "+32 470 12 34 56",
     meetingType: "video",
     message: "Need a backend",
-    packages: ["API & Backend"],
     slotIso,
     locale: "fr",
   });
@@ -42,6 +41,15 @@ describe("ownerEmail", () => {
     expect(mail.html).toContain("jane@example.com");
     expect(mail.html).toContain("Need a backend");
   });
+
+  it("attaches a tentative .ics so the slot can be held before confirming", () => {
+    const ics = mail.attachments?.[0].content ?? "";
+    expect(ics).toContain("STATUS:TENTATIVE");
+    expect(ics).toContain("SEQUENCE:0");
+    expect(ics).toContain("SUMMARY:RDV Jane Doe \u2014 \u00e0 confirmer");
+    expect(ics).toContain("UID:abc123@silexio.be");
+    expect(ics).toContain("jane@example.com");
+  });
 });
 
 describe("ownerEmail — HTML escaping", () => {
@@ -53,7 +61,6 @@ describe("ownerEmail — HTML escaping", () => {
       phone: "+3212345678",
       meetingType: "call",
       message: "<img src=x onerror=alert(2)>",
-      packages: [],
       slotIso,
       locale: "en",
     });
@@ -64,23 +71,26 @@ describe("ownerEmail — HTML escaping", () => {
 });
 
 describe("pendingEmail", () => {
-  it("addresses the client and references the slot, FR and EN", () => {
-    const fr = pendingEmail({
-      name: "Jane",
+  /**
+   * Cet accusé part avant toute validation, vers l'adresse que l'auteur du formulaire a saisie :
+   * il ne doit reprendre aucun texte de ce formulaire, sinon il relaie le message de n'importe qui
+   * vers n'importe quelle adresse, signé par le domaine du studio.
+   */
+  it("confirme le créneau sans reprendre un mot du formulaire, FR et EN", () => {
+    const payload = {
+      name: "Réglez votre facture sur https://evil.example",
       slotIso,
       meetingType: "video",
-      locale: "fr",
-    });
-    const en = pendingEmail({
-      name: "Jane",
-      slotIso,
-      meetingType: "video",
-      locale: "en",
-    });
-    expect(fr.text).toContain("Bonjour Jane");
-    expect(en.text).toContain("Hi Jane");
+    } as const;
+    const fr = pendingEmail({ ...payload, locale: "fr" });
+    const en = pendingEmail({ ...payload, locale: "en" });
+    expect(fr.text).toContain("Bonjour,");
+    expect(en.text).toContain("Hello,");
+    expect(fr.text).not.toContain("evil.example");
+    expect(en.text).not.toContain("evil.example");
     expect(fr.text).not.toContain("{name}");
     expect(fr.text).not.toContain("{slot}");
+    expect(fr.text).toContain("14 janvier");
   });
 });
 
@@ -108,6 +118,7 @@ describe("confirmedEmail", () => {
     );
     expect(video.text).toContain("dates=20260114T070000Z%2F20260114T073000Z");
     expect(video.html).toContain(">Ajouter à Google Agenda</a>");
+    expect(video.html).toContain('style="display:inline-block;padding:12px');
   });
 
   it("attaches an .ics invite with the meeting as location", () => {
@@ -134,21 +145,29 @@ describe("confirmedEmail", () => {
 });
 
 describe("ownerConfirmedEmail", () => {
-  it("addresses the owner with client details + .ics", () => {
-    const mail = ownerConfirmedEmail({
-      id: "abc",
-      name: "Jane",
-      email: "jane@example.com",
-      phone: "+32470123456",
-      slotIso,
-      meetingType: "video",
-      roomSlug: "silexio-xyz",
-      locale: "fr",
-      ownerEmail: "contact@silexio.be",
-    });
+  const mail = ownerConfirmedEmail({
+    id: "abc",
+    name: "Jane",
+    email: "jane@example.com",
+    phone: "+32470123456",
+    slotIso,
+    meetingType: "video",
+    roomSlug: "silexio-xyz",
+    locale: "fr",
+  });
+
+  it("addresses the owner with client details", () => {
     expect(mail.text).toContain("Jane");
     expect(mail.text).toContain("+32470123456");
-    expect(mail.attachments?.[0].content).toContain("BEGIN:VEVENT");
+  });
+
+  it("supersedes the tentative invite instead of duplicating it", () => {
+    const ics = mail.attachments?.[0].content ?? "";
+    expect(ics).toContain("UID:abc@silexio.be");
+    expect(ics).toContain("SEQUENCE:1");
+    expect(ics).toContain("STATUS:CONFIRMED");
+    expect(ics).toContain("SUMMARY:RDV Jane");
+    expect(ics).not.toContain("\u00e0 confirmer");
   });
 });
 

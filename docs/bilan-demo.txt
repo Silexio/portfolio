@@ -1,0 +1,296 @@
+================================================================================
+FICHE BILAN SCALENEO
+
+================================================================================
+SECTION 1: INFORMATION ADMINISTRATIVE
+================================================================================
+
+Nom et prénom du Patient: DÉMO Patiente (données fictives)
+Année de Naissance: 1983
+Age: 42
+Sexe: F
+Profession: Non-manuel | Secteur: Administration
+
+Kiné Examinateur: Démonstration SCALENEO
+Date Bilan: 15/09/2026
+ID Patient: DEMO-001
+ID Bilan: DEMO-001-B1
+
+================================================================================
+SECTION 2: DONNÉES ANTHROPOMÉTRIQUES
+================================================================================
+
+Poids (kg): 68
+Taille (cm): 170
+IMC Calculé: 
+
+================================================================================
+SECTION 3: PATHOLOGIE LOMBAIRE
+================================================================================
+
+Antécédents LBP (Oui/Non): Oui
+Episode Initial: 2019
+Traumatisme,progressif ou spontané : Progressif
+Récidive (Oui/Non): Oui
+Pire Episode: Épisode actuel
+Durée Totale LBP (mois): 14
+Type LBP (Aigu/Subaigu/Chronique): Chronique
+
+
+================================================================================
+SECTION 4: SYMPTÔMES - INTENSITÉ DOULEUR (NRS 0-10)
+================================================================================
+
+NRS Douleur au Repos: 3
+NRS Douleur à l'Activité: 6
+NRS Douleur Maximum: 7
+
+Horaire Douleur (Matin/Midi/Soir/Nuit): Matin
+Variation Journalière: Raideur matinale ~30 min, amélioration en journée
+Facteurs Aggravants: Station assise prolongée, port de charges
+Facteurs Soulageants: Marche, chaleur
+Évolution : Stable depuis 6 semaines
+
+================================================================================
+SECTION 5: MÉCANISMES DE DOULEUR (Cocher: 1=Oui, 0=Non)
+================================================================================
+
+Douleur Articulaire: 1
+Douleur Myofasciale: 1
+Douleur Neurologique: 0
+Sensibilisation Centrale (nociceptive, neuropathique ou nociplastique): Nociceptive
+Déficit Sensorimotor: 0
+
+Caractère sensations: ☒ Sourde | ☐ Aiguë | ☐ Brûlante | ☐ Piquante | ☐ Irradiante | ☐ Engourdie
+
+
+Observations Mécanismes: Douleur mécanique, reproduite en extension-rotation droite
+
+================================================================================
+SECTION 6: TESTS FONCTIONNELS - MOBILITÉ LOMBAIRE - TESTS NEURODYNAMIQUES - SIGNES NEUROLOGIQUES 
+================================================================================
+
+Flexion Avant (cm/grade): 8 / 2 | (NRS 0-10):5
+Extension (cm/grade): 4 / 2 | (NRS 0-10):6
+Inclinaison Latérale Droit (cm/grade): 18 / 1 | (NRS 0-10):3
+Inclinaison Latérale Gauche (cm/grade): 19 / 1 | (NRS 0-10):2
+Rotation droite(degré/grade): 30 / 1 | (NRS 0-10):2
+Rotation Gauche(degré/grade): 32 / 1 | (NRS 0-10):2
+Combinaison de mouvements (mouvements/grade) : Extension + rotation droite / 2 | (NRS 0-10):6
+Mobilité segmentaire PA (étage/grade): L4-L5 / 2 | (NRS 0-10):5
+Hanche (mouvements/grade): Flexion complète / 1 | (NRS 0-10):1
+
+SLR Droit (degrés): 70
+SLR Gauche (degrés): 75
+Asymétrie SLR: [Auto-calc: |SLR_D - SLR_G|]
+Slump test (degrés): ☐ Complet ☐ Limité | ☐ Modif cerv ☐ Modif à distance | ☐ Asymétrie   
+PKB (degrés): ☐ Complet ☐ Limité | ☐ Modif cerv ☐ Modif à distance | ☐ Asymétrie
+
+Force musculaire (MRC scale 0-5): 5/5
+Réflexes (Oui/Non): Oui (normaux et symétriques)
+Sensation: ☐ Piquer/Toucher | ☐ Sensibilité fine| ☐ Chaud/Froid | Localisation: —  
+Profil sensoriel: ☒ Normal | ☐ Hypoesthésie | ☐ Allodynie | ☐ Hyperalgésie
+Signes méningés	☒ Négatifs | ☐ Kernig ☐ Brudzinski 
+
+Tension musculaire: ☒ Normale | ☐ Légère | ☐ Importante
+Trigger points	☒ Absent | ☐ Présent
+Hypersensibilité à la pression (Oui/Non): Zone lombaire —  | Zone contrôle — 
+Spasme musculaire: ☐ Absent | ☐ Présent | ☐ Fatiguabilité | Localisation: —
+ 
+Sorensen (secondes): 72
+Ito Shirado (secondes): 58
+Core Strength Index: [Auto-calc: (Ito / Sorensen)]
+Side plank D/G (secondes): 35 / 32
+CSM (Plank, Pelvic tilt, Bridge,...): Contrôle lombo-pelvien insuffisant en charge
+
+================================================================================
+SECTION 7: QUESTIONNAIRES VALIDÉS - SCORES —
+================================================================================
+SBT (STarT Back Screening Tool, 0-9): 4
+  Interprétation:[Auto-calc: Low (0-3), Moderate (4-9)]
+
+CSI Score (Central Sensitization Inventory, 0-100): 22
+  Interprétation: [Auto-calc: Low (<30), Moderate (30-50), High (>50)]
+
+ODI Score (Oswestry Disability Index, 0-100): 28
+  Interprétation: [Auto-calc: Minimal (<20), Mild (20-40), Moderate (40-60), Severe (60-80), Very Severe (>80)]
+
+PCS Score (Pain Catastrophizing Scale, 0-52): 14
+  Interprétation: [Auto-calc: Low (<17), Moderate (17-34), High (>34)]
+
+HADS Score Anxiété (0-21): 7
+HADS Score Dépression (0-21): 5
+
+FABQ Score Travail (0-100): 22
+FABQ Score Activité (0-100): 14
+
+WAI Score (Work Ability Index, 0-100): 
+IPAQ (International Physical Activity): ☐ Sédentaire ☒ Modéré ☐ Vigoureux | MET(min/week): —
+PSFS (Patient-Specific Functional Scale, 0-10) Activités limitantes: —/— | Scores: —/—
+
+SF-36 ou EQ-5D (Qualité de vie): EQ-5D : 0,78
+
+Autres Questionnaires: Aucun
+
+================================================================================
+SECTION 8: DRAPEAUX ROUGES & PRÉCAUTIONS
+================================================================================
+
+Drapeaux Rouges Détectés (Oui/Non): Non
+  Si Oui, lesquels: —
+
+Contre-Indications: Aucune
+Allergies: Aucune connue
+Médications Pertinentes: Paracétamol à la demande
+Examen médicaux : IRM 2024 : discopathie L4-L5 modérée
+
+Instabilité rachidienne: ☐ Suspectée ☐ Présente ☐ À vérifier | Signes: —
+Limitation traitement manuel: ☐ Manipulation contre-indiquée | ☐ Mobilisation légère seulement | ☒ Pas de limite
+Anticoagulation/Trouble hémorragique: ☐ Oui ☒ Non
+Grossesse: ☒ N/A ☐ Oui (trimestre:—) | Adaptations: —
+État général: ☒ Stable ☐ Consultation médicale recommandée
+
+
+
+================================================================================
+SECTION 9: Mécanismes douleur 
+================================================================================
+
+ ☒ Motif articulaire
+ ☒ Motif myofascial
+ ☐ Motif neural
+ ☐ Sensibilisation centrale
+ ☐ Contrôle sensorimoteur
+
+================================================================================
+SECTION 10: PLAN DE GESTION & RECOMMANDATIONS
+================================================================================
+
+Fréquence Thérapie (séances/semaine): 2
+
+Thérapie Manuelle (Oui/Non): 1
+  Types TM si Oui: Mobilisations postéro-antérieures L4-L5
+
+Thérapie par Exercice (Oui/Non): 1
+  Types Exercices: Contrôle moteur, renforcement des extenseurs, reconditionnement
+
+Thérapie par Neurodynamique (Oui/Non): 0
+  Types Neuro si Oui: —
+
+Éducation Patient (Oui/Non): 1
+  Sujets Éducation: Neurophysiologie de la douleur, gestion de l'effort, reprise d'activité
+
+Modalités Supplémentaires: Programme à domicile, 10 min/jour
+
+================================================================================
+SECTION 11: Perspectives et croyances du patient
+================================================================================
+Compréhension du diagnostic par le patient: ☒ Oui ☐ Partiellement ☐ Non | Inquiétudes: —
+Perception de gravité:	☐ Bénigne ☒ Modérée ☐ Grave ☐ Catastrophe
+Auto-efficacité face à la douleur: ☐ Faible ☐ Modérée ☒ Bonne | Croyance contrôle: —
+
+================================================================================
+SECTION 12: PRONOSTIC
+================================================================================
+
+Durée Estimée Traitement: Modérée (4-8 sem)
+
+Nombre de Séances Espérées: 12
+
+Facteurs Pronostiques Positifs: Bonne auto-efficacité, activité professionnelle maintenue, pas de drapeau rouge
+Facteurs Pronostiques Négatifs: —
+
+Objectifs à Court Terme (2-4 sem): —
+Objectifs à Long Terme (8-12 sem): —
+Attentes réalistes: ☒ Oui ☐ Partiellement ☐ Non | Détail: —
+Patient anticipe guérison: ☐ Complète ☐ Partielle ☐ Chronique
+
+Yellow Flags : Détails: —
+Soutien social	☐ Bon ☐ Modéré ☐ Faible | Détail: — 
+Stresseurs identifiés ☐ Travail ☐ Famille ☐ Financier  Autre: —
+
+Point de réévaluation: Semaine: — | Critères changement: —
+Besoin orientation spécialisée	☐ Non ☐ Oui | ☐ Psychologue ☐ Médecin Autre: —
+Barrières anticipées au traitement: —
+
+================================================================================
+SECTION 13: Activités et participation
+================================================================================
+
+Activités quotidiennes limitées: ☐ Marche ☐ Assise ☐ Levage ☐ Escaliers ☐ Toilette ☐ Sexualité ☐ Sommeil
+Loisirs/Sports limitées: Activités antérieures: — | Actuellement: —
+Temps assis/debout toléré (minutes):	Assis: — | Debout: — | Marche: —
+Comportement sédentaire (heures): Temps assis quotidien: — | Écran: —
+
+Statut professionnel: ☐ Actif | ☐ Congé maladie | ☐ Incapacité | ☐ Arrêt | ☐ Sans activité/retraité
+Jours d'absence travail: Derniers 3 mois: — | 6 mois: —
+Limitations professionnelles: Tâches impossibles: — | Tâches difficiles: —
+Attentes Retour au Travail : Délai anticipé: — | Confiance: ☐ Élevée ☐ Modérée ☐ Faible
+Modifications poste possibles:	☐ Oui ☐ Non | Type: —
+
+================================================================================
+SECTION 14: Facteurs contribuants
+================================================================================
+
+Défauts posturaux identifiés: ☐ Hyperlordose ☐ Dos plat ☐ Scoliose ☐ Tête antépulsé ☐ Bassin antéversé
+Facteurs biomécaniques:	☐ Charge de travail ☐ Posture ☐ Mouvement répété ☐ Vibrations Autre: —
+Facteurs de style de vie: ☐ Tabac ☐ Alcool ☐ Obésité ☐ Inactivité ☐ Sommeil ☐ Nutrition
+Facteurs hormonaux/métaboliques: ☐ Ménopause ☐ Diabète ☐ Thyroïde ☐ Inflammation  Autre: —
+Contexte de travail ergonomique: Poste optimisé: ☐ Oui ☐ Non | Recommandations: —
+
+Facteurs psychosociaux majeurs:	☐ Peur-évitement ☐ Catastrophisme ☐ Dépression ☐ Anxiété ☐ Stress
+Système santé/Culture:	Conception biopsychosociale: ☐ Bien comprise ☐ À développer
+Attentes culturelles de traitement: Attente guérison rapide: ☐ Oui ☐ Non | Approche préférée: —
+Compliance anticipée: ☐ Bonne ☐ Modérée ☐ À questionner | Barrières: —
+
+================================================================================
+SECTION 15: Satisfaction
+================================================================================
+
+PGIC (Patient Global Impression of Change, 0-7): Score: — | État: ☐ Guéri ☐ Mieux ☐ Pareil ☐ Pire
+Treatment Satisfaction	Score (0-100) : — | Relation thérapeute: ☐ Très bonne ☐ Bonne ☐ À améliorer
+GAS (Goal Attainment Scaling):	Progression objectives: ☐ Non atteint ☐ Partiellement ☐ Atteint
+
+================================================================================
+SECTION 16: OBSERVATIONS CLINIQUES & NOTES
+================================================================================
+
+Résumé Clinique: —
+
+Observations globales: —
+
+Impression Générale: —
+
+Notes Supplémentaires: —
+
+Plan de traitement recommandé: —
+
+================================================================================
+SECTION 17: Hypothèse de travail (SCALENEO)
+================================================================================
+
+1. PATHOLOGY: —
+2. SOURCES OF SYMPTOMS: —
+3. PAIN TYPE: —
+4. IMPAIRMENTS: —
+5. PAIN MECHANISMS: —
+6. PRECAUTIONS: —
+7. PATIENTS' PERSPECTIVES: —
+8. ACTIVITY & PARTICIPATION: —
+9. CONTRIBUTING FACTORS: —
+10. MANAGEMENT & PROGNOSIS: —
+
+================================================================================
+SECTION 18: CONTRÔLE QUALITÉ
+================================================================================
+
+Confiance Extraction (estimée %): —
+Données Complètes (Oui/Non): —
+Révision Manuelle Requise (Oui/Non): —
+
+Modifié Par: [Signature/Initiales kiné]
+Date Modification: [Date]
+
+================================================================================
+FIN FICHE BILAN
+================================================================================

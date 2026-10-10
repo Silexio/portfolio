@@ -1,22 +1,38 @@
 import {
+  BOOKING,
   COVERAGE,
   EMAIL,
   FAQ,
   GEO,
   LEGAL,
   META,
-  PACKAGES,
+  OFFERS,
   URLS,
+  type FaqEntry,
 } from "@/lib/data";
 import type { Locale } from "@/lib/i18n/config";
 import { t } from "@/lib/i18n/utils";
 import { BASE_URL } from "@/lib/metadata";
+import type { Price } from "@/lib/price";
+import { servicePath, type ServicePage } from "@/lib/services";
 
+const WEEKDAY = [
+  "Sunday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+];
+const hour = (value: number) => `${String(value).padStart(2, "0")}:00`;
+
+/** Horaires dérivés de BOOKING : ce que Google annonce est exactement ce que le calendrier propose. */
 const OPENING_HOURS = {
   "@type": "OpeningHoursSpecification",
-  dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
-  opens: "08:00",
-  closes: "16:00",
+  dayOfWeek: BOOKING.workdays.map((day) => WEEKDAY[day]),
+  opens: hour(BOOKING.startHour),
+  closes: hour(BOOKING.endHour),
 };
 
 function servedCities() {
@@ -26,16 +42,28 @@ function servedCities() {
   }));
 }
 
+/** Prix HTVA : un prix « à partir de » devient un minPrice, un abonnement une unité mensuelle. */
+function priceSpecification(price: Price) {
+  return {
+    "@type": price.monthly ? "UnitPriceSpecification" : "PriceSpecification",
+    ...(price.from ? { minPrice: price.amount } : { price: price.amount }),
+    priceCurrency: "EUR",
+    valueAddedTaxIncluded: false,
+    ...(price.monthly && { unitCode: "MON" }),
+  };
+}
+
 function offerCatalog(lang: Locale) {
   return {
     "@type": "OfferCatalog",
     name: t(META.title, lang),
-    itemListElement: PACKAGES.map((pkg) => ({
+    itemListElement: OFFERS.map((offer) => ({
       "@type": "Offer",
+      priceSpecification: priceSpecification(offer.price),
       itemOffered: {
         "@type": "Service",
-        name: t(pkg.title, lang),
-        description: t(pkg.body, lang),
+        name: t(offer.name, lang),
+        description: t(offer.summary, lang),
         areaServed: { "@type": "AdministrativeArea", name: GEO.region },
         provider: { "@id": `${BASE_URL}/#studio` },
       },
@@ -98,6 +126,10 @@ export function structuredData(lang: Locale) {
           "API REST",
           "Base de données",
           "Automatisation",
+          "Automatisation des processus",
+          "Intégration de logiciels",
+          "Logiciel métier sur mesure",
+          "Facturation électronique Peppol",
           "Intelligence artificielle",
           "Intégration d'IA",
           "DevOps",
@@ -180,20 +212,47 @@ export function structuredData(lang: Locale) {
 }
 
 /**
- * Markup FAQ, à injecter **uniquement par la page qui affiche réellement la FAQ**.
+ * Markup FAQ, à injecter **uniquement par la page qui affiche réellement ces questions**.
  * Il vivait dans le graphe du layout, donc il était aussi émis sur /[lang]/legal, qui ne
  * porte aucune question : Google exige que les données structurées décrivent le contenu
  * visible, et sanctionne l'écart comme du spam de données structurées.
  */
-export function faqStructuredData(lang: Locale) {
+export function faqStructuredData(
+  lang: Locale,
+  entries: FaqEntry[] = FAQ,
+  path = `/${lang}`,
+) {
   return {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    "@id": `${BASE_URL}/${lang}#faq`,
-    mainEntity: FAQ.map((entry) => ({
+    "@id": `${BASE_URL}${path}#faq`,
+    mainEntity: entries.map((entry) => ({
       "@type": "Question",
       name: t(entry.q, lang),
       acceptedAnswer: { "@type": "Answer", text: t(entry.a, lang) },
     })),
+  };
+}
+
+/** Service décrit par une page dédiée, rattaché au studio. Le dépannage déclare les communes servies. */
+export function serviceStructuredData(page: ServicePage, lang: Locale) {
+  const url = `${BASE_URL}${servicePath(page, lang)}`;
+  return {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "@id": `${url}#service`,
+    url,
+    name: t(page.name, lang),
+    serviceType: t(page.name, lang),
+    description: t(page.meta.description, lang),
+    inLanguage: lang,
+    provider: { "@id": `${BASE_URL}/#studio` },
+    areaServed:
+      page.id === "support"
+        ? [
+            { "@type": "AdministrativeArea", name: GEO.region },
+            ...servedCities(),
+          ]
+        : { "@type": "Country", name: "Belgique" },
   };
 }

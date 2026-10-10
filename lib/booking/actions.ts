@@ -6,7 +6,7 @@ import {
   ownerConfirmedEmail,
   refusedEmail,
 } from "@/lib/booking/email";
-import { sendMail } from "@/lib/booking/mailer";
+import { ownerAddress, sendMailOrReport } from "@/lib/booking/mailer";
 import { verifyAction, type BookingAction } from "@/lib/booking/token";
 
 export type ActionState =
@@ -29,14 +29,15 @@ export async function applyAction(
   if (!(await settleBooking(id, status))) return "already";
 
   if (action === "refuse") {
-    await sendMail(
+    await sendMailOrReport(
       booking.email,
       refusedEmail({
         name: booking.name,
         slotIso: booking.slotStart,
         locale: booking.locale,
       }),
-    ).catch(() => undefined);
+      "booking-refused",
+    );
     return "refused";
   }
 
@@ -49,17 +50,17 @@ export async function applyAction(
     roomSlug: booking.meetingRoom ?? undefined,
     locale: booking.locale,
   };
-  await sendMail(booking.email, confirmedEmail(base)).catch(() => undefined);
+  await sendMailOrReport(
+    booking.email,
+    confirmedEmail(base),
+    "booking-confirmed",
+  );
 
-  const owner = process.env.BOOKING_NOTIFY_EMAIL;
-  if (owner) {
-    const ownerMail = ownerConfirmedEmail({
-      ...base,
-      phone: booking.phone,
-      ownerEmail: owner,
-    });
-    await sendMail(owner, ownerMail).catch(() => undefined);
-  }
+  await sendMailOrReport(
+    ownerAddress(),
+    ownerConfirmedEmail({ ...base, phone: booking.phone }),
+    "booking-confirmed-owner",
+  );
   return "confirmed";
 }
 

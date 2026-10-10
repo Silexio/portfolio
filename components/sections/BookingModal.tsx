@@ -2,12 +2,13 @@
 
 import dynamic from "next/dynamic";
 import { useEffect, useRef } from "react";
+import { Icon } from "@/components/ui/Icon";
 import {
   closeBooking,
   useBookingModalOpen,
   useBookingSession,
 } from "@/hooks/useBookingModal";
-import type { BookingLabels, PackageId } from "@/lib/data";
+import type { BookingLabels } from "@/lib/data";
 import type { Locale } from "@/lib/i18n/config";
 
 /* Calendrier, formulaire et Turnstile ne servent qu'après un clic : les monter au chargement,
@@ -21,7 +22,6 @@ type BookingModalProps = {
   lang: Locale;
   siteKey: string;
   labels: BookingLabels;
-  packageLabels: Record<PackageId, string>;
   closeLabel: string;
 };
 
@@ -29,7 +29,6 @@ export function BookingModal({
   lang,
   siteKey,
   labels,
-  packageLabels,
   closeLabel,
 }: BookingModalProps) {
   const open = useBookingModalOpen();
@@ -65,31 +64,23 @@ export function BookingModal({
         if (event.target === dialogRef.current) closeBooking();
       }}
     >
-      <button
-        type="button"
-        className="booking-modal__close"
-        onClick={closeBooking}
-        aria-label={closeLabel}
-      >
-        <svg
-          width="18"
-          height="18"
-          viewBox="0 0 18 18"
-          fill="none"
-          aria-hidden="true"
-        >
-          <path
-            d="M3 3l12 12M15 3L3 15"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-          />
-        </svg>
-      </button>
       <div className="booking-modal__inner">
-        <h2 id="booking-modal-title" className="booking-modal__title">
-          {labels.title}
-        </h2>
+        <div className="booking-modal__head">
+          <h2
+            id="booking-modal-title"
+            className="subtitle booking-modal__title"
+          >
+            {labels.title}
+          </h2>
+          <button
+            type="button"
+            className="icon-btn"
+            onClick={closeBooking}
+            aria-label={closeLabel}
+          >
+            <Icon name="close" />
+          </button>
+        </div>
         <p className="booking-modal__tz">{labels.tzNote}</p>
         {session > 0 && (
           <BookingClient
@@ -98,7 +89,6 @@ export function BookingModal({
             siteKey={siteKey}
             active={open}
             labels={labels}
-            packageLabels={packageLabels}
           />
         )}
       </div>

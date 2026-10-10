@@ -34,16 +34,15 @@ export function BookingCalendar({
     <div className="booking-cal">
       <div
         className="booking-cal__days"
-        role="tablist"
+        role="group"
         aria-label={labels.pickDay}
       >
         {days.map((day, index) => (
           <button
             key={day.day}
             type="button"
-            role="tab"
-            aria-selected={index === activeDay}
-            className="booking-cal__day"
+            aria-pressed={index === activeDay}
+            className="pill booking-cal__day"
             data-active={index === activeDay}
             onClick={() => onDayChange(index)}
           >

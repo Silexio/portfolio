@@ -1,32 +1,31 @@
+import type { ReactNode } from "react";
 import { Reveal } from "@/components/ui/Reveal";
 
 type SectionHeadProps = {
   id: string;
-  eyebrow: string;
-  num: string;
   title: string;
-  subtitle?: string;
+  lead?: string;
+  eyebrow?: string;
+  align?: "center" | "start";
+  children?: ReactNode;
 };
 
 export function SectionHead({
   id,
-  eyebrow,
-  num,
   title,
-  subtitle,
+  lead,
+  eyebrow,
+  align = "center",
+  children,
 }: SectionHeadProps) {
   return (
-    <Reveal className="section-head">
-      <div>
-        <span className="eyebrow">
-          <span className="section-head__num">{num}</span>
-          {eyebrow}
-        </span>
-        <h2 id={id} className="section-head__title">
-          {title}
-        </h2>
-      </div>
-      {subtitle && <p className="section-head__sub">{subtitle}</p>}
+    <Reveal className={`section-head section-head--${align}`}>
+      {eyebrow && <p className="eyebrow">{eyebrow}</p>}
+      <h2 id={id} className="title">
+        {title}
+      </h2>
+      {lead && <p className="lead">{lead}</p>}
+      {children}
     </Reveal>
   );
 }

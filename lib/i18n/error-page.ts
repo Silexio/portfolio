@@ -11,11 +11,11 @@ export const ERROR_PAGE: Record<
 > = {
   title: { fr: "Quelque chose a cassé.", en: "Something broke." },
   body: {
-    fr: "L'incident est remonté automatiquement. Réessayez, ou écrivez-moi si ça persiste.",
+    fr: "L’incident est remonté automatiquement. Réessayez, ou écrivez-moi si ça persiste.",
     en: "The incident was reported automatically. Try again, or email me if it persists.",
   },
   retry: { fr: "Réessayer", en: "Try again" },
-  home: { fr: "Retour à l'accueil", en: "Back home" },
+  home: { fr: "Retour à l’accueil", en: "Back home" },
 };
 
 /** Best-effort locale from the browser — global-error renders outside the [lang] segment. */

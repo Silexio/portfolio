@@ -6,37 +6,32 @@ import { t } from "@/lib/i18n/utils";
 
 export function About({ lang }: { lang: Locale }) {
   return (
-    <section id="about" className="about" aria-labelledby="about-title">
-      <div className="wrap">
-        <Reveal
-          className={`about__grid${ABOUT.photo ? " about__grid--portrait" : ""}`}
-        >
-          {ABOUT.photo && (
-            <div className="about__portrait">
-              <Image
-                src={ABOUT.photo}
-                alt={t(ABOUT.photoAlt, lang)}
-                width={640}
-                height={800}
-                sizes="(min-width: 900px) 340px, 100vw"
-              />
-            </div>
-          )}
-          <div className="about__body">
-            <span className="eyebrow">{t(ABOUT.eyebrow, lang)}</span>
-            <h2 id="about-title" className="about__title">
-              {t(ABOUT.title, lang)}
-            </h2>
-            {ABOUT.body.map((paragraph) => (
-              <p key={paragraph.fr.slice(0, 40)}>{t(paragraph, lang)}</p>
-            ))}
-            <p className="about__signature">
-              <strong>{ABOUT.name}</strong>
-              <span>{t(ABOUT.role, lang)}</span>
-            </p>
+    <section id="about" className="section about" aria-labelledby="about-title">
+      <Reveal
+        className={`wrap about__grid${ABOUT.photo ? " about__grid--portrait" : ""}`}
+      >
+        {ABOUT.photo && (
+          <div className="about__portrait">
+            <Image
+              src={ABOUT.photo}
+              alt={t(ABOUT.photoAlt, lang)}
+              width={640}
+              height={680}
+              sizes="(min-width: 960px) 420px, 100vw"
+            />
           </div>
-        </Reveal>
-      </div>
+        )}
+        <div className="about__text">
+          <p className="eyebrow">{t(ABOUT.eyebrow, lang)}</p>
+          <h2 id="about-title" className="title">
+            {t(ABOUT.title, lang)}
+          </h2>
+          <p className="lead">{t(ABOUT.lead, lang)}</p>
+          {ABOUT.proof.fr && (
+            <p className="about__proof">{t(ABOUT.proof, lang)}</p>
+          )}
+        </div>
+      </Reveal>
     </section>
   );
 }

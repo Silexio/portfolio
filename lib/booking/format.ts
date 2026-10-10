@@ -1,7 +1,6 @@
 import { BOOKING } from "@/lib/data";
 import type { Locale } from "@/lib/i18n/config";
-
-const intlLocale = (locale: Locale) => (locale === "fr" ? "fr-BE" : "en-GB");
+import { intlLocale } from "@/lib/i18n/utils";
 
 /** Full slot label in Brussels time, e.g. "mardi 14 janvier, 08:00". */
 export function formatSlotLabel(iso: string, locale: Locale): string {

@@ -1,39 +1,37 @@
 # Polices
 
-Les quatre familles sont auto-hébergées et **sous-échantillonnées**. Ne pas remplacer un `.woff2`
+Les deux familles sont auto-hébergées et **sous-échantillonnées**. Ne pas remplacer un `.woff2`
 par le fichier d'origine : il pèse 2 à 3 fois plus et se charge en priorité `High` au premier paint,
 ce qui dégrade directement le LCP mobile.
 
-| Fichier                               | Famille                                | Graisses             | Licence     | Source                                   |
-| ------------------------------------- | -------------------------------------- | -------------------- | ----------- | ---------------------------------------- |
-| `Montserrat-Variable.woff2`           | Montserrat — titres (`--font-display`) | axe 500-600          | SIL OFL 1.1 | https://github.com/JulietaUla/Montserrat |
-| `Inter-Variable.woff2`                | Inter — interface (`--font-ui`)        | axe 400-500          | SIL OFL 1.1 | https://github.com/rsms/inter            |
-| `FiraCode-Variable.woff2`             | Fira Code — mono (`--font-mono`)       | axe 400-500          | SIL OFL 1.1 | https://github.com/tonsky/FiraCode       |
-| `Luciole-{Regular,Italic,Bold}.woff2` | Luciole — corps (`--font-body`)        | 400, 400 italic, 700 | CC BY 4.0   | https://www.luciole-vision.com           |
+| Fichier                        | Famille                                          | Graisses    | Licence     | Source                                   |
+| ------------------------------ | ------------------------------------------------ | ----------- | ----------- | ---------------------------------------- |
+| `Montserrat-Variable.woff2`    | Montserrat — titres et wordmark (`--font-title`) | axe 500-600 | SIL OFL 1.1 | https://github.com/JulietaUla/Montserrat |
+| `Luciole-{Regular,Bold}.woff2` | Luciole — tout le reste (`--font-body`)          | 400, 700    | CC BY 4.0   | https://www.luciole-vision.com           |
 
 Les mentions de copyright restent dans la table `name` de chaque fichier (`nameID 0`).
 
-`Luciole-BoldItalic` a été retirée : vérifié au runtime sur `/fr`, `/en`, les deux pages légales et
-la modale de réservation ouverte, aucun texte n'est rendu en Luciole gras italique. `Luciole-Bold`
-est conservée — elle sert au créneau sélectionné dans la modale (`.booking-form__selected strong`).
+Inter, Fira Code et les italiques de Luciole ont été retirées avec la charte A3 : le texte courant,
+les libellés et les champs sont tous en Luciole, et la charte réserve l'insistance au gras — jamais
+d'italique ni de capitales. `Luciole-Bold` sert aux libellés de formulaire, aux boutons et au gras.
 
 ## Régénérer
 
 Prérequis : `pip install "fonttools[woff]" brotli`.
 
-Les trois familles Google sont dérivées des sous-ensembles `latin` que l'API Google Fonts livre —
-des polices variables couvrant l'axe `wght` 100-900 alors que le site n'emploie que deux graisses
-par famille. Deux étapes : borner l'axe, puis sous-échantillonner.
+Montserrat est dérivée du sous-ensemble `latin` que l'API Google Fonts livre — une police variable
+couvrant l'axe `wght` 100-900 alors que le site n'emploie que deux graisses. Deux étapes : borner
+l'axe, puis sous-échantillonner.
 
 ```sh
 LATIN='U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2190-2193,U+2212,U+2215,U+FEFF,U+FFFD'
 FEAT='kern,liga,clig,ccmp,mark,mkmk,locl'
 
-# 1. borner l'axe des graisses (Montserrat 500:600, Inter 400:500, Fira Code 400:500)
-python -m fontTools.varLib.instancer source.woff2 'wght=400:500' -o instance.ttf
+# 1. borner l'axe des graisses
+python -m fontTools.varLib.instancer source.woff2 'wght=500:600' -o instance.ttf
 
 # 2. jeu latin, features utiles seulement, sans hinting
-pyftsubset instance.ttf --output-file=Cible-Variable.woff2 --flavor=woff2 \
+pyftsubset instance.ttf --output-file=Montserrat-Variable.woff2 --flavor=woff2 \
   --unicodes="$LATIN" --layout-features="$FEAT" --no-hinting --drop-tables+=FFTM
 ```
 

@@ -1,9 +1,17 @@
 import { Buffer } from "node:buffer";
 import { EMAIL } from "@/lib/data";
+import { reportServerError } from "@/lib/observability/server";
 import type { Mail } from "@/lib/booking/email";
 
 const ENDPOINT = "https://api.brevo.com/v3/smtp/email";
 const SENDER_NAME = "Silexio";
+
+/**
+ * Adresse qui reçoit les notifications du studio. Le repli sur l'adresse publique est le point
+ * important : sans lui, une variable d'environnement oubliée fait disparaître la notification
+ * d'une réservation sans la moindre erreur — la demande est enregistrée, et personne ne la voit.
+ */
+export const ownerAddress = () => process.env.BOOKING_NOTIFY_EMAIL || EMAIL;
 
 /** Sends one transactional email through the Brevo HTTP API — Workers cannot open an SMTP socket. */
 export async function sendMail(to: string, mail: Mail): Promise<void> {
@@ -22,7 +30,7 @@ export async function sendMail(to: string, mail: Mail): Promise<void> {
     body: JSON.stringify({
       sender: { name: SENDER_NAME, email: sender },
       to: [{ email: to }],
-      replyTo: { name: SENDER_NAME, email: EMAIL },
+      replyTo: { email: mail.replyTo ?? EMAIL },
       subject: mail.subject,
       htmlContent: mail.html,
       textContent: mail.text,
@@ -35,4 +43,21 @@ export async function sendMail(to: string, mail: Mail): Promise<void> {
 
   if (!response.ok)
     throw new Error(`Brevo rejected the email (HTTP ${response.status})`);
+}
+
+/**
+ * Envoie un email dont l'échec ne doit pas faire échouer la requête — mais ne doit pas passer
+ * inaperçu non plus : une réservation enregistrée dont la notification s'est perdue est un
+ * rendez-vous que personne ne voit arriver. L'erreur part donc vers Bugsink.
+ */
+export async function sendMailOrReport(
+  to: string,
+  mail: Mail,
+  context: string,
+): Promise<void> {
+  try {
+    await sendMail(to, mail);
+  } catch (error) {
+    reportServerError(error, `mail:${context}`);
+  }
 }

@@ -1,11 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useRef, useState } from "react";
-import { Mark } from "@/components/ui/Mark";
-import { useActiveSection } from "@/hooks/useActiveSection";
+import { useEffect, useRef, useState } from "react";
+import { Brand } from "@/components/ui/Brand";
+import { Btn } from "@/components/ui/Btn";
+import { Icon } from "@/components/ui/Icon";
 import { openBooking } from "@/hooks/useBookingModal";
-import { useSelectedPackages } from "@/hooks/usePackages";
 import type { Locale } from "@/lib/i18n/config";
 
 export type NavLink = {
@@ -15,12 +15,13 @@ export type NavLink = {
 
 export type NavLabels = {
   home: string;
+  nav: string;
   menu: string;
   close: string;
   toggleLang: string;
   toggleTheme: string;
-  cta: string;
-  selected: string;
+  book: string;
+  task: string;
 };
 
 type NavClientProps = {
@@ -46,58 +47,18 @@ function toggleTheme() {
   else apply();
 }
 
-function Brand({
-  label,
-  href,
-  onClick,
-}: {
-  label: string;
-  href: string;
-  onClick?: () => void;
-}) {
+/** Lune ou soleil selon [data-theme], basculés en CSS : aucun état React, donc aucun décalage d'hydratation. */
+function ThemeToggle({ label }: { label: string }) {
   return (
-    <a href={href} className="nav__brand" aria-label={label} onClick={onClick}>
-      <Mark />
-      <span className="nav__brand-text">SILEXIO</span>
-    </a>
-  );
-}
-
-function ThemeIcon() {
-  return (
-    <>
-      <svg
-        className="moon"
-        width="14"
-        height="14"
-        viewBox="0 0 14 14"
-        fill="none"
-        aria-hidden="true"
-      >
-        <path
-          d="M11.5 8.5a4 4 0 01-5-5 4 4 0 106 5z"
-          stroke="currentColor"
-          strokeWidth="1.3"
-          strokeLinejoin="round"
-        />
-      </svg>
-      <svg
-        className="sun"
-        width="14"
-        height="14"
-        viewBox="0 0 14 14"
-        fill="none"
-        aria-hidden="true"
-      >
-        <circle cx="7" cy="7" r="3" stroke="currentColor" strokeWidth="1.3" />
-        <path
-          d="M7 1v1.5M7 11.5V13M1 7h1.5M11.5 7H13M2.5 2.5l1 1M10.5 10.5l1 1M11.5 2.5l-1 1M3.5 10.5l-1 1"
-          stroke="currentColor"
-          strokeWidth="1.3"
-          strokeLinecap="round"
-        />
-      </svg>
-    </>
+    <button
+      type="button"
+      className="icon-btn theme-toggle"
+      onClick={toggleTheme}
+      aria-label={label}
+    >
+      <Icon name="moon" className="theme-toggle__moon" />
+      <Icon name="sun" className="theme-toggle__sun" />
+    </button>
   );
 }
 
@@ -108,45 +69,35 @@ export function NavClient({
   base = "",
   altPath = "",
 }: NavClientProps) {
-  const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
-  const menuRef = useRef<HTMLButtonElement>(null);
-  const ids = useMemo(() => links.map((link) => link.id), [links]);
-  const activeId = useActiveSection(ids);
-  const count = useSelectedPackages().length;
+  const sheetRef = useRef<HTMLDialogElement>(null);
   const otherLang: Locale = lang === "fr" ? "en" : "fr";
 
-  const countLabel = (link: NavLink) =>
-    link.id === "contact" && count > 0
-      ? `${link.label} (${count} ${labels.selected})`
-      : undefined;
-
-  const closeSheet = () => {
-    setOpen(false);
-    menuRef.current?.focus();
-  };
-
+  /* `showModal()` apporte gratuitement ce qu'un div ne donne pas : le reste de la page devient
+     inerte, le focus est piégé puis rendu au bouton d'ouverture, et Échap ferme. Sans ça le focus
+     passait derrière un panneau opaque — on tabulait dans une page invisible. */
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
-  useEffect(() => {
+    const sheet = sheetRef.current;
+    if (!sheet) return;
+    if (open && !sheet.open) sheet.showModal();
+    if (!open && sheet.open) sheet.close();
     document.body.style.overflow = open ? "hidden" : "";
-    if (!open) return;
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        setOpen(false);
-        menuRef.current?.focus();
-      }
-    };
-    window.addEventListener("keydown", onKeyDown);
     return () => {
       document.body.style.overflow = "";
-      window.removeEventListener("keydown", onKeyDown);
     };
+  }, [open]);
+
+  /* Un dialogue modal laissé ouvert mais masqué par la requête média du bureau rendrait toute la
+     page inerte : on referme en passant la barre des 900px. */
+  useEffect(() => {
+    if (!open) return;
+    const desktop = window.matchMedia("(min-width: 900px)");
+    const sync = () => {
+      if (desktop.matches) setOpen(false);
+    };
+    sync();
+    desktop.addEventListener("change", sync);
+    return () => desktop.removeEventListener("change", sync);
   }, [open]);
 
   const langSwitch = (
@@ -154,10 +105,10 @@ export function NavClient({
       href={`/${otherLang}${altPath}`}
       hrefLang={otherLang}
       scroll={false}
-      className="nav__lang"
+      className="lang-switch"
     >
       <span data-active={lang === "fr"}>FR</span>
-      <span>·</span>
+      <span aria-hidden="true">·</span>
       <span data-active={lang === "en"}>EN</span>
       {/* Le libellé complète le texte visible au lieu de le remplacer : un aria-label qui ne
           contient pas « FR · EN » rend le lien inatteignable à la commande vocale (WCAG 2.5.3). */}
@@ -167,71 +118,44 @@ export function NavClient({
 
   return (
     <>
-      <header className="nav" aria-label={labels.home}>
-        <div className="nav__bar" data-scrolled={scrolled}>
-          <Brand label={labels.home} href={`${base}#top`} />
-
-          <ul className="nav__links">
-            {links.map((link) => (
-              <li key={link.id}>
-                <a
-                  href={`${base}#${link.id}`}
-                  aria-current={link.id === activeId ? "true" : undefined}
-                  aria-label={countLabel(link)}
-                >
-                  {link.label}
-                  {link.id === "contact" && count > 0 && (
-                    <span className="nav__count" aria-hidden="true">
-                      {count}
-                    </span>
-                  )}
-                </a>
-              </li>
-            ))}
-          </ul>
-
+      <header className="nav">
+        <div className="nav__bar">
+          <Brand label={labels.home} href={`${base}#top`} glint="nav" />
+          <nav className="nav__links" aria-label={labels.nav}>
+            <ul>
+              {links.map((link) => (
+                <li key={link.id}>
+                  <a href={`${base}#${link.id}`}>{link.label}</a>
+                </li>
+              ))}
+            </ul>
+          </nav>
           <div className="nav__tools">
             {langSwitch}
+            <ThemeToggle label={labels.toggleTheme} />
+            <Btn onClick={openBooking} className="btn--compact nav__cta">
+              {labels.book}
+            </Btn>
             <button
               type="button"
-              className="nav__tool"
-              onClick={toggleTheme}
-              aria-label={labels.toggleTheme}
-            >
-              <ThemeIcon />
-            </button>
-            <button
-              ref={menuRef}
-              type="button"
-              className="nav__menu-btn"
-              data-count={count > 0}
+              className="icon-btn nav__menu-btn"
               onClick={() => setOpen(true)}
-              aria-label={
-                count > 0
-                  ? `${labels.menu} (${count} ${labels.selected})`
-                  : labels.menu
-              }
+              aria-label={labels.menu}
+              aria-expanded={open}
             >
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 18 18"
-                fill="none"
-                aria-hidden="true"
-              >
-                <path
-                  d="M2 5h14M2 13h14"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                />
-              </svg>
+              <Icon name="menu" />
             </button>
           </div>
         </div>
       </header>
 
-      <div className="sheet" data-open={open} inert={!open}>
+      <dialog
+        ref={sheetRef}
+        className="sheet"
+        data-open={open}
+        aria-label={labels.menu}
+        onClose={() => setOpen(false)}
+      >
         <div className="sheet__head">
           <Brand
             label={labels.home}
@@ -240,71 +164,44 @@ export function NavClient({
           />
           <button
             type="button"
-            className="nav__tool"
-            onClick={closeSheet}
+            className="icon-btn"
+            onClick={() => setOpen(false)}
             aria-label={labels.close}
           >
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 18 18"
-              fill="none"
-              aria-hidden="true"
-            >
-              <path
-                d="M3 3l12 12M15 3L3 15"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-              />
-            </svg>
+            <Icon name="close" />
           </button>
         </div>
-        <ul className="sheet__links">
-          {links.map((link, i) => (
-            <li key={link.id}>
-              <a
-                href={`${base}#${link.id}`}
-                onClick={() => setOpen(false)}
-                aria-label={countLabel(link)}
-              >
-                <span>
+        <nav aria-label={labels.nav}>
+          <ul className="sheet__links">
+            {links.map((link) => (
+              <li key={link.id}>
+                <a href={`${base}#${link.id}`} onClick={() => setOpen(false)}>
                   {link.label}
-                  {link.id === "contact" && count > 0 && (
-                    <span className="nav__count" aria-hidden="true">
-                      {count}
-                    </span>
-                  )}
-                </span>
-                <span className="n">{String(i + 1).padStart(2, "0")}</span>
-              </a>
-            </li>
-          ))}
-        </ul>
+                  <span aria-hidden="true">›</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
         <div className="sheet__foot">
-          <button
-            type="button"
-            className="btn btn--ember"
+          <Btn href={`${base}#contact`} onClick={() => setOpen(false)}>
+            {labels.task}
+          </Btn>
+          <Btn
+            variant="link"
             onClick={() => {
               setOpen(false);
               openBooking();
             }}
           >
-            {labels.cta}
-          </button>
-          <div className="sheet__foot-row">
+            {labels.book}
+          </Btn>
+          <div className="sheet__row">
             {langSwitch}
-            <button
-              type="button"
-              className="nav__tool"
-              onClick={toggleTheme}
-              aria-label={labels.toggleTheme}
-            >
-              <ThemeIcon />
-            </button>
+            <ThemeToggle label={labels.toggleTheme} />
           </div>
         </div>
-      </div>
+      </dialog>
     </>
   );
 }
