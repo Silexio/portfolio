@@ -87,10 +87,13 @@ export function structuredData(lang: Locale) {
         name: "Nicolas Wieckiewicz",
         url: BASE_URL,
         email: EMAIL,
+        /* Pas « indépendant » : en Belgique le mot désigne un statut social précis, et les
+           prestations sont contractées par Productions Associées ASBL, dont le contrat porte la
+           fonction « consultant·e en informatique ». L'intitulé reste donc le métier, sans statut. */
         jobTitle: t(
           {
-            fr: "Développeur full-stack indépendant",
-            en: "Independent full-stack developer",
+            fr: "Développeur full-stack, consultant en informatique",
+            en: "Full-stack developer and IT consultant",
           },
           lang,
         ),
