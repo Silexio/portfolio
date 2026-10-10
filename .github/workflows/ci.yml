@@ -52,7 +52,9 @@ jobs:
   smoke:
     name: Servi par workerd
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    # Le contrôle tient en 40 s en local : au-delà de 8 minutes c'est un blocage, pas une lenteur,
+    # et mieux vaut échouer vite que se faire annuler au bout de 20.
+    timeout-minutes: 8
     env:
       NEXT_TELEMETRY_DISABLED: "1"
       # Figée dans le bundle au moment du build : absente, la réservation part morte en production.

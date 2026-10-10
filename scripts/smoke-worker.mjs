@@ -34,8 +34,23 @@ const note = (message) => failures.push(message);
 const worker = spawn(
   "pnpm",
   ["exec", "opennextjs-cloudflare", "preview", "--", "--port", String(PORT)],
-  { stdio: ["ignore", "pipe", "pipe"] },
+  {
+    stdio: ["ignore", "pipe", "pipe"],
+    detached: true,
+    // Wrangler pose une question sur l'envoi de statistiques au premier lancement : sans réponse,
+    // il attend indéfiniment là où personne ne peut taper.
+    env: { ...process.env, WRANGLER_SEND_METRICS: "false", CI: "true" },
+  },
 );
+
+/** Arrête le groupe entier, pas seulement le `pnpm` de surface. */
+function stopWorker() {
+  try {
+    process.kill(-worker.pid, "SIGTERM");
+  } catch {
+    worker.kill("SIGTERM");
+  }
+}
 
 let log = "";
 for (const stream of [worker.stdout, worker.stderr])
@@ -101,5 +116,6 @@ try {
     );
   }
 } finally {
-  worker.kill("SIGTERM");
+  stopWorker();
+  process.exit(process.exitCode ?? 0);
 }
