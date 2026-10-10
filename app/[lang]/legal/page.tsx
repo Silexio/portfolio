@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import { Footer } from "@/components/layout/Footer";
-import { Nav } from "@/components/layout/Nav";
+import { SiteShell } from "@/components/layout/SiteShell";
+import { Btn } from "@/components/ui/Btn";
 import { LEGAL_PAGE, LEGAL_SECTIONS } from "@/lib/legal";
 import { I18N, LEGAL } from "@/lib/data";
 import { LOCALES } from "@/lib/i18n/config";
-import { localeParam, t } from "@/lib/i18n/utils";
-import { BASE_URL } from "@/lib/metadata";
+import { localeParam, longDate, t } from "@/lib/i18n/utils";
+import { BASE_URL, openGraph } from "@/lib/metadata";
 
 export function generateStaticParams() {
   return LOCALES.map((lang) => ({ lang }));
@@ -18,9 +18,11 @@ export async function generateMetadata({
 }: PageProps<"/[lang]/legal">): Promise<Metadata> {
   const lang = await localeParam(params);
   const title = `${t(LEGAL_PAGE.title, lang)} | ${LEGAL.entity}`;
+  const description = t(LEGAL_PAGE.intro, lang).slice(0, 160);
+  const path = `/${lang}/legal`;
   return {
     title,
-    description: t(LEGAL_PAGE.intro, lang).slice(0, 160),
+    description,
     alternates: {
       canonical: `${BASE_URL}/${lang}/legal`,
       languages: {
@@ -31,6 +33,7 @@ export async function generateMetadata({
         "x-default": `${BASE_URL}/fr/legal`,
       },
     },
+    openGraph: openGraph(lang, path, title, description),
   };
 }
 
@@ -38,22 +41,16 @@ export default async function LegalPage({
   params,
 }: PageProps<"/[lang]/legal">) {
   const lang = await localeParam(params);
-  const updated = new Intl.DateTimeFormat(lang, {
-    day: "2-digit",
-    month: "long",
-    year: "numeric",
-  });
 
   return (
-    <>
-      <Nav lang={lang} base={`/${lang}`} altPath="/legal" />
+    <SiteShell lang={lang} base={`/${lang}`} altPath="/legal">
       <main id="main" className="legal">
         <div className="wrap">
-          <h1 className="legal__title">{t(LEGAL_PAGE.title, lang)}</h1>
-          <p className="legal__intro">{t(LEGAL_PAGE.intro, lang)}</p>
+          <h1 className="display">{t(LEGAL_PAGE.title, lang)}</h1>
+          <p className="lead">{t(LEGAL_PAGE.intro, lang)}</p>
           <p className="legal__updated">
             {t(LEGAL_PAGE.updated, lang)} :{" "}
-            {updated.format(new Date(LEGAL_PAGE.updatedOn))}
+            {longDate(LEGAL_PAGE.updatedOn, lang)}
           </p>
           {LEGAL_SECTIONS.map((section) => (
             <section
@@ -61,7 +58,7 @@ export default async function LegalPage({
               className="legal__section"
               aria-labelledby={`legal-${section.id}`}
             >
-              <h2 id={`legal-${section.id}`} className="legal__heading">
+              <h2 id={`legal-${section.id}`} className="subtitle">
                 {t(section.title, lang)}
               </h2>
               {section.body.map((paragraph) => (
@@ -69,12 +66,11 @@ export default async function LegalPage({
               ))}
             </section>
           ))}
-          <a className="legal__back" href={`/${lang}`}>
-            {t(I18N.a11y.home, lang)}
-          </a>
+          <Btn href={`/${lang}`} variant="accent">
+            {t(I18N.service.home, lang)}
+          </Btn>
         </div>
       </main>
-      <Footer lang={lang} />
-    </>
+    </SiteShell>
   );
 }

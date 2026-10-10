@@ -3,7 +3,7 @@ import { I18N } from "@/lib/data";
 import type { Locale } from "@/lib/i18n/config";
 import { t } from "@/lib/i18n/utils";
 
-const NAV_SECTIONS = ["services", "work", "faq", "contact"] as const;
+const NAV_SECTIONS = ["solutions", "work", "offers", "faq"] as const;
 
 export function Nav({
   lang,
@@ -26,12 +26,13 @@ export function Nav({
       links={links}
       labels={{
         home: t(I18N.a11y.home, lang),
+        nav: t(I18N.a11y.nav, lang),
         menu: t(I18N.a11y.menu, lang),
         close: t(I18N.a11y.close, lang),
         toggleLang: t(I18N.a11y.toggleLang, lang),
         toggleTheme: t(I18N.a11y.toggleTheme, lang),
-        cta: t(I18N.contact.cal, lang),
-        selected: t(I18N.a11y.selected, lang),
+        book: t(I18N.contact.cal, lang),
+        task: t(I18N.hero.cta, lang),
       }}
     />
   );

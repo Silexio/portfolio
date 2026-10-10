@@ -1,74 +1,32 @@
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import { MarkSprite } from "@/components/ui/Mark";
+import { BOOT_SCRIPT } from "@/lib/boot";
+import { BRAND } from "@/lib/brand";
 import { LEGAL, META } from "@/lib/data";
 import { LOCALES } from "@/lib/i18n/config";
 import { localeParam, t } from "@/lib/i18n/utils";
-import { BASE_URL } from "@/lib/metadata";
+import { BASE_URL, openGraph } from "@/lib/metadata";
 import { structuredData } from "@/lib/seo";
 import "../globals.css";
 
-/* Les trois familles Google sont auto-hébergées plutôt que servies par next/font/google. Les
-   fichiers livrés par l'API sont des polices variables couvrant l'axe wght 100-900 alors que le
-   site n'emploie que deux graisses par famille : axe borné aux graisses réellement utilisées,
-   jeu latin, features OpenType inutilisées et hinting retirés — 120 Ko ramenés à 60 Ko, à rendu
-   identique. Effet de bord bienvenu : le build ne télécharge plus rien, donc il passe sans réseau.
-   Régénération : voir app/fonts/README.md. */
+/* Deux familles seulement, auto-hébergées et sous-échantillonnées (voir app/fonts/README.md) :
+   Montserrat pour les titres et le wordmark, Luciole — dessinée pour les lecteurs malvoyants et
+   dyslexiques — pour tout le reste. Pas d'italique : la charte réserve l'insistance au gras. Le
+   build ne télécharge rien, donc il passe sans réseau. */
 const montserrat = localFont({
   src: "../fonts/Montserrat-Variable.woff2",
   weight: "500 600",
   variable: "--font-montserrat",
   declarations: [{ prop: "font-display", value: "swap" }],
 });
-const inter = localFont({
-  src: "../fonts/Inter-Variable.woff2",
-  weight: "400 500",
-  variable: "--font-inter",
-  declarations: [{ prop: "font-display", value: "swap" }],
-});
-const firaCode = localFont({
-  src: "../fonts/FiraCode-Variable.woff2",
-  weight: "400 500",
-  variable: "--font-fira-code",
-  declarations: [{ prop: "font-display", value: "swap" }],
-});
 const luciole = localFont({
   variable: "--font-luciole",
   src: [
     { path: "../fonts/Luciole-Regular.woff2", weight: "400", style: "normal" },
-    { path: "../fonts/Luciole-Italic.woff2", weight: "400", style: "italic" },
     { path: "../fonts/Luciole-Bold.woff2", weight: "700", style: "normal" },
   ],
 });
-
-/* Un seul script inline, dans le <head>, avant le premier paint — les deux effets doivent le
-   précéder. Le thème est dans son propre try/catch : un localStorage indisponible ne doit pas
-   empêcher d'armer les reveals. */
-const themeScript = `try {
-  var stored = localStorage.getItem("silex_theme");
-  var dark = stored === "dark" || (!stored && matchMedia("(prefers-color-scheme: dark)").matches);
-  document.documentElement.dataset.theme = dark ? "dark" : "light";
-} catch (e) {}`;
-
-/* `revealJs` conditionne l'état masqué des blocs [data-reveal] : sans JS l'attribut n'est jamais
-   posé, donc le contenu reste visible. L'observer vit ici plutôt que dans un composant client pour
-   ne coûter ni chunk ni hydratation — voir § Animations de CLAUDE.md. */
-const revealScript = `document.documentElement.dataset.revealJs = "";
-function armReveals() {
-  var io = new IntersectionObserver(function (entries) {
-    entries.forEach(function (entry) {
-      if (!entry.isIntersecting) return;
-      entry.target.dataset.in = "";
-      io.unobserve(entry.target);
-    });
-  }, { threshold: 0.12 });
-  document.querySelectorAll("[data-reveal]").forEach(function (el) { io.observe(el); });
-}
-document.readyState === "loading"
-  ? document.addEventListener("DOMContentLoaded", armReveals)
-  : armReveals();`;
-
-const bootScript = `(function(){${themeScript}\n${revealScript}})()`;
 
 export const dynamicParams = false;
 
@@ -78,8 +36,8 @@ export function generateStaticParams() {
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#F4F1EA" },
-    { media: "(prefers-color-scheme: dark)", color: "#0B0B0C" },
+    { media: "(prefers-color-scheme: light)", color: BRAND.bg },
+    { media: "(prefers-color-scheme: dark)", color: BRAND.bgDark },
   ],
 };
 
@@ -112,23 +70,12 @@ export async function generateMetadata({
       canonical: `/${lang}`,
       languages: { fr: "/fr", en: "/en", "x-default": "/fr" },
     },
-    openGraph: {
-      type: "website",
-      url: `/${lang}`,
-      siteName: LEGAL.entity,
-      title: t(META.title, lang),
-      description: t(META.description, lang),
-      locale: lang === "fr" ? "fr_BE" : "en_US",
-      alternateLocale: lang === "fr" ? "en_US" : "fr_BE",
-      images: [
-        {
-          url: "/opengraph.png",
-          width: 1200,
-          height: 630,
-          alt: t(META.title, lang),
-        },
-      ],
-    },
+    openGraph: openGraph(
+      lang,
+      `/${lang}`,
+      t(META.title, lang),
+      t(META.description, lang),
+    ),
     twitter: { card: "summary_large_image" },
   };
 }
@@ -142,10 +89,10 @@ export default async function RootLayout({
     <html
       lang={lang}
       suppressHydrationWarning
-      className={`${montserrat.variable} ${inter.variable} ${firaCode.variable} ${luciole.variable}`}
+      className={`${montserrat.variable} ${luciole.variable}`}
     >
       <head>
-        <script dangerouslySetInnerHTML={{ __html: bootScript }} />
+        <script dangerouslySetInnerHTML={{ __html: BOOT_SCRIPT }} />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{

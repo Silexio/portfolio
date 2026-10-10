@@ -1,89 +1,94 @@
-import { Mark } from "@/components/ui/Mark";
+import { BookingButton } from "@/components/ui/BookingButton";
+import { Brand } from "@/components/ui/Brand";
 import { SocialIcon } from "@/components/ui/SocialIcon";
+import { Btn } from "@/components/ui/Btn";
 import { EMAIL, GEO, I18N, LEGAL, SOCIALS, URLS } from "@/lib/data";
 import type { Locale } from "@/lib/i18n/config";
 import { t } from "@/lib/i18n/utils";
+import { SERVICE_PAGES, servicePath } from "@/lib/services";
 
-const NAV_SECTIONS = ["services", "work", "faq", "contact"] as const;
-
-export function Footer({ lang }: { lang: Locale }) {
+/**
+ * Footer unique, qui porte les mentions légales belges obligatoires : entité de facturation Smart,
+ * siège et TVA de la coopérative. `base` préfixe l'ancre de la marque : vide sur l'accueil,
+ * `/{lang}` depuis une autre page.
+ */
+export function Footer({ lang, base = "" }: { lang: Locale; base?: string }) {
   const newTab = t(I18N.a11y.newTab, lang);
   const i18n = I18N.footer;
 
   return (
     <footer className="footer">
-      <div className="footer__grid">
-        <div className="footer__brand-col">
-          <a
-            href="#top"
-            className="footer__brand"
-            aria-label={t(I18N.a11y.home, lang)}
-          >
-            <Mark />
-            <span>SILEXIO</span>
-          </a>
-          <p className="footer__tagline">{t(i18n.tagline, lang)}</p>
+      <div className="wrap footer__grid">
+        <div className="footer__brand">
+          <Brand href={`${base}#top`} label={t(I18N.a11y.home, lang)} />
+          <p>{t(i18n.tagline, lang)}</p>
           <p className="footer__place">
             {GEO.locality} ({GEO.postalCode}) · {GEO.region} ·{" "}
             {t(i18n.country, lang)}
           </p>
         </div>
 
-        <nav className="footer__col" aria-label={t(i18n.navTitle, lang)}>
-          <h2 className="footer__col-title">{t(i18n.navTitle, lang)}</h2>
+        <nav className="footer__col" aria-labelledby="footer-services">
+          <h2 id="footer-services" className="footer__title">
+            {t(i18n.servicesTitle, lang)}
+          </h2>
           <ul>
-            {NAV_SECTIONS.map((id) => (
-              <li key={id}>
-                <a href={`#${id}`}>{t(I18N.nav[id], lang)}</a>
+            {SERVICE_PAGES.map((page) => (
+              <li key={page.id}>
+                <Btn href={servicePath(page, lang)} variant="link">
+                  {t(page.name, lang)}
+                </Btn>
               </li>
             ))}
           </ul>
         </nav>
 
         <div className="footer__col">
-          <h2 className="footer__col-title">{t(i18n.contactTitle, lang)}</h2>
+          <h2 className="footer__title">{t(i18n.contactTitle, lang)}</h2>
           <ul>
             <li>
-              <a href={URLS.email}>{EMAIL}</a>
+              <Btn href={URLS.email} variant="link" icon="mail">
+                {EMAIL}
+              </Btn>
             </li>
             <li>
-              <a href={`/${lang}/legal`}>{t(i18n.legal, lang)}</a>
+              <BookingButton variant="link">
+                {t(I18N.contact.cal, lang)}
+              </BookingButton>
+            </li>
+            <li>
+              <Btn href={`/${lang}/legal`} variant="link">
+                {t(i18n.legal, lang)}
+              </Btn>
             </li>
           </ul>
         </div>
 
         <div className="footer__col">
-          <h2 className="footer__col-title">{t(i18n.followTitle, lang)}</h2>
+          <h2 className="footer__title">{t(i18n.followTitle, lang)}</h2>
           <div className="footer__socials">
             {SOCIALS.map((social) => (
-              <a
+              <Btn
                 key={social.id}
                 href={social.url}
-                className="footer__social"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={`${social.label} — ${newTab}`}
+                variant="pill"
+                srHint={newTab}
               >
                 <SocialIcon id={social.id} />
-              </a>
+                {social.label}
+              </Btn>
             ))}
-            {LEGAL.whatsappUrl && (
-              <a
-                href={LEGAL.whatsappUrl}
-                className="footer__social footer__social--cta"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <SocialIcon id="whatsapp" />
-                {t(i18n.whatsapp, lang)}
-                <span className="sr-only"> — {newTab}</span>
-              </a>
-            )}
           </div>
+          {LEGAL.whatsappUrl && (
+            <Btn href={LEGAL.whatsappUrl} variant="pillStrong" srHint={newTab}>
+              <SocialIcon id="whatsapp" />
+              {t(i18n.whatsapp, lang)}
+            </Btn>
+          )}
         </div>
       </div>
 
-      <div className="footer__bar">
+      <div className="wrap footer__bar">
         <p>
           © 2026 {LEGAL.entity} · {t(i18n.rights, lang)} · {t(i18n.tag, lang)}
         </p>
