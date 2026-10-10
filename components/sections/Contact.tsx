@@ -4,6 +4,7 @@ import { Btn } from "@/components/ui/Btn";
 import { Reveal } from "@/components/ui/Reveal";
 import { SocialIcon } from "@/components/ui/SocialIcon";
 import { SectionHead } from "@/components/ui/SectionHead";
+import { TURNSTILE_SITE_KEY } from "@/lib/turnstile";
 import { I18N, LEGAL } from "@/lib/data";
 import type { LeadSource } from "@/lib/leads/constants";
 import type { Locale } from "@/lib/i18n/config";
@@ -42,7 +43,7 @@ export function Contact({
             lang={lang}
             source={source}
             askHours={askHours}
-            siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? ""}
+            siteKey={TURNSTILE_SITE_KEY}
             taskLabel={t(copy?.task ?? i18n.task, lang)}
             taskPlaceholder={t(
               copy?.taskPlaceholder ?? i18n.taskPlaceholder,
