@@ -55,6 +55,9 @@ const ART_BY_DOMAIN: Record<ArtId, (props: { lang: Locale }) => ReactNode> = {
   repair: RepairArt,
 };
 
+/** L'éclat qui traverse une planche. Écrit une fois, posé par translation. */
+const FLAKE = "0,0 54,-18 92,8 54,36 0,18 14,9";
+
 const PAGE_LINES = [118, 104, 112, 90, 116, 70, 100];
 const CELL_TEXT = [
   [30, 34, 26, 32],
@@ -124,7 +127,8 @@ function AutomateArt() {
       </g>
       <polygon
         className="art-accent"
-        points="332,196 386,178 424,204 386,232 332,214 346,205"
+        points={FLAKE}
+        transform="translate(332 196)"
       />
       <rect
         className="art-paper"
@@ -240,7 +244,8 @@ function RepairArt() {
       />
       <polygon
         className="art-accent"
-        points="56,178 110,160 148,186 110,214 56,196 70,187"
+        points={FLAKE}
+        transform="translate(56 178)"
       />
     </svg>
   );

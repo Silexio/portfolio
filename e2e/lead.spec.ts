@@ -1,14 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
-
-/* Turnstile est remplacé par un bouchon qui délivre un jeton tout de suite : le test ne dépend ni
-   du réseau ni de Cloudflare. L'envoi est intercepté, rien ne part chez Brevo. */
-const stubTurnstile = (page: Page) =>
-  page.route("https://challenges.cloudflare.com/turnstile/**", (route) =>
-    route.fulfill({
-      contentType: "application/javascript",
-      body: "window.turnstile={render:function(el,o){setTimeout(function(){o.callback('e2e-token')});return 'w'},reset:function(){},remove:function(){}};",
-    }),
-  );
+import { stubTurnstile } from "./stub-turnstile";
 
 const openForm = async (page: Page, path = "/fr") => {
   await stubTurnstile(page);

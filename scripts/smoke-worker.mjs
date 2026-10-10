@@ -14,20 +14,19 @@ const PORT = 8788;
 const BASE = `http://localhost:${PORT}`;
 const BOOT_TIMEOUT_MS = 180_000;
 
-/** Les routes dont une seule en échec rend le site inutilisable pour un visiteur. */
-const PAGES = [
-  "/fr",
-  "/en",
-  "/fr/automatisation",
-  "/fr/logiciel-metier",
-  "/fr/depannage",
-  "/en/automation",
-  "/en/custom-software",
-  "/en/it-support",
-  "/fr/legal",
-  "/en/legal",
-];
+/** Routes techniques, les seules à connaître d'avance : tout le reste vient du sitemap. */
 const ENDPOINTS = ["/robots.txt", "/sitemap.xml", "/api/availability"];
+
+/**
+ * Les pages à servir viennent du sitemap du site lui-même, pas d'une liste recopiée : une page
+ * ajoutée est couverte sans qu'on y pense, et un slug renommé ne laisse pas le contrôle valider
+ * des chemins qui n'existent plus.
+ */
+async function sitemapPaths() {
+  const xml = await (await fetch(`${BASE}/sitemap.xml`)).text();
+  const urls = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
+  return urls.map((url) => new URL(url).pathname);
+}
 
 const failures = [];
 const note = (message) => failures.push(message);
@@ -68,7 +67,10 @@ try {
     throw new Error(`workerd n'a pas démarré en ${BOOT_TIMEOUT_MS / 1000} s`);
   }
 
-  for (const path of [...PAGES, ...ENDPOINTS]) {
+  const pages = await sitemapPaths();
+  if (pages.length === 0) note("le sitemap ne liste aucune page");
+
+  for (const path of [...pages, ...ENDPOINTS]) {
     const res = await fetch(`${BASE}${path}`);
     if (!res.ok) note(`${path} → HTTP ${res.status}`);
   }
@@ -76,12 +78,13 @@ try {
   const home = await (await fetch(`${BASE}/fr`)).text();
   if (!home.includes("<h1")) note("/fr ne contient aucun <h1>");
 
-  /* La clé Turnstile est figée dans le bundle au moment du build : construite sans elle, la page
-     part en production avec `siteKey:""`, le widget ne se monte jamais et aucune réservation ne
-     peut partir — sans la moindre erreur. On lit donc le HTML servi, sans rien supposer de l'env. */
-  if (home.includes('siteKey:""') || home.includes('"siteKey":""'))
+  /* La réservation ne part que si le widget peut se monter, donc si la page porte une vraie clé.
+     Vérifier sa *présence* reste vrai quelle que soit sa provenance — l'environnement du build ou
+     le repli de `lib/turnstile.ts` ; chercher `siteKey:""` ne prouverait plus rien depuis que ce
+     repli existe. */
+  if (!/siteKey\\?":\\?"[^"\\]+/.test(home))
     note(
-      'le HTML servi porte `siteKey:""` : le build n\'avait pas NEXT_PUBLIC_TURNSTILE_SITE_KEY, aucune réservation ne partira',
+      "le HTML servi ne porte aucune clé Turnstile : aucune demande ne partira",
     );
 
   for (const symptom of ["NoFallbackError", "WebAssembly.compile"])
@@ -94,7 +97,7 @@ try {
     process.exitCode = 1;
   } else {
     console.log(
-      `Contrôle de fumée passé : ${PAGES.length} pages et ${ENDPOINTS.length} routes servies par workerd.`,
+      `Contrôle de fumée passé : ${pages.length} pages et ${ENDPOINTS.length} routes servies par workerd.`,
     );
   }
 } finally {

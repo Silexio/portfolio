@@ -32,8 +32,6 @@ export async function POST(request: Request) {
       method: "POST",
       headers: {
         "Content-Type": "application/x-sentry-envelope",
-        // L'authentification du protocole Sentry. Sans elle, le serveur répond 403 et l'erreur
-        // est perdue — le navigateur n'a aucun moyen de l'apprendre.
         "X-Sentry-Auth": `Sentry sentry_version=7, sentry_key=${target.publicKey}, sentry_client=silexio-reporter/1.0`,
         // L'authentification du protocole Sentry. Sans elle, le serveur répond 403 et l'erreur
         // est perdue — le navigateur n'a aucun moyen de l'apprendre.

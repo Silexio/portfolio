@@ -27,8 +27,6 @@ export function useFormSubmit<Key extends string>({
   const [token, setToken] = useState<string | null>(null);
   const [attempt, setAttempt] = useState(0);
 
-  const onToken = useCallback((value: string | null) => setToken(value), []);
-
   /* Un jeton Turnstile ne sert qu'une fois : après un échec le widget est remonté (`attempt`),
      sinon le second envoi repart avec un jeton consommé et échoue sans que le visiteur comprenne. */
   const fail = useCallback((key: Key) => {
@@ -64,5 +62,5 @@ export function useFormSubmit<Key extends string>({
     [url, errorByCode, genericError, fail],
   );
 
-  return { status, errorKey, token, attempt, onToken, send };
+  return { status, errorKey, token, attempt, onToken: setToken, send };
 }
