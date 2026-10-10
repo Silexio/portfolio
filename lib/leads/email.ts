@@ -36,6 +36,7 @@ export function leadOwnerEmail(data: LeadMailData): Mail {
 <p style="margin:20px 0 6px;font-size:12px;color:${BRAND.muted};">${esc(f.task)}</p>
 <div style="font-size:15px;line-height:1.6;">${nl2br(esc(data.task))}</div>
 <p style="margin-top:24px;font-size:12px;color:${BRAND.muted};">${esc(tpl.hint)}</p>`,
+    "fr",
   );
 
   const text = [
@@ -63,7 +64,10 @@ export function leadAckEmail(locale: Locale): Mail {
   const text = t(tpl.body, locale);
   return {
     subject: t(tpl.subject, locale),
-    html: shell(`<div style="font-size:14px;">${nl2br(esc(text))}</div>`),
+    html: shell(
+      `<div style="font-size:14px;">${nl2br(esc(text))}</div>`,
+      locale,
+    ),
     text,
   };
 }
