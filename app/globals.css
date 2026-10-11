@@ -1837,7 +1837,7 @@ button {
 .about__grid {
   display: grid;
   justify-content: start;
-  align-items: center;
+  align-items: start;
   gap: var(--s-5);
 }
 @media (min-width: 900px) {
