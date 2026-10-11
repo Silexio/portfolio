@@ -991,12 +991,40 @@ export const ABOUT = {
     fr: "Nicolas Wieckiewicz, développeur full-stack à Chapelle-lez-Herlaimont. La personne qui vous répond est celle qui écrit le code.",
     en: "Nicolas Wieckiewicz, full-stack developer in Chapelle-lez-Herlaimont. The person who answers you is the one who writes the code.",
   },
-  /** Preuve vérifiable chez un tiers. Vide = la ligne disparaît. Ne jamais y mettre une promesse maison. */
-  proof: { fr: "", en: "" },
-  photo: "",
+  /**
+   * Le parcours, et rien d'autre : chaque phrase doit tenir devant quelqu'un qui vérifie.
+   * Pas de diplôme qui n'existe pas, pas d'ancienneté arrondie, pas de compliment rapporté.
+   */
+  story: [
+    {
+      fr: "J’ai commencé à démonter des ordinateurs vers dix ans, pour comprendre comment ils marchaient et réparer ceux de la maison. Je n’ai jamais arrêté : réseaux et systèmes en secondaire, puis le développement, la sécurité et l’infrastructure — appris surtout seul, sur des cas réels.",
+      en: "I started taking computers apart at about ten, to understand how they worked and fix the ones at home. I never stopped: networks and systems in secondary school, then development, security and infrastructure — mostly self-taught, on real cases.",
+    },
+    {
+      fr: "Mon premier poste : le support informatique de la Commission européenne. J’y réparais les pannes des autres, et j’y ai écrit les scripts qui ont supprimé ce que mon équipe refaisait chaque jour à la main. C’est exactement ce que je fais aujourd’hui pour des PME.",
+      en: "My first job: the IT support desk at the European Commission. I fixed other people’s problems, and wrote the scripts that removed what my team was redoing by hand every day. That is exactly what I now do for small businesses.",
+    },
+    {
+      fr: "Ensuite développeur full-stack chez Tafsquare : Django, React, Docker, des applications utilisées tous les jours. Silexio est né de l’envie de faire ce métier à ma façon — un seul interlocuteur, des prix annoncés d’avance, et le droit de vous dire non.",
+      en: "Then full-stack developer at Tafsquare: Django, React, Docker, applications people used every day. Silexio came out of wanting to do this work my own way — one person to talk to, prices stated up front, and the freedom to tell you no.",
+    },
+  ],
+  /**
+   * Preuve vérifiable chez un tiers. Vide = la ligne disparaît. Ne jamais y mettre une promesse
+   * maison : le seul intérêt de cette ligne est qu'un inconnu puisse la contrôler sans me croire.
+   */
+  proof: {
+    fr: "Le support du casque Razer Kraken Tournament Edition que j’ai écrit est intégré à OpenRazer, le pilote libre des périphériques Razer sous Linux.",
+    en: "The Razer Kraken Tournament Edition support I wrote is part of OpenRazer, the open-source Razer device driver for Linux.",
+  },
+  /** Où la vérifier. Vide = la preuve s'affiche en texte simple. */
+  proofUrl: "https://github.com/openrazer/openrazer/commits?author=TheSawkit",
+  photo: "/nicolas.webp",
+  photoWidth: 715,
+  photoHeight: 760,
   photoAlt: {
-    fr: "Portrait de Nicolas Wieckiewicz",
-    en: "Portrait of Nicolas Wieckiewicz",
+    fr: "Portrait de Nicolas Wieckiewicz, fondateur de Silexio",
+    en: "Portrait of Nicolas Wieckiewicz, founder of Silexio",
   },
 } satisfies Record<string, unknown>;
 

@@ -1847,9 +1847,19 @@ button {
     gap: var(--s-7);
   }
 }
+/* Sur téléphone le portrait est plafonné : en pleine largeur il mangeait une demi-page pour
+   une information qui tient dans une vignette. Il reprend sa place dès que la grille a deux
+   colonnes — la surcharge vient donc après la règle de base, une media query n'ajoutant
+   aucune spécificité. */
 .about__portrait img {
   width: 100%;
+  max-width: 220px;
   border-radius: var(--radius-frame);
+}
+@media (min-width: 900px) {
+  .about__portrait img {
+    max-width: none;
+  }
 }
 .about__text {
   display: flex;
