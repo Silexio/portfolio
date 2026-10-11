@@ -1001,12 +1001,16 @@ export const ABOUT = {
       en: "I started taking computers apart at about ten, to understand how they worked and fix the ones at home. I never stopped: networks and systems in secondary school, then development, security and infrastructure — mostly self-taught, on real cases.",
     },
     {
-      fr: "Mon premier poste : le support informatique de la Commission européenne. J’y réparais les pannes des autres, et j’y ai écrit les scripts qui ont supprimé ce que mon équipe refaisait chaque jour à la main. C’est exactement ce que je fais aujourd’hui pour des PME.",
-      en: "My first job: the IT support desk at the European Commission. I fixed other people’s problems, and wrote the scripts that removed what my team was redoing by hand every day. That is exactly what I now do for small businesses.",
+      fr: "Mon premier poste était au support informatique d’une grande administration. J’y réparais les pannes des autres, et j’y ai écrit les outils qui ont supprimé ce que mon équipe refaisait chaque jour à la main. C’est exactement ce que je fais aujourd’hui pour des PME.",
+      en: "My first job was on a large organisation’s IT support desk. I fixed other people’s problems, and wrote the tools that removed what my team was redoing by hand every day. That is exactly what I now do for small businesses.",
     },
     {
-      fr: "Ensuite développeur full-stack chez Tafsquare : Django, React, Docker, des applications utilisées tous les jours. Silexio est né de l’envie de faire ce métier à ma façon — un seul interlocuteur, des prix annoncés d’avance, et le droit de vous dire non.",
-      en: "Then full-stack developer at Tafsquare: Django, React, Docker, applications people used every day. Silexio came out of wanting to do this work my own way — one person to talk to, prices stated up front, and the freedom to tell you no.",
+      fr: "Ensuite développeur full-stack en agence : Django, React, Docker, des sites et des applications utilisés tous les jours. Silexio est né de l’envie de faire ce métier à ma façon — un seul interlocuteur, des prix annoncés d’avance, et le droit de vous dire non.",
+      en: "Then full-stack developer at an agency: Django, React, Docker, sites and applications people used every day. Silexio came out of wanting to do this work my own way — one person to talk to, prices stated up front, and the freedom to tell you no.",
+    },
+    {
+      fr: "Ce qui m’obsède, c’est l’usage : un outil qui demande un mode d’emploi a déjà raté quelque chose. Et la réponse est rarement de tout remplacer — c’est de rendre enfin utile ce que vous avez déjà.",
+      en: "What I obsess over is use: a tool that needs a manual has already failed at something. And the answer is rarely to replace everything — it is to make what you already have finally useful.",
     },
   ],
   /**
