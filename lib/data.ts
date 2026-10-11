@@ -988,8 +988,8 @@ export const ABOUT = {
     en: "A person, not a switchboard",
   },
   lead: {
-    fr: "Nicolas Wieckiewicz, développeur full-stack à Chapelle-lez-Herlaimont. La personne qui vous répond est celle qui écrit le code.",
-    en: "Nicolas Wieckiewicz, full-stack developer in Chapelle-lez-Herlaimont. The person who answers you is the one who writes the code.",
+    fr: "Nicolas Wieckiewicz, développeur full-stack à Chapelle-lez-Herlaimont. J’aide les PME à automatiser leurs tâches répétitives et à créer des outils adaptés à leur métier, du premier échange au code livré.",
+    en: "Nicolas Wieckiewicz, full-stack developer in Chapelle-lez-Herlaimont. I help small businesses automate repetitive work and build tools that fit their needs, from the first conversation to the delivered code.",
   },
   /**
    * Le parcours, et rien d'autre : chaque phrase doit tenir devant quelqu'un qui vérifie.
@@ -997,20 +997,16 @@ export const ABOUT = {
    */
   story: [
     {
-      fr: "J’ai commencé à démonter des ordinateurs vers dix ans, pour comprendre comment ils marchaient et réparer ceux de la maison. Je n’ai jamais arrêté : réseaux et systèmes en secondaire, puis le développement, la sécurité et l’infrastructure — appris surtout seul, sur des cas réels.",
-      en: "I started taking computers apart at about ten, to understand how they worked and fix the ones at home. I never stopped: networks and systems in secondary school, then development, security and infrastructure — mostly self-taught, on real cases.",
+      fr: "J’ai commencé dans le support informatique avant de passer au développement full-stack. Ces deux métiers m’ont appris à partir d’un problème concret et de son usage, pas de la technologie à la mode.",
+      en: "I started in IT support before moving into full-stack development. Both taught me to start with a real problem and how it is used, not with whatever technology is trendy.",
     },
     {
-      fr: "Mon premier poste était au support informatique d’une grande administration. J’y réparais les pannes des autres, et j’y ai écrit les outils qui ont supprimé ce que mon équipe refaisait chaque jour à la main. C’est exactement ce que je fais aujourd’hui pour des PME.",
-      en: "My first job was on a large organisation’s IT support desk. I fixed other people’s problems, and wrote the tools that removed what my team was redoing by hand every day. That is exactly what I now do for small businesses.",
+      fr: "En support, j’ai créé des outils pour supprimer des tâches répétées chaque jour. En agence, j’ai développé des sites et applications avec Django, React et Docker.",
+      en: "In IT support, I built tools to eliminate tasks repeated every day. At an agency, I developed websites and applications with Django, React and Docker.",
     },
     {
-      fr: "Ensuite développeur full-stack en agence : Django, React, Docker, des sites et des applications utilisés tous les jours. Silexio est né de l’envie de faire ce métier à ma façon — un seul interlocuteur, des prix annoncés d’avance, et le droit de vous dire non.",
-      en: "Then full-stack developer at an agency: Django, React, Docker, sites and applications people used every day. Silexio came out of wanting to do this work my own way — one person to talk to, prices stated up front, and the freedom to tell you no.",
-    },
-    {
-      fr: "Ce qui m’obsède, c’est l’usage : un outil qui demande un mode d’emploi a déjà raté quelque chose. Et la réponse est rarement de tout remplacer — c’est de rendre enfin utile ce que vous avez déjà.",
-      en: "What I obsess over is use: a tool that needs a manual has already failed at something. And the answer is rarely to replace everything — it is to make what you already have finally useful.",
+      fr: "Avec Silexio, je garde cette approche : comprendre votre façon de travailler, améliorer l’existant quand c’est pertinent, puis livrer un outil clair que vous restez libre de faire évoluer.",
+      en: "With Silexio, I keep that approach: understand how you work, improve what you already have when it makes sense, and deliver a clear tool you remain free to evolve.",
     },
   ],
   /**
@@ -1018,8 +1014,8 @@ export const ABOUT = {
    * maison : le seul intérêt de cette ligne est qu'un inconnu puisse la contrôler sans me croire.
    */
   proof: {
-    fr: "Le support du casque Razer Kraken Tournament Edition que j’ai écrit est intégré à OpenRazer, le pilote libre des périphériques Razer sous Linux.",
-    en: "The Razer Kraken Tournament Edition support I wrote is part of OpenRazer, the open-source Razer device driver for Linux.",
+    fr: "Contribution OpenRazer : support du Razer Kraken Tournament Edition intégré au pilote libre pour Linux.",
+    en: "OpenRazer contribution: Razer Kraken Tournament Edition support integrated into the open-source Linux driver.",
   },
   /** Où la vérifier. Vide = la preuve s'affiche en texte simple. */
   proofUrl: "https://github.com/openrazer/openrazer/commits?author=TheSawkit",
