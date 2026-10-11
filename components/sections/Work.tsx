@@ -3,7 +3,7 @@ import { Btn } from "@/components/ui/Btn";
 import { Carousel } from "@/components/ui/Carousel";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionHead } from "@/components/ui/SectionHead";
-import { I18N, PROJECTS } from "@/lib/data";
+import { I18N, PROJECTS, URLS } from "@/lib/data";
 import type { Locale } from "@/lib/i18n/config";
 import { fill, t } from "@/lib/i18n/utils";
 import { monthlyHoursSaved } from "@/lib/roi";
@@ -125,6 +125,18 @@ export function Work({ lang }: { lang: Locale }) {
           })}
         </Carousel>
       </Reveal>
+      <div className="wrap">
+        <p className="work__contribution">
+          {t(i18n.contribution, lang)}{" "}
+          <Btn
+            href={URLS.openrazer}
+            variant="accent"
+            srHint={newTab}
+          >
+            {t(i18n.contributionLink, lang)}
+          </Btn>
+        </p>
+      </div>
     </section>
   );
 }

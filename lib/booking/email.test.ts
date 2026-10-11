@@ -178,3 +178,21 @@ describe("refusedEmail", () => {
     expect(mail.text).not.toContain("{slot}");
   });
 });
+
+/* Un email français qui se déclare anglais trompe les lecteurs d'écran et la césure des clients
+   mail. La langue de l'email doit être celle de son contenu. */
+describe("langue déclarée de l'email", () => {
+  it("suit la langue du destinataire", () => {
+    const base = {
+      name: "Jane",
+      slotIso,
+      meetingType: "video",
+    } as const;
+    expect(pendingEmail({ ...base, locale: "fr" }).html).toContain(
+      '<html lang="fr">',
+    );
+    expect(pendingEmail({ ...base, locale: "en" }).html).toContain(
+      '<html lang="en">',
+    );
+  });
+});

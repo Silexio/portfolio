@@ -1,0 +1,67 @@
+name: Relevé de la note Google
+
+# Un relevé est une mesure, pas du contenu : il s'écrit tout seul dans lib/reviews.json plutôt
+# que de se recopier à la main dans le code. Le push sur main déclenche le redéploiement
+# Cloudflare, donc le chiffre affiché suit sans autre geste.
+on:
+  schedule:
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: reviews
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    name: Relever et committer si ça a bougé
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+
+      - name: Setup Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 22
+
+      # Tant que la clé n'est pas posée, ce travail ne doit pas échouer toutes les semaines :
+      # il se contente de dire pourquoi il ne fait rien.
+      - name: Vérifier que le relevé est configuré
+        id: configured
+        env:
+          GOOGLE_PLACES_API_KEY: ${{ secrets.GOOGLE_PLACES_API_KEY }}
+          GOOGLE_PLACE_ID: ${{ vars.GOOGLE_PLACE_ID }}
+        run: |
+          set -euo pipefail
+          if [ -z "${GOOGLE_PLACES_API_KEY}" ] || [ -z "${GOOGLE_PLACE_ID}" ]; then
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::Relevé inactif : il manque le secret GOOGLE_PLACES_API_KEY ou la variable GOOGLE_PLACE_ID."
+          else
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Relever la note
+        if: steps.configured.outputs.ready == 'true'
+        env:
+          GOOGLE_PLACES_API_KEY: ${{ secrets.GOOGLE_PLACES_API_KEY }}
+          GOOGLE_PLACE_ID: ${{ vars.GOOGLE_PLACE_ID }}
+        run: node scripts/refresh-reviews.mjs
+
+      - name: Committer si le chiffre a changé
+        if: steps.configured.outputs.ready == 'true'
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- lib/reviews.json; then
+            echo "Rien à committer."
+            exit 0
+          fi
+          git config user.name "silexio-bot"
+          git config user.email "contact@silexio.be"
+          git add lib/reviews.json
+          git commit -m "chore(reviews): relevé de la note Google"
+          git push

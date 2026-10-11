@@ -1,3 +1,5 @@
+import type { IconName } from "@/components/ui/Icon";
+import MEASURED from "@/lib/reviews.json";
 import type { Bilingual } from "@/lib/i18n/utils";
 import type { Price } from "@/lib/price";
 import type { Roi } from "@/lib/roi";
@@ -54,6 +56,10 @@ export const URLS = {
   github: "https://github.com/Silexio",
   /** Compte personnel : publié dans `sameAs` pour lier la personne au studio (E-E-A-T). */
   githubPersonal: "https://github.com/TheSawkit",
+  /** Profil personnel : le studio a sa page entreprise, la personne a la sienne. */
+  linkedinPersonal: "https://www.linkedin.com/in/nicolasjzw",
+  /** Contribution publique au pilote libre des périphériques Razer, citée sous les réalisations. */
+  openrazer: "https://github.com/openrazer/openrazer/commits?author=TheSawkit",
   facebook: "https://www.facebook.com/silexio",
   instagram: "https://www.instagram.com/silexio.be",
 } as const;
@@ -80,7 +86,11 @@ export const SOCIALS: { id: SocialId; label: string; url: string }[] = [
 ];
 
 /** Pages dédiées (contenu dans lib/services.ts). L’identifiant sert aussi de source au formulaire. */
-export type ServicePageId = "automation" | "software" | "support";
+export type ServicePageId =
+  | "automation"
+  | "software"
+  | "website"
+  | "support";
 
 export const I18N = {
   nav: {
@@ -131,6 +141,14 @@ export const I18N = {
       fr: "C’est par ici : dépannage informatique",
       en: "This way: IT support",
     },
+    websiteLead: {
+      fr: "Pas encore de site, ou un site qui ne vous ressemble plus ?",
+      en: "No website yet, or one that no longer looks like you?",
+    },
+    websiteLink: {
+      fr: "C’est par ici : création de site internet",
+      en: "This way: website design",
+    },
   },
   work: {
     title: { fr: "Ce qui tourne déjà", en: "Already up and running" },
@@ -158,6 +176,11 @@ export const I18N = {
       shipped: { fr: "Livré", en: "Shipped" },
       wip: { fr: "En cours", en: "In progress" },
     },
+    contribution: {
+      fr: "Côté open source : le support du casque Razer Kraken Tournament Edition que j’ai ajouté à OpenRazer.",
+      en: "On the open-source side: the Razer Kraken Tournament Edition support I added to OpenRazer.",
+    },
+    contributionLink: { fr: "Voir le commit", en: "See the commit" },
     roi: {
       fr: "≈ {hours} h rendues chaque mois",
       en: "≈ {hours} h given back each month",
@@ -174,10 +197,14 @@ export const I18N = {
     },
     free: { fr: "Gratuit", en: "Free" },
     from: { fr: "dès", en: "from" },
-    perMonth: { fr: "/ mois", en: "/ month" },
+    perMonth: { fr: "/mois", en: "/month" },
+    net: {
+      fr: "soit {amount} TVA comprise",
+      en: "i.e. {amount} incl. VAT",
+    },
     note: {
-      fr: "Prix hors TVA : un particulier ajoute 21 % de TVA. Le montant exact est fixé par écrit avant de commencer.",
-      en: "Prices exclude VAT: a private individual adds 21% VAT. The exact amount is set in writing before we start.",
+      fr: "Montants hors TVA, à partir de — les tarifs s’adressent à des professionnels, qui récupèrent la TVA. Un particulier ajoute 21 %. Le périmètre exact et le montant définitif sont fixés par écrit avant de commencer, et vous ne payez rien à la commande.",
+      en: "Amounts exclude VAT, starting from — these prices are for businesses, which reclaim VAT. A private customer adds 21%. The exact scope and final amount are set in writing before we start, and you pay nothing on order.",
     },
   },
   faq: {
@@ -277,6 +304,8 @@ export const I18N = {
     },
     pickDay: { fr: "Choisissez un jour", en: "Pick a day" },
     pickSlot: { fr: "Choisissez un horaire", en: "Pick a time" },
+    morning: { fr: "Matin", en: "Morning" },
+    afternoon: { fr: "Après-midi", en: "Afternoon" },
     noSlots: {
       fr: "Aucun créneau disponible ce jour",
       en: "No slots available that day",
@@ -535,6 +564,7 @@ export const LEAD_EMAILS = {
     home: "Accueil",
     automation: "Automatisation",
     software: "Logiciel métier",
+    website: "Site internet",
     support: "Dépannage",
   },
 } as const;
@@ -542,7 +572,7 @@ export const LEAD_EMAILS = {
 export type DomainId = "automate" | "connect" | "build";
 
 /** Les planches disponibles. « repair » n'a pas de panneau sur l'accueil, seulement sa page. */
-export type ArtId = DomainId | "repair";
+export type ArtId = DomainId | "repair" | "website";
 
 type Domain = {
   id: DomainId;
@@ -662,6 +692,15 @@ export const ART = {
     { fr: "CRM", en: "CRM" },
     { fr: "Peppol", en: "Peppol" },
   ],
+  site: {
+    cta: { fr: "Demander un devis", en: "Request a quote" },
+    inbox: { fr: "Vos demandes", en: "Your enquiries" },
+    entries: [
+      { fr: "Binche — toiture", en: "Binche — roofing" },
+      { fr: "Jumet — devis", en: "Jumet — quote" },
+      { fr: "Morlanwelz — rappel", en: "Morlanwelz — call back" },
+    ],
+  },
   planning: {
     title: { fr: "Planning — semaine 38", en: "Schedule — week 38" },
     sample: { fr: "Exemple", en: "Sample" },
@@ -682,7 +721,8 @@ export const ART = {
   },
 };
 
-export type OfferId = "intro" | "diagnostic" | "sprint" | "tool" | "care";
+export type OfferId =
+  "intro" | "diagnostic" | "site" | "automation" | "software" | "care";
 
 type Offer = {
   id: OfferId;
@@ -693,9 +733,11 @@ type Offer = {
 };
 
 /**
- * L’échelle d’offres, dans l’ordre où un client la gravit. Prix HTVA de lancement : ils sont à
- * réviser dès que les premiers chiffres réels de conversion sont connus — c’est le seul endroit
- * où ils vivent (la FAQ et le JSON-LD en dérivent ou y renvoient).
+ * L’échelle d’offres, dans l’ordre où un client la gravit. **Montants hors TVA** : c’est la base
+ * de calcul commerciale, celle du JSON-LD et celle de l’affichage — ces tarifs s’adressent à des
+ * professionnels. Le total TVA comprise accompagne chaque montant pour le particulier
+ * (`lib/price.ts`). Les planchers viennent du catalogue « Offres & tarifs » du Notion, réconcilié
+ * avec le Business Plan quand les deux se recoupent — c’est le seul endroit où ils vivent.
  */
 export const OFFERS: Offer[] = [
   {
@@ -710,34 +752,43 @@ export const OFFERS: Offer[] = [
   {
     id: "diagnostic",
     name: { fr: "Diagnostic", en: "Diagnostic" },
-    price: { amount: 490, from: false, monthly: false },
+    price: { amount: 600, from: true, monthly: false },
     summary: {
-      fr: "Un plan d’action chiffré",
-      en: "A costed action plan",
+      fr: "Ce qui coince, chiffré",
+      en: "What is broken, costed",
     },
   },
   {
-    id: "sprint",
-    name: { fr: "Sprint automatisation", en: "Automation sprint" },
-    price: { amount: 1500, from: true, monthly: false },
+    id: "site",
+    name: { fr: "Site internet", en: "Website" },
+    price: { amount: 900, from: true, monthly: false },
+    summary: {
+      fr: "Une vitrine qui travaille",
+      en: "A site that does its job",
+    },
+  },
+  {
+    id: "automation",
+    name: { fr: "Automatisation", en: "Automation" },
+    price: { amount: 900, from: true, monthly: false },
     summary: {
       fr: "Une tâche supprimée",
       en: "One task gone for good",
     },
   },
   {
-    id: "tool",
-    name: { fr: "Outil métier", en: "Business tool" },
-    price: { amount: 4500, from: true, monthly: false },
+    id: "software",
+    name: { fr: "Logiciel métier", en: "Business software" },
+    price: { amount: 5000, from: true, monthly: false },
     summary: {
-      fr: "Votre logiciel sur mesure",
-      en: "Your custom software",
+      fr: "Votre outil sur mesure",
+      en: "Your custom tool",
     },
   },
   {
     id: "care",
     name: { fr: "Suivi", en: "Care plan" },
-    price: { amount: 150, from: true, monthly: true },
+    price: { amount: 99, from: true, monthly: true },
     summary: {
       fr: "Hébergé, surveillé, entretenu",
       en: "Hosted, monitored, maintained",
@@ -766,8 +817,18 @@ export const FAQ: FaqEntry[] = [
   {
     q: { fr: "Combien ça coûte ?", en: "How much does it cost?" },
     a: {
-      fr: "Le premier échange est gratuit. Les étapes suivantes ont un prix affiché, du diagnostic à l’outil métier : voyez les tarifs plus haut. Le montant exact est fixé par écrit avant de commencer — jamais de facture surprise en cours de route.",
-      en: "The first conversation is free. Each following step has a published price, from the diagnostic to the business tool: see pricing above. The exact amount is set in writing before we start — never a surprise invoice along the way.",
+      fr: "Le premier échange est gratuit. Les étapes suivantes ont un prix affiché, du diagnostic au logiciel métier : voyez les tarifs plus haut. Le montant exact est fixé par écrit avant de commencer — jamais de facture surprise en cours de route.",
+      en: "The first conversation is free. Each following step has a published price, from the diagnostic to the business software: see pricing above. The exact amount is set in writing before we start — never a surprise invoice along the way.",
+    },
+  },
+  {
+    q: {
+      fr: "Que comprend le suivi mensuel ?",
+      en: "What does the monthly care plan include?",
+    },
+    a: {
+      fr: "Surveillance, sauvegardes, mises à jour contrôlées, petites corrections, vérification du domaine et du certificat, et un rapport synthétique. Le support y est non urgent. Ce forfait ne couvre pas une refonte, une nouvelle fonctionnalité importante ni une astreinte 24 h/24 : ces besoins font l’objet d’un devis à part. Le périmètre exact est écrit dans le contrat.",
+      en: "Monitoring, backups, controlled updates, small fixes, domain and certificate checks, and a short report. Support is non-urgent. The plan does not cover a redesign, a major new feature or round-the-clock standby: those are quoted separately. The exact scope is written into the contract.",
     },
   },
   {
@@ -786,8 +847,8 @@ export const FAQ: FaqEntry[] = [
       en: "I know nothing about IT — is that a problem?",
     },
     a: {
-      fr: "C’est même le cas de la plupart de mes clients. Vous m’expliquez votre problème avec vos mots, je traduis en solution. Je ne vous ferai jamais un devis bourré de termes techniques que vous devriez aller chercher sur Google pour comprendre ce que vous payez.",
-      en: "That’s true of most of my clients. You explain your problem in your own words, I translate it into a solution. You’ll never get a quote stuffed with technical terms you’d have to google to understand what you’re paying for.",
+      fr: "C’est même la situation la plus courante. Vous m’expliquez votre problème avec vos mots, je traduis en solution. Je ne vous ferai jamais un devis bourré de termes techniques que vous devriez aller chercher sur Google pour comprendre ce que vous payez.",
+      en: "That is in fact the most common situation. You explain your problem in your own words, I translate it into a solution. You’ll never get a quote stuffed with technical terms you’d have to google to understand what you’re paying for.",
     },
   },
   {
@@ -930,6 +991,62 @@ export const COVERAGE: CoverageArea[] = [
  * qu’un vrai visage installe. Le texte n’affirme que des faits vérifiables : toute ligne ajoutée
  * ici doit pouvoir être prouvée.
  */
+/**
+ * Le parcours en trois temps, chacun titré : un pavé de prose à côté d'un portrait ne se lit pas.
+ * Chaque phrase doit tenir devant quelqu'un qui vérifie — pas de diplôme qui n'existe pas, pas
+ * d'ancienneté arrondie, pas de compliment rapporté. `icon` est typé par le jeu de glyphes, donc
+ * un nom inexistant casse la compilation au lieu de rendre une case vide.
+ */
+type StoryStep = { icon: IconName; title: Bilingual; body: Bilingual };
+
+const STORY: StoryStep[] = [
+    {
+      icon: "wrench",
+      title: {
+        fr: "Un parcours orienté solutions",
+        en: "A path aimed at solutions",
+      },
+      body: {
+        fr: "J’ai commencé dans le support informatique avant de passer au développement full-stack. Ces deux métiers m’ont appris à partir d’un problème concret et de son usage, pas de la technologie à la mode.",
+        en: "I started in IT support before moving into full-stack development. Both taught me to start with a real problem and how it is used, not with whatever technology is trendy.",
+      },
+    },
+    {
+      icon: "code",
+      title: {
+        fr: "De la pratique au produit",
+        en: "From hands-on to product",
+      },
+      body: {
+        fr: "En support, j’ai créé des outils pour supprimer des tâches répétées chaque jour. En agence, j’ai développé des sites et applications avec Django, React et Docker.",
+        en: "In IT support, I built tools to eliminate tasks repeated every day. At an agency, I developed websites and applications with Django, React and Docker.",
+      },
+    },
+    {
+      icon: "spark",
+      title: { fr: "Une approche terrain", en: "A ground-level approach" },
+      body: {
+        fr: "Avec Silexio, je garde cette approche : comprendre votre façon de travailler, améliorer l’existant quand c’est pertinent, puis livrer un outil clair que vous restez libre de faire évoluer.",
+        en: "With Silexio, I keep that approach: understand how you work, improve what you already have when it makes sense, and deliver a clear tool you remain free to evolve.",
+      },
+    },
+];
+
+type Proof = { id: SocialId; label: Bilingual; url: string };
+
+const PROOFS: Proof[] = [
+  {
+    id: "github",
+    label: { fr: "Mon code sur GitHub", en: "My code on GitHub" },
+    url: URLS.githubPersonal,
+  },
+  {
+    id: "linkedin",
+    label: { fr: "Profil LinkedIn", en: "LinkedIn profile" },
+    url: URLS.linkedinPersonal,
+  },
+];
+
 export const ABOUT = {
   eyebrow: { fr: "Qui je suis", en: "Who I am" },
   title: {
@@ -937,15 +1054,22 @@ export const ABOUT = {
     en: "A person, not a switchboard",
   },
   lead: {
-    fr: "Nicolas Wieckiewicz, développeur full-stack à Chapelle-lez-Herlaimont. La personne qui vous répond est celle qui écrit le code.",
-    en: "Nicolas Wieckiewicz, full-stack developer in Chapelle-lez-Herlaimont. The person who answers you is the one who writes the code.",
+    fr: "Nicolas Wieckiewicz, développeur full-stack à Chapelle-lez-Herlaimont. J’aide les PME à automatiser leurs tâches répétitives et à créer des outils adaptés à leur métier, du premier échange au code livré.",
+    en: "Nicolas Wieckiewicz, full-stack developer in Chapelle-lez-Herlaimont. I help small businesses automate repetitive work and build tools that fit their needs, from the first conversation to the delivered code.",
   },
-  /** Preuve vérifiable chez un tiers. Vide = la ligne disparaît. Ne jamais y mettre une promesse maison. */
-  proof: { fr: "", en: "" },
-  photo: "",
+  story: STORY,
+  /**
+   * Profils publics où un inconnu vérifie le parcours sans avoir à me croire. Liste vide =
+   * la rangée disparaît. Ne jamais y mettre une promesse maison : seul compte ce qui se
+   * contrôle chez un tiers.
+   */
+  proofs: PROOFS,
+  photo: "/nicolas.webp",
+  photoWidth: 860,
+  photoHeight: 894,
   photoAlt: {
-    fr: "Portrait de Nicolas Wieckiewicz",
-    en: "Portrait of Nicolas Wieckiewicz",
+    fr: "Portrait de Nicolas Wieckiewicz, fondateur de Silexio",
+    en: "Portrait of Nicolas Wieckiewicz, founder of Silexio",
   },
 } satisfies Record<string, unknown>;
 
@@ -960,19 +1084,21 @@ type Review = {
 };
 
 /**
- * Avis publics agrégés, relevés à la main sur chaque plateforme. Une URL vide ou un compteur à
- * zéro masque la carte : ne jamais inventer une note ni un nombre d’avis. Ces valeurs restent
- * hors du JSON-LD — Google refuse le markup aggregateRating construit sur des avis collectés
- * ailleurs, et un rich snippet refusé coûte plus qu’il ne rapporte.
+ * Avis publics agrégés. Une URL vide ou un compteur à zéro masque la carte : ne jamais inventer
+ * une note ni un nombre d’avis. Ces valeurs restent hors du JSON-LD — Google refuse le markup
+ * aggregateRating construit sur des avis collectés ailleurs, et un rich snippet refusé coûte
+ * plus qu’il ne rapporte.
+ *
+ * Les chiffres de Google vivent dans `lib/reviews.json`, écrit par `scripts/refresh-reviews.mjs`
+ * et jamais à la main : un relevé est une mesure, pas du contenu. Trustpilot reste manuel, la
+ * plateforme répondant 403 à tout script.
  */
 export const REVIEWS: Review[] = [
   {
     id: "google",
     platform: "Google",
     url: "https://g.page/r/CQS4cLlmMzj6ECE",
-    rating: 5,
-    count: 6,
-    checkedOn: "2026-10-09",
+    ...MEASURED.google,
   },
   {
     id: "trustpilot",
@@ -1030,8 +1156,8 @@ export const PROJECTS: Project[] = [
     install: "",
     stack: ["Next.js", "TypeScript", "Tailwind", "Recharts"],
     summary: {
-      fr: "Un bilan de lombalgie déposé, les scores et l’hypothèse clinique en sortent calculés.",
-      en: "Drop in a low-back-pain assessment, get the scores and the clinical hypothesis back.",
+      fr: "Un bilan de lombalgie déposé, les scores et l’hypothèse clinique en sortent calculés — sans que le fichier quitte le navigateur.",
+      en: "Drop in a low-back-pain assessment, get the scores and the clinical hypothesis back — without the file ever leaving the browser.",
     },
     shot: {
       src: "/work/scaleneo.webp",

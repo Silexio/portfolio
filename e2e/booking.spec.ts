@@ -31,6 +31,22 @@ test.describe("Booking modal", () => {
     await expect(dialog.getByLabel("Email")).toBeVisible();
   });
 
+  /**
+   * Dix-sept boutons alignés d'un bloc ne se lisent pas. Les créneaux sont groupés par
+   * demi-journée, chaque groupe étant nommé pour un lecteur d'écran autant que pour l'œil.
+   */
+  test("groups the slots into morning and afternoon", async ({ page }) => {
+    const dialog = await openModal(page);
+    const periods = dialog.locator(".booking-cal__period");
+    await expect(periods.first()).toBeVisible();
+
+    for (const period of await periods.all()) {
+      const title = period.locator(".booking-cal__period-title");
+      await expect(title).toHaveText(/^(Matin|Après-midi)$/);
+      await expect(period.locator(".booking-cal__slot").first()).toBeVisible();
+    }
+  });
+
   test("closes with the Escape key", async ({ page }) => {
     const dialog = await openModal(page);
     await page.keyboard.press("Escape");

@@ -32,5 +32,3 @@ export const bookingSchema = z.object({
   locale: z.enum(["fr", "en"]).optional().default("fr"),
   turnstileToken: z.string().min(1),
 });
-
-export type BookingInput = z.infer<typeof bookingSchema>;

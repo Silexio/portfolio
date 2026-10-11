@@ -1,65 +1,73 @@
 import { describe, expect, it } from "vitest";
-import { priceParts, type PriceLabels } from "@/lib/price";
+import { priceParts, VAT_RATE, type PriceLabels } from "@/lib/price";
 
 const fr: PriceLabels = {
   free: "Gratuit",
   from: "dès",
-  perMonth: "/ mois",
+  perMonth: "/mois",
+  net: "soit {amount} TVA comprise",
 };
 const en: PriceLabels = {
   free: "Free",
   from: "from",
-  perMonth: "/ month",
+  perMonth: "/month",
+  net: "i.e. {amount} incl. VAT",
 };
-const nbsp = /[  ]/g;
+const nbsp = /[\u00a0\u202f]/g;
+const plain = (value: string) => value.replace(nbsp, " ");
 
+/**
+ * Le montant mis en avant est hors TVA : les tarifs s'adressent à des professionnels, qui la
+ * récupèrent. Le total TVA comprise reste dit à côté, pour le particulier qui, lui, le paiera —
+ * et la page dépannage, la seule qui vise d'abord des particuliers, n'affiche aucun prix.
+ */
 describe("priceParts", () => {
-  it("shows a free offer as a word, without qualifiers", () => {
+  it("affiche une offre gratuite comme un mot, sans qualificatif ni mention de TVA", () => {
     expect(
       priceParts({ amount: 0, from: false, monthly: false }, "fr", fr),
-    ).toEqual({ lead: "", amount: "Gratuit", tail: "" });
+    ).toEqual({ lead: "", amount: "Gratuit", tail: "", net: "" });
   });
 
-  it("formats a fixed price in Belgian French, without qualifiers", () => {
+  it("met en avant le prix hors TVA et dit le TVA comprise à côté", () => {
     const parts = priceParts(
-      { amount: 490, from: false, monthly: false },
-      "fr",
-      fr,
-    );
-    expect(parts.lead).toBe("");
-    expect(parts.amount.replace(nbsp, " ")).toBe("490 €");
-    expect(parts.tail).toBe("");
-  });
-
-  it("prefixes a starting price and groups thousands", () => {
-    const parts = priceParts(
-      { amount: 1500, from: true, monthly: false },
+      { amount: 600, from: true, monthly: false },
       "fr",
       fr,
     );
     expect(parts.lead).toBe("dès");
-    expect(parts.amount.replace(nbsp, " ")).toBe("1 500 €");
+    expect(plain(parts.amount)).toBe("600 €");
+    expect(plain(parts.net)).toBe("soit 726 € TVA comprise");
   });
 
-  it("adds the monthly unit after the amount", () => {
+  it("applique le taux belge et groupe les milliers", () => {
     const parts = priceParts(
-      { amount: 150, from: true, monthly: true },
+      { amount: 5000, from: true, monthly: false },
       "fr",
       fr,
     );
-    expect(parts.tail).toBe("/ mois");
+    expect(VAT_RATE).toBe(0.21);
+    expect(plain(parts.amount)).toBe("5 000 €");
+    expect(plain(parts.net)).toBe("soit 6 050 € TVA comprise");
   });
 
-  it("uses the English currency layout", () => {
+  it("ajoute l'unité mensuelle après le montant", () => {
     const parts = priceParts(
-      { amount: 4500, from: true, monthly: false },
+      { amount: 99, from: true, monthly: true },
+      "fr",
+      fr,
+    );
+    expect(parts.tail).toBe("/mois");
+    expect(plain(parts.amount)).toBe("99 €");
+  });
+
+  it("utilise la mise en forme monétaire anglaise", () => {
+    const parts = priceParts(
+      { amount: 900, from: true, monthly: false },
       "en",
       en,
     );
-    expect(parts).toEqual({
-      lead: "from",
-      amount: "€4,500",
-      tail: "",
-    });
+    expect(parts.lead).toBe("from");
+    expect(parts.amount).toBe("€900");
+    expect(parts.net).toBe("i.e. €1,089 incl. VAT");
   });
 });

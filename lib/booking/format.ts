@@ -32,3 +32,13 @@ export function formatTimeLabel(iso: string, locale: Locale): string {
     minute: "2-digit",
   }).format(new Date(iso));
 }
+
+/** Demi-journée d'un créneau en heure de Bruxelles : la grille se lit en deux blocs, pas en dix-sept boutons. */
+export function slotPeriod(iso: string): "morning" | "afternoon" {
+  const hour = new Intl.DateTimeFormat("en-GB", {
+    timeZone: BOOKING.timezone,
+    hour: "2-digit",
+    hourCycle: "h23",
+  }).format(new Date(iso));
+  return Number(hour) < 12 ? "morning" : "afternoon";
+}

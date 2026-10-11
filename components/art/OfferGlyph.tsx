@@ -24,6 +24,15 @@ const TOOL_FACETS: Facet[] = [
   { d: "M84 84L60 110L60 72Z", tone: 4 },
 ];
 
+/** La lame : un éclat déjà retouché, utile tel quel. Entre l'éclat brut et l'outil emmanché. */
+const BLADE = "M60 12L84 56L72 110L48 110L36 56Z";
+const BLADE_FACETS: Facet[] = [
+  { d: "M60 12L36 56L60 68Z", tone: 1 },
+  { d: "M60 12L60 68L84 56Z", tone: 2 },
+  { d: "M36 56L60 68L60 110L48 110Z", tone: 3 },
+  { d: "M84 56L72 110L60 110L60 68Z", tone: 4 },
+];
+
 const NODULE =
   "M30 70C24 48 40 28 62 30C84 32 98 46 94 68C90 88 70 96 52 92C38 89 33 82 30 70Z";
 
@@ -66,7 +75,7 @@ const GLYPHS: Record<OfferId, Glyph> = {
       [42, 76],
     ],
   },
-  sprint: {
+  automation: {
     outline: "M22 78L58 26L98 40L86 84L40 98Z",
     facets: [
       { d: "M22 78L58 26L62 90L40 98Z", tone: 1 },
@@ -76,7 +85,12 @@ const GLYPHS: Record<OfferId, Glyph> = {
     ripples: "M52 36Q58 42 64 36M50 44Q58 52 66 44",
     point: [58, 26],
   },
-  tool: { outline: TOOL, facets: TOOL_FACETS },
+  site: {
+    outline: BLADE,
+    facets: BLADE_FACETS,
+    ripples: "M50 40Q60 48 70 40",
+  },
+  software: { outline: TOOL, facets: TOOL_FACETS },
   care: {
     outline: TOOL,
     facets: TOOL_FACETS,

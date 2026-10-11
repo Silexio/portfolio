@@ -117,6 +117,28 @@ export function ServiceDetail({
         </div>
       </section>
 
+      {page.asset && (
+        <section className="panel" aria-labelledby="asset-title">
+          <div className="wrap">
+            <Reveal className="asset">
+              <p className="eyebrow">{t(page.asset.eyebrow, lang)}</p>
+              <h2 id="asset-title" className="title">
+                {t(page.asset.title, lang)}
+              </h2>
+              <p className="lead">{t(page.asset.body, lang)}</p>
+              <ul className="situations">
+                {page.asset.points.map((point, i) => (
+                  <li key={point.fr} style={cssVars({ "--i": i })}>
+                    {t(point, lang)}
+                  </li>
+                ))}
+              </ul>
+              <p className="asset__note">{t(page.asset.note, lang)}</p>
+            </Reveal>
+          </div>
+        </section>
+      )}
+
       {page.offers.length > 0 ? (
         <Offers lang={lang} ids={page.offers} title={t(i18n.offers, lang)} />
       ) : (

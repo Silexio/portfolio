@@ -2,6 +2,9 @@ import { reportServerError } from "@/lib/observability/server";
 
 const SITEVERIFY = "https://challenges.cloudflare.com/turnstile/v0/siteverify";
 
+/** Un service tiers qui pend ne doit pas retenir la requête du visiteur, comme pour l’agenda. */
+const TIMEOUT_MS = 4000;
+
 /** Server-side Cloudflare Turnstile validation. Not subject to the browser CSP. */
 export async function verifyTurnstile(
   token: string,
@@ -12,7 +15,11 @@ export async function verifyTurnstile(
   const body = new URLSearchParams({ secret, response: token });
   if (ip) body.set("remoteip", ip);
   try {
-    const res = await fetch(SITEVERIFY, { method: "POST", body });
+    const res = await fetch(SITEVERIFY, {
+      method: "POST",
+      body,
+      signal: AbortSignal.timeout(TIMEOUT_MS),
+    });
     if (!res.ok) return false;
     const data = (await res.json()) as { success?: boolean };
     return data.success === true;

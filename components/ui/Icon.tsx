@@ -12,7 +12,9 @@ export type IconName =
   | "code"
   | "arrow"
   | "phone"
-  | "video";
+  | "video"
+  | "wrench"
+  | "spark";
 
 const PATHS: Record<IconName, { box: number; d: string }> = {
   close: { box: 20, d: "M4 4l12 12M16 4L4 16" },
@@ -49,6 +51,14 @@ const PATHS: Record<IconName, { box: number; d: string }> = {
     d: "M6 5.5 2.5 9 6 12.5M12 5.5 15.5 9 12 12.5M10.5 3.5l-3 11",
   },
   arrow: { box: 18, d: "M3 9h11M10 5l4 4-4 4" },
+  wrench: {
+    box: 18,
+    d: "M11.8 2.6a4 4 0 0 0-4.5 5.2L2.6 12.5a1.7 1.7 0 0 0 2.4 2.4l4.7-4.7a4 4 0 0 0 5.2-4.5l-2.3 2.3-2-.6-.6-2Z",
+  },
+  spark: {
+    box: 18,
+    d: "M9 1.8 10.7 7.3 16.2 9 10.7 10.7 9 16.2 7.3 10.7 1.8 9 7.3 7.3Z",
+  },
   sun: {
     box: 18,
     d: "M12.6 9a3.6 3.6 0 1 1-7.2 0 3.6 3.6 0 0 1 7.2 0M9 1.5v2M9 14.5v2M1.5 9h2M14.5 9h2M3.7 3.7l1.4 1.4M12.9 12.9l1.4 1.4M14.3 3.7l-1.4 1.4M5.1 12.9l-1.4 1.4",

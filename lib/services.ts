@@ -15,6 +15,18 @@ export type ServiceContact = {
   taskPlaceholder: Bilingual;
 };
 
+/**
+ * Une brique que Silexio a déjà construite et qu'un client n'a donc pas à payer de zéro.
+ * Affichée après la démarche : c'est une preuve, pas une offre — elle ne porte aucun prix.
+ */
+export type ServiceAsset = {
+  eyebrow: Bilingual;
+  title: Bilingual;
+  body: Bilingual;
+  points: Bilingual[];
+  note: Bilingual;
+};
+
 export type ServicePage = {
   id: ServicePageId;
   slug: Bilingual;
@@ -29,6 +41,8 @@ export type ServicePage = {
   situations: Bilingual[];
   stepsTitle: Bilingual;
   steps: Step[];
+  /** Brique déjà construite, montrée après la démarche. Absente = rien n’est affiché. */
+  asset?: ServiceAsset;
   /** Offres affichées sur la page. Vide = la zone d’intervention prend leur place. */
   offers: OfferId[];
   faq: FaqEntry[];
@@ -154,7 +168,36 @@ export const SERVICE_PAGES: ServicePage[] = [
         },
       },
     ],
-    offers: ["intro", "diagnostic", "sprint", "care"],
+    asset: {
+      eyebrow: { fr: "Ce qui existe déjà", en: "What already exists" },
+      title: {
+        fr: "Un moteur de recherche pour vos propres documents",
+        en: "A search engine for your own documents",
+      },
+      body: {
+        fr: "Vos équipes posent une question en français et reçoivent une réponse tirée de vos contrats, procédures et dossiers. Le socle est écrit et testé : chez vous, il est branché sur vos sources au lieu d’être reconstruit.",
+        en: "Your team asks a question in plain language and gets an answer drawn from your own contracts, procedures and files. The foundation is written and tested: at your place it is plugged into your sources rather than rebuilt.",
+      },
+      points: [
+        {
+          fr: "Tout tourne sur une machine installée chez vous — aucun de vos documents ne part sur internet",
+          en: "Everything runs on a machine installed at your office — none of your documents leave it",
+        },
+        {
+          fr: "Chaque réponse cite le fichier et la page dont elle vient, que vous ouvrez d’un clic pour vérifier",
+          en: "Every answer cites the file and page it came from, which you open in one click to check",
+        },
+        {
+          fr: "Quand vos documents ne permettent pas de répondre, l’outil le dit au lieu d’inventer",
+          en: "When your documents don’t support an answer, the tool says so instead of making one up",
+        },
+      ],
+      note: {
+        fr: "Conçu et développé par Silexio. Code propriétaire, non publié.",
+        en: "Designed and built by Silexio. Proprietary code, not published.",
+      },
+    },
+    offers: ["intro", "diagnostic", "automation", "care"],
     faq: [
       {
         q: {
@@ -281,7 +324,7 @@ export const SERVICE_PAGES: ServicePage[] = [
         },
       },
     ],
-    offers: ["intro", "diagnostic", "tool", "care"],
+    offers: ["intro", "diagnostic", "software", "care"],
     faq: [
       {
         q: {
@@ -316,12 +359,171 @@ export const SERVICE_PAGES: ServicePage[] = [
           en: "Is my data safe?",
         },
         a: {
-          fr: "Elles restent chez vous chaque fois que c’est possible : l’outil livré à un cabinet de kinésithérapie ne transmet aucune donnée patient. Sinon, elles sont hébergées, sauvegardées et surveillées, et vous savez toujours où elles se trouvent.",
-          en: "It stays on your side whenever possible: the tool delivered to a physiotherapy practice sends no patient data anywhere. Otherwise it’s hosted, backed up and monitored, and you always know where it lives.",
+          fr: "Elles restent chez vous chaque fois que c’est possible. L’outil livré à un cabinet de kinésithérapie calcule tout dans le navigateur : le bilan ne quitte jamais l’ordinateur du praticien et aucune donnée patient n’atteint un serveur, le mien compris. Quand un hébergement est nécessaire, les données sont sauvegardées, surveillées, et vous savez toujours où elles se trouvent.",
+          en: "It stays on your side whenever possible. The tool delivered to a physiotherapy practice runs entirely in the browser: the assessment never leaves the practitioner’s computer and no patient data reaches a server, mine included. When hosting is needed, the data is backed up, monitored, and you always know where it lives.",
         },
       },
     ],
     askHours: true,
+  },
+  {
+    id: "website",
+    slug: { fr: "site-internet", en: "website" },
+    name: { fr: "Sites internet", en: "Websites" },
+    meta: {
+      title: {
+        fr: "Création de site internet, Hainaut | Silexio",
+        en: "Website design for small businesses | Silexio",
+      },
+      description: {
+        fr: "Site vitrine, refonte, référencement local : un site que vos clients trouvent, qui se lit sur téléphone et qui vous amène des demandes.",
+        en: "Brochure site, redesign, local search: a website your customers find, that reads well on a phone and brings you enquiries.",
+      },
+    },
+    title: {
+      fr: "Un site que vos clients trouvent, et qui vous amène des demandes",
+      en: "A website your customers find, that brings you enquiries",
+    },
+    lead: {
+      fr: "Un site n’est pas une plaquette mise en ligne : c’est le premier endroit où un client vous juge, et le seul qui travaille pendant que vous êtes sur le terrain. Trouvé sur Google, lisible sur téléphone, et une façon évidente de vous écrire.",
+      en: "A website isn’t a brochure put online: it’s the first place a customer judges you, and the only one working while you’re out on site. Found on Google, readable on a phone, with an obvious way to get in touch.",
+    },
+    cta: { fr: "Parlez-moi de votre projet", en: "Tell me about your project" },
+    art: "website",
+    situationsTitle: SITUATIONS_TITLE,
+    situations: [
+      {
+        fr: "Vous n’avez pas de site, et vos clients vous trouvent par bouche-à-oreille seulement",
+        en: "You have no website, and customers only find you by word of mouth",
+      },
+      {
+        fr: "Le vôtre date : il ne ressemble plus à ce que vous faites aujourd’hui",
+        en: "Yours is dated: it no longer looks like what you do today",
+      },
+      {
+        fr: "Sur téléphone il faut zoomer pour lire, alors que la moitié de vos visiteurs sont dessus",
+        en: "On a phone you have to zoom in to read, yet half your visitors are on one",
+      },
+      {
+        fr: "On ne vous trouve pas quand quelqu’un cherche votre métier dans votre commune",
+        en: "You don’t come up when someone searches your trade in your town",
+      },
+      {
+        fr: "Le formulaire ne fonctionne plus, ou les messages n’arrivent nulle part",
+        en: "The form stopped working, or the messages land nowhere",
+      },
+      {
+        fr: "Vous payez un abonnement depuis des années sans savoir ce qu’il couvre",
+        en: "You’ve paid a subscription for years without knowing what it covers",
+      },
+      {
+        fr: "Changer une phrase ou un prix vous oblige à demander à quelqu’un",
+        en: "Changing a sentence or a price means asking someone else",
+      },
+      {
+        fr: "Vos horaires et votre adresse ne sont pas les mêmes partout sur internet",
+        en: "Your opening hours and address differ from one site to the next",
+      },
+    ],
+    stepsTitle: { fr: "Comment je m’y prends", en: "How I go about it" },
+    steps: [
+      {
+        title: {
+          fr: "Je regarde qui vous cherche, et comment",
+          en: "I look at who’s searching for you, and how",
+        },
+        body: {
+          fr: "Ce que vos clients tapent vraiment, ce que montrent vos concurrents proches, et ce qui vous distingue d’eux.",
+          en: "What your customers actually type, what nearby competitors show, and what sets you apart from them.",
+        },
+      },
+      {
+        title: {
+          fr: "J’écris la page avant de la dessiner",
+          en: "I write the page before designing it",
+        },
+        body: {
+          fr: "Un visiteur décide en quelques secondes. L’ordre des phrases pèse plus lourd que l’effet visuel.",
+          en: "A visitor decides in seconds. The order of the sentences matters more than the visual effect.",
+        },
+      },
+      {
+        title: {
+          fr: "Je construis, et vous relisez avant tout le monde",
+          en: "I build it, and you review it before anyone else",
+        },
+        body: {
+          fr: "Vous voyez le site en entier avant sa mise en ligne, et vous demandez vos corrections.",
+          en: "You see the whole site before it goes live, and ask for your corrections.",
+        },
+      },
+      {
+        title: {
+          fr: "Je mets en ligne et je vous rends les clés",
+          en: "I publish it and hand you the keys",
+        },
+        body: {
+          fr: "Nom de domaine, certificat, fiche Google. Vos textes et vos prix, vous les changez vous-même.",
+          en: "Domain name, certificate, Google listing. Your wording and prices, you change them yourself.",
+        },
+      },
+    ],
+    offers: ["intro", "site", "care"],
+    faq: [
+      {
+        q: {
+          fr: "Combien de temps faut-il ?",
+          en: "How long does it take?",
+        },
+        a: {
+          fr: "Deux à quatre semaines pour un site de quelques pages, une fois vos textes et vos photos réunis. C’est généralement cette partie-là qui prend le plus de temps : je vous dis exactement ce qu’il me faut, et je peux rédiger à partir de ce que vous me racontez.",
+          en: "Two to four weeks for a site of a few pages, once your wording and photos are gathered. That part usually takes the longest: I tell you exactly what I need, and I can write from what you tell me.",
+        },
+      },
+      {
+        q: {
+          fr: "Pourrai-je modifier mes textes moi-même ?",
+          en: "Will I be able to edit my own text?",
+        },
+        a: {
+          fr: "Oui, et c’est prévu dès le départ. Vous changez un horaire, un prix ou une photo sans m’appeler. Je vous montre comment faire à la mise en ligne, et le nom de domaine reste à votre nom.",
+          en: "Yes, and it’s planned from the start. You change an opening time, a price or a photo without calling me. I show you how when it goes live, and the domain name stays in your name.",
+        },
+      },
+      {
+        q: {
+          fr: "Vous garantissez d’être premier sur Google ?",
+          en: "Do you guarantee first place on Google?",
+        },
+        a: {
+          fr: "Non, et personne ne peut le garantir sérieusement : le classement appartient à Google. Ce qui se fait, et que je fais, c’est tout ce dont il tient compte — un site rapide, lisible sur téléphone, des pages qui répondent à une vraie question, et une fiche d’établissement cohérente.",
+          en: "No, and nobody can seriously guarantee it: the ranking belongs to Google. What can be done, and what I do, is everything it takes into account — a fast site, readable on a phone, pages that answer a real question, and a consistent business listing.",
+        },
+      },
+      {
+        q: {
+          fr: "Y a-t-il un abonnement à payer ensuite ?",
+          en: "Is there a subscription to pay afterwards?",
+        },
+        a: {
+          fr: "Le nom de domaine et l’hébergement se paient chaque année, quelques dizaines d’euros, et vous pouvez les payer directement. Le suivi mensuel est facultatif : il couvre la surveillance, les sauvegardes et les mises à jour si vous préférez ne pas y penser.",
+          en: "The domain name and hosting are paid yearly, a few dozen euros, and you can pay for them directly. The monthly care plan is optional: it covers monitoring, backups and updates if you’d rather not think about it.",
+        },
+      },
+    ],
+    contact: {
+      title: { fr: "Parlez-moi\nde votre projet.", en: "Tell me about\nyour project." },
+      sub: {
+        fr: "Quelques lignes suffisent : ce que vous faites, pour qui, et ce que votre site actuel ne fait pas. Je vous réponds sous 24 h.",
+        en: "A few lines are enough: what you do, who for, and what your current site fails to do. I reply within 24 hours.",
+      },
+      task: { fr: "Votre projet", en: "Your project" },
+      taskPlaceholder: {
+        fr: "Ex. : je pose des toitures, je n’ai pas de site, et je voudrais qu’on me trouve quand on cherche un couvreur dans ma région.",
+        en: "E.g. I fit roofs, I have no website, and I want to come up when someone searches for a roofer in my area.",
+      },
+    },
+    askHours: false,
   },
   {
     id: "support",

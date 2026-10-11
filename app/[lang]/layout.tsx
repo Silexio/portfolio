@@ -43,9 +43,7 @@ export const viewport: Viewport = {
 
 export async function generateMetadata({
   params,
-}: {
-  params: Promise<{ lang: string }>;
-}): Promise<Metadata> {
+}: Pick<LayoutProps<"/[lang]">, "params">): Promise<Metadata> {
   const lang = await localeParam(params);
   return {
     metadataBase: new URL(BASE_URL),

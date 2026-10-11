@@ -15,5 +15,3 @@ export const leadSchema = z.object({
   locale: z.enum(["fr", "en"]).optional().default("fr"),
   turnstileToken: z.string().min(1),
 });
-
-export type LeadInput = z.infer<typeof leadSchema>;

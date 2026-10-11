@@ -73,8 +73,8 @@ export const nl2br = (value: string) => value.replace(/\n/g, "<br>");
 export const row = (label: string, value: string) =>
   `<tr><td style="padding:6px 12px 6px 0;color:${BRAND.muted};vertical-align:top;white-space:nowrap;">${esc(label)}</td><td style="padding:6px 0;">${value}</td></tr>`;
 
-export function shell(inner: string): string {
-  return `<!doctype html><html lang="en"><body style="margin:0;background:${BRAND.bg};padding:24px;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:${BRAND.text};line-height:1.5;">
+export function shell(inner: string, locale: Locale = "fr"): string {
+  return `<!doctype html><html lang="${locale}"><body style="margin:0;background:${BRAND.bg};padding:24px;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:${BRAND.text};line-height:1.5;">
 <div style="max-width:560px;margin:0 auto;background:${BRAND.raised};border-radius:14px;padding:28px;">${inner}</div></body></html>`;
 }
 
@@ -226,6 +226,7 @@ export function ownerEmail(data: OwnerMailData): Mail {
 <table style="border-collapse:collapse;font-size:14px;">${rows}</table>
 ${buttons}
 <p style="margin-top:20px;font-size:12px;color:${BRAND.muted};">${nl2br(esc(t(tpl.hint, data.locale)))}</p>`,
+    data.locale,
   );
 
   const text = [
@@ -259,6 +260,7 @@ type MailLink = { url: string; label?: string; button?: boolean };
 function clientMail(
   subject: string,
   text: string,
+  locale: Locale,
   links: MailLink[] = [],
 ): Mail {
   let body = nl2br(esc(text));
@@ -270,7 +272,7 @@ function clientMail(
   }
   return {
     subject,
-    html: shell(`<div style="font-size:14px;">${body}</div>`),
+    html: shell(`<div style="font-size:14px;">${body}</div>`, locale),
     text,
   };
 }
@@ -282,7 +284,7 @@ export function pendingEmail(data: ClientMailData): Mail {
   const mode = modeLabel(data.meetingType, data.locale);
   const subject = t(tpl.subject, data.locale);
   const text = fill(t(tpl.body, data.locale), { name: data.name, slot, mode });
-  return clientMail(subject, text);
+  return clientMail(subject, text, data.locale);
 }
 
 /** Confirmation email to the client, with the kMeet link (video) or call note + an .ics invite. */
@@ -316,7 +318,7 @@ export function confirmedEmail(data: ConfirmedMailData): Mail {
   ];
   if (url) links.unshift({ url });
   return {
-    ...clientMail(subject, text, links),
+    ...clientMail(subject, text, data.locale, links),
     attachments: [bookingIcs(event)],
   };
 }
@@ -352,7 +354,7 @@ export function ownerConfirmedEmail(data: OwnerConfirmedMailData): Mail {
   ];
   if (url) links.unshift({ url });
   return {
-    ...clientMail(subject, text, links),
+    ...clientMail(subject, text, data.locale, links),
     attachments: [bookingIcs(event)],
   };
 }
@@ -365,5 +367,5 @@ export function refusedEmail(
   const slot = formatSlotLabel(data.slotIso, data.locale);
   const subject = t(tpl.subject, data.locale);
   const text = fill(t(tpl.body, data.locale), { name: data.name, slot });
-  return clientMail(subject, text);
+  return clientMail(subject, text, data.locale);
 }

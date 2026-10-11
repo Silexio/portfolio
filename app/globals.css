@@ -85,8 +85,11 @@
   --panel-y: clamp(44px, 6vw, 80px);
   --nav-h: 64px;
   /* Cible tactile minimale (WCAG 2.5.8) et hauteur d'un contrôle de saisie. */
+  --portrait-gray: 70%;
+  --portrait-fade: 74%;
   --tap: 44px;
   --control-h: 52px;
+  --glyph-box: 36px;
   --disabled-opacity: 0.4;
   /* Épaisseur du trait d'un contrôle de saisie. Un chiffre, un seul endroit. */
   --stroke-control: 1.5px;
@@ -328,6 +331,8 @@ button {
 .legal__updated,
 .booking-modal__tz,
 .booking-form__selected-label,
+.booking-cal__period-title,
+.work__contribution,
 .booking-cal__empty {
   font-size: var(--fs-small);
   color: var(--muted);
@@ -530,7 +535,8 @@ button {
 /* Glyphes dans les actions : taille unique, jamais écrasés par le texte. */
 .btn svg,
 .link svg,
-.pill svg {
+.pill svg,
+.about__step-glyph svg {
   flex: none;
   width: 18px;
   height: 18px;
@@ -1427,6 +1433,17 @@ button {
   font-size: 20px;
   fill: var(--heading);
 }
+/* Sur un aplat d'encre, un libellé en `--heading` serait de la même couleur que son fond. */
+.art-label--ink {
+  fill: var(--bg);
+}
+.art-label--sm {
+  font-size: 16px;
+}
+/* Un trait plein plutôt qu'un stroke : `.art-spoke` dessine les liaisons de « Connecter ». */
+.art-spoke-bar {
+  fill: var(--border-strong);
+}
 
 .domain-art--build,
 .service-hero__art {
@@ -1719,6 +1736,10 @@ button {
 .offer__price[data-free="true"] strong {
   color: var(--accent-ink);
 }
+.offer__net {
+  font-size: var(--fs-small);
+  color: var(--muted);
+}
 .offer__summary {
   font-size: var(--fs-small);
 }
@@ -1726,13 +1747,13 @@ button {
   .ladder {
     display: grid;
     grid-template-columns: repeat(var(--count, 5), minmax(0, 1fr));
-    grid-template-rows: auto auto auto auto;
+    grid-template-rows: auto auto auto auto auto;
     column-gap: var(--s-2);
     row-gap: calc(var(--s-1) / 2);
   }
   .offer {
     position: relative;
-    grid-row: span 4;
+    grid-row: span 5;
     grid-template-columns: none;
     grid-template-rows: subgrid;
     gap: calc(var(--s-1) / 2);
@@ -1748,6 +1769,19 @@ button {
   .offer .heading-sm {
     align-self: end;
     margin-top: calc(var(--s-2) - var(--s-1) / 2);
+  }
+  /* Le résumé est cloué sur la dernière ligne de la sous-grille. Une offre gratuite n'a pas de
+     mention hors TVA : sans ce placement, son résumé remonte d'une ligne et sa colonne entière
+     se désaligne. `start` aligne les hauts, sinon un résumé d'une ligne se centre dans une
+     rangée dimensionnée par un résumé de deux lignes. */
+  .offer__summary {
+    grid-row: 5;
+    align-self: start;
+  }
+  /* Le seul prix mensuel tient sur deux lignes : aligné par le haut, son montant reste à la
+     hauteur des autres et le suffixe déborde sous lui, plutôt que de tout remonter. */
+  .offer__price {
+    align-self: start;
   }
   /* Un trait d'une étape à la précédente : rien à masquer, donc l'échelle tient sur tout fond. */
   .offer:not(:first-child)::before {
@@ -1808,7 +1842,7 @@ button {
 .about__grid {
   display: grid;
   justify-content: start;
-  align-items: center;
+  align-items: start;
   gap: var(--s-5);
 }
 @media (min-width: 900px) {
@@ -1818,9 +1852,25 @@ button {
     gap: var(--s-7);
   }
 }
+/* Le portrait est détouré : il se fond dans la page au lieu de s'y poser comme une vignette.
+   Le gris le ramène dans une palette qui n'a pas de couleur, et le masque dissout la coupe
+   basse du détourage — sans lui, la découpe se lit comme un trait net au milieu du fond.
+   Sur téléphone il est plafonné : en pleine largeur il mangeait une demi-page. La surcharge
+   vient après la règle de base, une media query n'ajoutant aucune spécificité. */
 .about__portrait img {
   width: 100%;
-  border-radius: var(--radius-frame);
+  max-width: 220px;
+  filter: grayscale(var(--portrait-gray));
+  mask-image: linear-gradient(
+    to bottom,
+    #000 var(--portrait-fade),
+    transparent
+  );
+}
+@media (min-width: 900px) {
+  .about__portrait img {
+    max-width: none;
+  }
 }
 .about__text {
   display: flex;
@@ -1828,8 +1878,54 @@ button {
   gap: 14px;
   max-width: 600px;
 }
-.about__proof {
+
+/* Trois temps titrés plutôt qu'un pavé de prose : à côté d'un portrait, un bloc de texte
+   continu ne se lit pas. Le glyphe est une gorge creusée, comme un champ, pas un bouton. */
+.about__steps {
+  display: grid;
+  gap: var(--s-3);
+  margin-top: var(--s-1);
+}
+.about__step {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: start;
+  gap: var(--s-2);
+}
+.about__step-glyph {
+  display: grid;
+  place-items: center;
+  width: var(--glyph-box);
+  height: var(--glyph-box);
+  border-radius: var(--radius-field);
+  background: var(--raised);
+  color: var(--heading);
+  box-shadow:
+    inset 1px 1px 0 var(--arris-dark),
+    inset -1px -1px 0 var(--arris-light);
+}
+.about__step-text {
+  display: grid;
+  gap: var(--s-1);
+}
+.about__step-text p {
   color: var(--muted);
+}
+/* Deux profils publics, en pilules : un lien souligné se perdait sous le parcours, et un
+   bouton plein volerait la hiérarchie au CTA de la page. */
+.about__proofs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-1-5);
+  padding-top: var(--s-2);
+  border-top: 1px solid var(--border);
+}
+
+/* La contribution open source se cite sous les réalisations, pas dans « Qui je suis » :
+   c'est un commit, pas un parcours. Discret, donc, mais vérifiable en un clic. */
+.work__contribution {
+  margin-top: var(--s-3);
+  max-width: 70ch;
 }
 
 /* ── 12 Questions ─────────────────────────────────────────── */
@@ -2177,11 +2273,18 @@ button {
   margin: 0;
   accent-color: var(--accent);
 }
+/* Matin et après-midi : dix-sept boutons alignés d'un bloc ne se lisent pas, deux groupes si. */
+.booking-cal__period {
+  margin-top: var(--s-2);
+}
+.booking-cal__period-title {
+  user-select: none;
+}
 .booking-cal__slots {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
   gap: var(--s-1);
-  margin-top: var(--s-2);
+  margin-top: var(--s-1);
 }
 .booking-cal__slot {
   min-height: var(--tap);
@@ -2364,6 +2467,24 @@ button {
   height: 14px;
   background: var(--accent);
   clip-path: polygon(50% 0, 100% 58%, 40% 100%, 0 42%);
+}
+/* Brique déjà construite : une preuve, pas une offre — pas de prix, pas de bouton. Colonne
+   unique et largeur de lecture bornée, comme les autres blocs de prose de la charte. */
+.asset {
+  display: grid;
+  gap: var(--s-2);
+  max-width: 36em;
+}
+.asset .lead {
+  color: var(--muted);
+}
+.asset .situations {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 14px;
+}
+.asset__note {
+  font-size: var(--fs-small);
+  color: var(--muted);
 }
 .steps {
   display: grid;
