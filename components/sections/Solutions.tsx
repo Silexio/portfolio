@@ -32,6 +32,15 @@ export function Solutions({ lang }: { lang: Locale }) {
         ))}
       </div>
       <p className="solutions__support">
+        {t(i18n.websiteLead, lang)}{" "}
+        <a
+          className="link link--accent"
+          href={servicePath(servicePage("website"), lang)}
+        >
+          {t(i18n.websiteLink, lang)}
+        </a>
+      </p>
+      <p className="solutions__support">
         {t(i18n.supportLead, lang)}{" "}
         <a
           className="link link--accent"

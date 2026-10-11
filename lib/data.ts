@@ -80,7 +80,11 @@ export const SOCIALS: { id: SocialId; label: string; url: string }[] = [
 ];
 
 /** Pages dédiées (contenu dans lib/services.ts). L’identifiant sert aussi de source au formulaire. */
-export type ServicePageId = "automation" | "software" | "support";
+export type ServicePageId =
+  | "automation"
+  | "software"
+  | "website"
+  | "support";
 
 export const I18N = {
   nav: {
@@ -130,6 +134,14 @@ export const I18N = {
     supportLink: {
       fr: "C’est par ici : dépannage informatique",
       en: "This way: IT support",
+    },
+    websiteLead: {
+      fr: "Pas encore de site, ou un site qui ne vous ressemble plus ?",
+      en: "No website yet, or one that no longer looks like you?",
+    },
+    websiteLink: {
+      fr: "C’est par ici : création de site internet",
+      en: "This way: website design",
     },
   },
   work: {
@@ -539,6 +551,7 @@ export const LEAD_EMAILS = {
     home: "Accueil",
     automation: "Automatisation",
     software: "Logiciel métier",
+    website: "Site internet",
     support: "Dépannage",
   },
 } as const;
@@ -546,7 +559,7 @@ export const LEAD_EMAILS = {
 export type DomainId = "automate" | "connect" | "build";
 
 /** Les planches disponibles. « repair » n'a pas de panneau sur l'accueil, seulement sa page. */
-export type ArtId = DomainId | "repair";
+export type ArtId = DomainId | "repair" | "website";
 
 type Domain = {
   id: DomainId;
@@ -666,6 +679,15 @@ export const ART = {
     { fr: "CRM", en: "CRM" },
     { fr: "Peppol", en: "Peppol" },
   ],
+  site: {
+    cta: { fr: "Demander un devis", en: "Request a quote" },
+    inbox: { fr: "Vos demandes", en: "Your enquiries" },
+    entries: [
+      { fr: "Binche — toiture", en: "Binche — roofing" },
+      { fr: "Jumet — devis", en: "Jumet — quote" },
+      { fr: "Morlanwelz — rappel", en: "Morlanwelz — call back" },
+    ],
+  },
   planning: {
     title: { fr: "Planning — semaine 38", en: "Schedule — week 38" },
     sample: { fr: "Exemple", en: "Sample" },

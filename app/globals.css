@@ -1427,6 +1427,17 @@ button {
   font-size: 20px;
   fill: var(--heading);
 }
+/* Sur un aplat d'encre, un libellé en `--heading` serait de la même couleur que son fond. */
+.art-label--ink {
+  fill: var(--bg);
+}
+.art-label--sm {
+  font-size: 16px;
+}
+/* Un trait plein plutôt qu'un stroke : `.art-spoke` dessine les liaisons de « Connecter ». */
+.art-spoke-bar {
+  fill: var(--border-strong);
+}
 
 .domain-art--build,
 .service-hero__art {

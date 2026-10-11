@@ -3,9 +3,11 @@ import { expect, test } from "@playwright/test";
 const SERVICE_PAGES = [
   { path: "/fr/automatisation", other: "/en/automation" },
   { path: "/fr/logiciel-metier", other: "/en/custom-software" },
+  { path: "/fr/site-internet", other: "/en/website" },
   { path: "/fr/depannage", other: "/en/it-support" },
   { path: "/en/automation", other: "/fr/automatisation" },
   { path: "/en/custom-software", other: "/fr/logiciel-metier" },
+  { path: "/en/website", other: "/fr/site-internet" },
   { path: "/en/it-support", other: "/fr/depannage" },
 ];
 

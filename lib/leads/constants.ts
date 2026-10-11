@@ -17,6 +17,7 @@ export const LEAD_SOURCES = [
   "home",
   "automation",
   "software",
+  "website",
   "support",
 ] as const satisfies readonly ("home" | ServicePageId)[];
 export type LeadSource = (typeof LEAD_SOURCES)[number];
