@@ -1,5 +1,19 @@
 packages:
   - "."
+
+# Chaînes transitives des plugins de bundler de @sentry/nextjs, qui ne tournent qu'au build (et
+# le projet construit avec Turbopack, pas webpack). Rien n'atteint le Worker ni le navigateur,
+# mais `pnpm audit` affichait 5 high sur un dépôt public : autant servir les versions corrigées.
+# Chaînes transitives des plugins de bundler de @sentry/nextjs, qui ne tournent qu'au build
+# (et le projet construit avec Turbopack, pas webpack) : rien n'atteint le Worker ni le
+# navigateur. Ces deux-là se corrigent sans risque.
+# brace-expansion reste volontairement NON forcé : seule la chaîne glob>minimatch est touchée
+# par l'avis, mais un override global impose la v5, ESM à exports nommés, à minimatch@9 qui
+# l'importe en export par défaut — le build casse, vérifié. pnpm 11 n'accepte pas de sélecteur
+# à trois niveaux pour viser la seule chaîne fautive. À reprendre quand Sentry montera glob.
+overrides:
+  fast-uri: "^3.1.8"
+  source-map-js: "^1.2.2"
 allowBuilds:
   "@sentry/cli": true
   esbuild: true
