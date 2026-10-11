@@ -1,3 +1,4 @@
+import MEASURED from "@/lib/reviews.json";
 import type { Bilingual } from "@/lib/i18n/utils";
 import type { Price } from "@/lib/price";
 import type { Roi } from "@/lib/roi";
@@ -1008,19 +1009,21 @@ type Review = {
 };
 
 /**
- * Avis publics agrégés, relevés à la main sur chaque plateforme. Une URL vide ou un compteur à
- * zéro masque la carte : ne jamais inventer une note ni un nombre d’avis. Ces valeurs restent
- * hors du JSON-LD — Google refuse le markup aggregateRating construit sur des avis collectés
- * ailleurs, et un rich snippet refusé coûte plus qu’il ne rapporte.
+ * Avis publics agrégés. Une URL vide ou un compteur à zéro masque la carte : ne jamais inventer
+ * une note ni un nombre d’avis. Ces valeurs restent hors du JSON-LD — Google refuse le markup
+ * aggregateRating construit sur des avis collectés ailleurs, et un rich snippet refusé coûte
+ * plus qu’il ne rapporte.
+ *
+ * Les chiffres de Google vivent dans `lib/reviews.json`, écrit par `scripts/refresh-reviews.mjs`
+ * et jamais à la main : un relevé est une mesure, pas du contenu. Trustpilot reste manuel, la
+ * plateforme répondant 403 à tout script.
  */
 export const REVIEWS: Review[] = [
   {
     id: "google",
     platform: "Google",
     url: "https://g.page/r/CQS4cLlmMzj6ECE",
-    rating: 5,
-    count: 6,
-    checkedOn: "2026-10-09",
+    ...MEASURED.google,
   },
   {
     id: "trustpilot",

@@ -8,6 +8,7 @@
     "lint": "eslint",
     "test": "vitest run",
     "test:e2e": "playwright test",
+    "reviews:refresh": "node scripts/refresh-reviews.mjs",
     "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
     "smoke": "opennextjs-cloudflare build && node scripts/smoke-worker.mjs",
     "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
