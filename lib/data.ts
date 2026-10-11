@@ -1111,8 +1111,8 @@ export const PROJECTS: Project[] = [
     install: "",
     stack: ["Next.js", "TypeScript", "Tailwind", "Recharts"],
     summary: {
-      fr: "Un bilan de lombalgie déposé, les scores et l’hypothèse clinique en sortent calculés.",
-      en: "Drop in a low-back-pain assessment, get the scores and the clinical hypothesis back.",
+      fr: "Un bilan de lombalgie déposé, les scores et l’hypothèse clinique en sortent calculés — sans que le fichier quitte le navigateur.",
+      en: "Drop in a low-back-pain assessment, get the scores and the clinical hypothesis back — without the file ever leaving the browser.",
     },
     shot: {
       src: "/work/scaleneo.webp",

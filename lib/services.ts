@@ -359,8 +359,8 @@ export const SERVICE_PAGES: ServicePage[] = [
           en: "Is my data safe?",
         },
         a: {
-          fr: "Elles restent chez vous chaque fois que c’est possible : l’outil livré à un cabinet de kinésithérapie ne transmet aucune donnée patient. Sinon, elles sont hébergées, sauvegardées et surveillées, et vous savez toujours où elles se trouvent.",
-          en: "It stays on your side whenever possible: the tool delivered to a physiotherapy practice sends no patient data anywhere. Otherwise it’s hosted, backed up and monitored, and you always know where it lives.",
+          fr: "Elles restent chez vous chaque fois que c’est possible. L’outil livré à un cabinet de kinésithérapie calcule tout dans le navigateur : le bilan ne quitte jamais l’ordinateur du praticien et aucune donnée patient n’atteint un serveur, le mien compris. Quand un hébergement est nécessaire, les données sont sauvegardées, surveillées, et vous savez toujours où elles se trouvent.",
+          en: "It stays on your side whenever possible. The tool delivered to a physiotherapy practice runs entirely in the browser: the assessment never leaves the practitioner’s computer and no patient data reaches a server, mine included. When hosting is needed, the data is backed up, monitored, and you always know where it lives.",
         },
       },
     ],
