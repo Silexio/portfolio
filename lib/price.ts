@@ -16,26 +16,28 @@ export type PriceLabels = {
 };
 
 /**
- * Taux de TVA belge applicable aux prestations. Les montants du catalogue sont hors TVA — c'est
- * la base de calcul commerciale — mais le prix **affiché** doit être le total que le visiteur
- * paiera : le SPF Économie impose au prix montré à un consommateur d'inclure la TVA et toutes
- * les autres taxes, prestations de services comprises.
+ * Taux de TVA belge applicable aux prestations. Le montant mis en avant est **hors TVA** : ces
+ * tarifs s'adressent à des professionnels, qui la récupèrent, et c'est la convention de toute
+ * offre B2B. L'obligation d'afficher un prix TVA comprise vise le prix montré **à un
+ * consommateur** (SPF Économie, prix total à payer) : le total TTC accompagne donc chaque
+ * montant, et la page dépannage — la seule qui s'adresse d'abord à des particuliers —
+ * n'affiche aucun prix.
  */
 export const VAT_RATE = 0.21;
 
 export type PriceParts = {
   lead: string;
-  /** Le montant visible : TVA comprise. */
+  /** Le montant visible : hors TVA. */
   amount: string;
   tail: string;
-  /** Le même montant hors TVA, pour un professionnel qui la récupère. */
+  /** Le même montant TVA comprise, pour un particulier qui ne la récupère pas. */
   net: string;
 };
 
 /**
- * Découpe un prix en parties affichables. Le montant mis en avant est **TVA comprise**, et le
- * montant hors TVA l'accompagne : un consommateur doit lire ce qu'il paiera, un professionnel
- * ce qu'il déduira.
+ * Découpe un prix en parties affichables. Le montant mis en avant est **hors TVA**, et le total
+ * TVA comprise l'accompagne : un professionnel lit ce qu'il déduira, un particulier ce qu'il
+ * paiera réellement.
  */
 export function priceParts(
   price: Price,
@@ -52,8 +54,11 @@ export function priceParts(
     }).format(value);
   return {
     lead: price.from ? labels.from : "",
-    amount: money(Math.round(price.amount * (1 + VAT_RATE))),
+    amount: money(price.amount),
     tail: price.monthly ? labels.perMonth : "",
-    net: labels.net.replace("{amount}", money(price.amount)),
+    net: labels.net.replace(
+      "{amount}",
+      money(Math.round(price.amount * (1 + VAT_RATE))),
+    ),
   };
 }

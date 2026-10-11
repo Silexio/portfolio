@@ -188,12 +188,12 @@ export const I18N = {
     from: { fr: "dès", en: "from" },
     perMonth: { fr: "/mois", en: "/month" },
     net: {
-      fr: "soit {amount} hors TVA pour un professionnel",
-      en: "i.e. {amount} excl. VAT for a business",
+      fr: "soit {amount} TVA comprise",
+      en: "i.e. {amount} incl. VAT",
     },
     note: {
-      fr: "Montants TVA comprise, à partir de. Le périmètre exact et le montant définitif sont fixés par écrit avant de commencer, et vous ne payez rien à la commande.",
-      en: "Amounts include VAT, starting from. The exact scope and final amount are set in writing before we start, and you pay nothing on order.",
+      fr: "Montants hors TVA, à partir de — les tarifs s’adressent à des professionnels, qui récupèrent la TVA. Un particulier ajoute 21 %. Le périmètre exact et le montant définitif sont fixés par écrit avant de commencer, et vous ne payez rien à la commande.",
+      en: "Amounts exclude VAT, starting from — these prices are for businesses, which reclaim VAT. A private customer adds 21%. The exact scope and final amount are set in writing before we start, and you pay nothing on order.",
     },
   },
   faq: {
@@ -721,7 +721,8 @@ type Offer = {
 
 /**
  * L’échelle d’offres, dans l’ordre où un client la gravit. **Montants hors TVA** : c’est la base
- * de calcul commerciale et celle du JSON-LD ; l’affichage, lui, montre le total TVA comprise
+ * de calcul commerciale, celle du JSON-LD et celle de l’affichage — ces tarifs s’adressent à des
+ * professionnels. Le total TVA comprise accompagne chaque montant pour le particulier
  * (`lib/price.ts`). Les planchers viennent du catalogue « Offres & tarifs » du Notion, réconcilié
  * avec le Business Plan quand les deux se recoupent — c’est le seul endroit où ils vivent.
  */
