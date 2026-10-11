@@ -85,8 +85,11 @@
   --panel-y: clamp(44px, 6vw, 80px);
   --nav-h: 64px;
   /* Cible tactile minimale (WCAG 2.5.8) et hauteur d'un contrôle de saisie. */
+  --portrait-gray: 70%;
+  --portrait-fade: 74%;
   --tap: 44px;
   --control-h: 52px;
+  --glyph-box: 36px;
   --disabled-opacity: 0.4;
   /* Épaisseur du trait d'un contrôle de saisie. Un chiffre, un seul endroit. */
   --stroke-control: 1.5px;
@@ -329,6 +332,7 @@ button {
 .booking-modal__tz,
 .booking-form__selected-label,
 .booking-cal__period-title,
+.work__contribution,
 .booking-cal__empty {
   font-size: var(--fs-small);
   color: var(--muted);
@@ -531,7 +535,8 @@ button {
 /* Glyphes dans les actions : taille unique, jamais écrasés par le texte. */
 .btn svg,
 .link svg,
-.pill svg {
+.pill svg,
+.about__step-glyph svg {
   flex: none;
   width: 18px;
   height: 18px;
@@ -1843,18 +1848,25 @@ button {
 @media (min-width: 900px) {
   .about__grid--portrait {
     justify-content: center;
+    align-items: start;
     grid-template-columns: minmax(0, 420px) minmax(0, 600px);
     gap: var(--s-7);
   }
 }
-/* Sur téléphone le portrait est plafonné : en pleine largeur il mangeait une demi-page pour
-   une information qui tient dans une vignette. Il reprend sa place dès que la grille a deux
-   colonnes — la surcharge vient donc après la règle de base, une media query n'ajoutant
-   aucune spécificité. */
+/* Le portrait est détouré : il se fond dans la page au lieu de s'y poser comme une vignette.
+   Le gris le ramène dans une palette qui n'a pas de couleur, et le masque dissout la coupe
+   basse du détourage — sans lui, la découpe se lit comme un trait net au milieu du fond.
+   Sur téléphone il est plafonné : en pleine largeur il mangeait une demi-page. La surcharge
+   vient après la règle de base, une media query n'ajoutant aucune spécificité. */
 .about__portrait img {
   width: 100%;
   max-width: 220px;
-  border-radius: var(--radius-frame);
+  filter: grayscale(var(--portrait-gray));
+  mask-image: linear-gradient(
+    to bottom,
+    #000 var(--portrait-fade),
+    transparent
+  );
 }
 @media (min-width: 900px) {
   .about__portrait img {
@@ -1867,8 +1879,54 @@ button {
   gap: 14px;
   max-width: 600px;
 }
-.about__proof {
+
+/* Trois temps titrés plutôt qu'un pavé de prose : à côté d'un portrait, un bloc de texte
+   continu ne se lit pas. Le glyphe est une gorge creusée, comme un champ, pas un bouton. */
+.about__steps {
+  display: grid;
+  gap: var(--s-3);
+  margin-top: var(--s-1);
+}
+.about__step {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: start;
+  gap: var(--s-2);
+}
+.about__step-glyph {
+  display: grid;
+  place-items: center;
+  width: var(--glyph-box);
+  height: var(--glyph-box);
+  border-radius: var(--radius-field);
+  background: var(--raised);
+  color: var(--heading);
+  box-shadow:
+    inset 1px 1px 0 var(--arris-dark),
+    inset -1px -1px 0 var(--arris-light);
+}
+.about__step-text {
+  display: grid;
+  gap: var(--s-1);
+}
+.about__step-text p {
   color: var(--muted);
+}
+/* Deux profils publics, en pilules : un lien souligné se perdait sous le parcours, et un
+   bouton plein volerait la hiérarchie au CTA de la page. */
+.about__proofs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-1-5);
+  padding-top: var(--s-2);
+  border-top: 1px solid var(--border);
+}
+
+/* La contribution open source se cite sous les réalisations, pas dans « Qui je suis » :
+   c'est un commit, pas un parcours. Discret, donc, mais vérifiable en un clic. */
+.work__contribution {
+  margin-top: var(--s-3);
+  max-width: 70ch;
 }
 
 /* ── 12 Questions ─────────────────────────────────────────── */

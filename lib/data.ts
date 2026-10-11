@@ -1,3 +1,4 @@
+import type { IconName } from "@/components/ui/Icon";
 import MEASURED from "@/lib/reviews.json";
 import type { Bilingual } from "@/lib/i18n/utils";
 import type { Price } from "@/lib/price";
@@ -55,6 +56,10 @@ export const URLS = {
   github: "https://github.com/Silexio",
   /** Compte personnel : publié dans `sameAs` pour lier la personne au studio (E-E-A-T). */
   githubPersonal: "https://github.com/TheSawkit",
+  /** Profil personnel : le studio a sa page entreprise, la personne a la sienne. */
+  linkedinPersonal: "https://www.linkedin.com/in/nicolasjzw",
+  /** Contribution publique au pilote libre des périphériques Razer, citée sous les réalisations. */
+  openrazer: "https://github.com/openrazer/openrazer/commits?author=TheSawkit",
   facebook: "https://www.facebook.com/silexio",
   instagram: "https://www.instagram.com/silexio.be",
 } as const;
@@ -171,6 +176,11 @@ export const I18N = {
       shipped: { fr: "Livré", en: "Shipped" },
       wip: { fr: "En cours", en: "In progress" },
     },
+    contribution: {
+      fr: "Côté open source : le support du casque Razer Kraken Tournament Edition que j’ai ajouté à OpenRazer.",
+      en: "On the open-source side: the Razer Kraken Tournament Edition support I added to OpenRazer.",
+    },
+    contributionLink: { fr: "Voir le commit", en: "See the commit" },
     roi: {
       fr: "≈ {hours} h rendues chaque mois",
       en: "≈ {hours} h given back each month",
@@ -981,6 +991,62 @@ export const COVERAGE: CoverageArea[] = [
  * qu’un vrai visage installe. Le texte n’affirme que des faits vérifiables : toute ligne ajoutée
  * ici doit pouvoir être prouvée.
  */
+/**
+ * Le parcours en trois temps, chacun titré : un pavé de prose à côté d'un portrait ne se lit pas.
+ * Chaque phrase doit tenir devant quelqu'un qui vérifie — pas de diplôme qui n'existe pas, pas
+ * d'ancienneté arrondie, pas de compliment rapporté. `icon` est typé par le jeu de glyphes, donc
+ * un nom inexistant casse la compilation au lieu de rendre une case vide.
+ */
+type StoryStep = { icon: IconName; title: Bilingual; body: Bilingual };
+
+const STORY: StoryStep[] = [
+    {
+      icon: "wrench",
+      title: {
+        fr: "Un parcours orienté solutions",
+        en: "A path aimed at solutions",
+      },
+      body: {
+        fr: "J’ai commencé à démonter des ordinateurs vers dix ans. Je voulais comprendre comment ils fonctionnaient, réparer ceux de la maison et découvrir ce qu’il y avait derrière l’écran. Cette curiosité m’a suivi : des réseaux et systèmes au développement, en passant par le support informatique.",
+        en: "I started taking computers apart when I was about ten. I wanted to understand how they worked, fix the ones at home, and find out what was behind the screen. That curiosity stayed with me — from networks and systems to software development, by way of the IT support desk.",
+      },
+    },
+    {
+      icon: "code",
+      title: {
+        fr: "De la pratique au produit",
+        en: "From hands-on to product",
+      },
+      body: {
+        fr: "C’est dans le support que j’ai compris ce qui me plaisait le plus : ne pas seulement résoudre un problème, mais faire en sorte qu’il ne se répète plus. J’ai créé des outils pour supprimer des tâches que mon équipe refaisait chaque jour à la main. Plus tard, en agence, j’ai développé des sites et des applications avec Django, React et Docker.",
+        en: "It was on the support desk that I understood what I enjoyed most: not just solving a problem, but making sure it would not come back. I built tools that removed what my team was redoing by hand every day. Later, at an agency, I developed websites and applications with Django, React and Docker.",
+      },
+    },
+    {
+      icon: "spark",
+      title: { fr: "Une approche terrain", en: "A ground-level approach" },
+      body: {
+        fr: "Avec Silexio, je poursuis la même idée : rendre l’informatique réellement utile. Pas ajouter un outil de plus pour le plaisir, ni tout remplacer systématiquement, mais comprendre votre quotidien et construire ce qui vous simplifie vraiment le travail.",
+        en: "With Silexio I am following the same idea: making technology genuinely useful. Not adding one more tool for its own sake, nor replacing everything on principle, but understanding your day-to-day and building what actually makes the work simpler.",
+      },
+    },
+];
+
+type Proof = { id: SocialId; label: Bilingual; url: string };
+
+const PROOFS: Proof[] = [
+  {
+    id: "github",
+    label: { fr: "Mon code sur GitHub", en: "My code on GitHub" },
+    url: URLS.githubPersonal,
+  },
+  {
+    id: "linkedin",
+    label: { fr: "Profil LinkedIn", en: "LinkedIn profile" },
+    url: URLS.linkedinPersonal,
+  },
+];
+
 export const ABOUT = {
   eyebrow: { fr: "Qui je suis", en: "Who I am" },
   title: {
@@ -988,44 +1054,19 @@ export const ABOUT = {
     en: "A person, not a switchboard",
   },
   lead: {
-    fr: "Nicolas Wieckiewicz, développeur full-stack à Chapelle-lez-Herlaimont. La personne qui vous répond est celle qui écrit le code.",
-    en: "Nicolas Wieckiewicz, full-stack developer in Chapelle-lez-Herlaimont. The person who answers you is the one who writes the code.",
+    fr: "Nicolas Wieckiewicz, développeur full-stack à Chapelle-lez-Herlaimont. De la première idée au code livré, vous échangez directement avec la personne qui développe votre solution.",
+    en: "Nicolas Wieckiewicz, a full-stack developer in Chapelle-lez-Herlaimont. From the initial idea to the final code, you’ll work directly with the person developing your solution.",
   },
+  story: STORY,
   /**
-   * Le parcours, et rien d'autre : chaque phrase doit tenir devant quelqu'un qui vérifie.
-   * Pas de diplôme qui n'existe pas, pas d'ancienneté arrondie, pas de compliment rapporté.
+   * Profils publics où un inconnu vérifie le parcours sans avoir à me croire. Liste vide =
+   * la rangée disparaît. Ne jamais y mettre une promesse maison : seul compte ce qui se
+   * contrôle chez un tiers.
    */
-  story: [
-    {
-      fr: "J’ai commencé à démonter des ordinateurs vers dix ans, pour comprendre comment ils marchaient et réparer ceux de la maison. Je n’ai jamais arrêté : réseaux et systèmes en secondaire, puis le développement, la sécurité et l’infrastructure — appris surtout seul, sur des cas réels.",
-      en: "I started taking computers apart at about ten, to understand how they worked and fix the ones at home. I never stopped: networks and systems in secondary school, then development, security and infrastructure — mostly self-taught, on real cases.",
-    },
-    {
-      fr: "Mon premier poste était au support informatique d’une grande administration. J’y réparais les pannes des autres, et j’y ai écrit les outils qui ont supprimé ce que mon équipe refaisait chaque jour à la main. C’est exactement ce que je fais aujourd’hui pour des PME.",
-      en: "My first job was on a large organisation’s IT support desk. I fixed other people’s problems, and wrote the tools that removed what my team was redoing by hand every day. That is exactly what I now do for small businesses.",
-    },
-    {
-      fr: "Ensuite développeur full-stack en agence : Django, React, Docker, des sites et des applications utilisés tous les jours. Silexio est né de l’envie de faire ce métier à ma façon — un seul interlocuteur, des prix annoncés d’avance, et le droit de vous dire non.",
-      en: "Then full-stack developer at an agency: Django, React, Docker, sites and applications people used every day. Silexio came out of wanting to do this work my own way — one person to talk to, prices stated up front, and the freedom to tell you no.",
-    },
-    {
-      fr: "Ce qui m’obsède, c’est l’usage : un outil qui demande un mode d’emploi a déjà raté quelque chose. Et la réponse est rarement de tout remplacer — c’est de rendre enfin utile ce que vous avez déjà.",
-      en: "What I obsess over is use: a tool that needs a manual has already failed at something. And the answer is rarely to replace everything — it is to make what you already have finally useful.",
-    },
-  ],
-  /**
-   * Preuve vérifiable chez un tiers. Vide = la ligne disparaît. Ne jamais y mettre une promesse
-   * maison : le seul intérêt de cette ligne est qu'un inconnu puisse la contrôler sans me croire.
-   */
-  proof: {
-    fr: "Le support du casque Razer Kraken Tournament Edition que j’ai écrit est intégré à OpenRazer, le pilote libre des périphériques Razer sous Linux.",
-    en: "The Razer Kraken Tournament Edition support I wrote is part of OpenRazer, the open-source Razer device driver for Linux.",
-  },
-  /** Où la vérifier. Vide = la preuve s'affiche en texte simple. */
-  proofUrl: "https://github.com/openrazer/openrazer/commits?author=TheSawkit",
+  proofs: PROOFS,
   photo: "/nicolas.webp",
-  photoWidth: 715,
-  photoHeight: 760,
+  photoWidth: 860,
+  photoHeight: 894,
   photoAlt: {
     fr: "Portrait de Nicolas Wieckiewicz, fondateur de Silexio",
     en: "Portrait of Nicolas Wieckiewicz, founder of Silexio",
