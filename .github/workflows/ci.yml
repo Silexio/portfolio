@@ -74,8 +74,11 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      # Le projet `mobile` est l'iPhone 13, dont le navigateur par défaut est WebKit, pas
+      # Chromium : n'installer que Chromium faisait échouer les 25 tests mobiles d'un bloc,
+      # pendant que les 23 tests bureau passaient.
       - name: Install Playwright browsers
-        run: pnpm exec playwright install --with-deps chromium
+        run: pnpm exec playwright install --with-deps chromium webkit
 
       - name: End-to-end tests
         run: pnpm test:e2e
