@@ -15,6 +15,18 @@ export type ServiceContact = {
   taskPlaceholder: Bilingual;
 };
 
+/**
+ * Une brique que Silexio a déjà construite et qu'un client n'a donc pas à payer de zéro.
+ * Affichée après la démarche : c'est une preuve, pas une offre — elle ne porte aucun prix.
+ */
+export type ServiceAsset = {
+  eyebrow: Bilingual;
+  title: Bilingual;
+  body: Bilingual;
+  points: Bilingual[];
+  note: Bilingual;
+};
+
 export type ServicePage = {
   id: ServicePageId;
   slug: Bilingual;
@@ -29,6 +41,8 @@ export type ServicePage = {
   situations: Bilingual[];
   stepsTitle: Bilingual;
   steps: Step[];
+  /** Brique déjà construite, montrée après la démarche. Absente = rien n’est affiché. */
+  asset?: ServiceAsset;
   /** Offres affichées sur la page. Vide = la zone d’intervention prend leur place. */
   offers: OfferId[];
   faq: FaqEntry[];
@@ -154,6 +168,35 @@ export const SERVICE_PAGES: ServicePage[] = [
         },
       },
     ],
+    asset: {
+      eyebrow: { fr: "Ce qui existe déjà", en: "What already exists" },
+      title: {
+        fr: "Un moteur de recherche pour vos propres documents",
+        en: "A search engine for your own documents",
+      },
+      body: {
+        fr: "Vos équipes posent une question en français et reçoivent une réponse tirée de vos contrats, procédures et dossiers. Le socle est écrit et testé : chez vous, il est branché sur vos sources au lieu d’être reconstruit.",
+        en: "Your team asks a question in plain language and gets an answer drawn from your own contracts, procedures and files. The foundation is written and tested: at your place it is plugged into your sources rather than rebuilt.",
+      },
+      points: [
+        {
+          fr: "Tout tourne sur une machine installée chez vous — aucun de vos documents ne part sur internet",
+          en: "Everything runs on a machine installed at your office — none of your documents leave it",
+        },
+        {
+          fr: "Chaque réponse cite le fichier et la page dont elle vient, que vous ouvrez d’un clic pour vérifier",
+          en: "Every answer cites the file and page it came from, which you open in one click to check",
+        },
+        {
+          fr: "Quand vos documents ne permettent pas de répondre, l’outil le dit au lieu d’inventer",
+          en: "When your documents don’t support an answer, the tool says so instead of making one up",
+        },
+      ],
+      note: {
+        fr: "Conçu et développé par Silexio. Code propriétaire, non publié.",
+        en: "Designed and built by Silexio. Proprietary code, not published.",
+      },
+    },
     offers: ["intro", "diagnostic", "automation", "care"],
     faq: [
       {

@@ -2382,6 +2382,24 @@ button {
   background: var(--accent);
   clip-path: polygon(50% 0, 100% 58%, 40% 100%, 0 42%);
 }
+/* Brique déjà construite : une preuve, pas une offre — pas de prix, pas de bouton. Colonne
+   unique et largeur de lecture bornée, comme les autres blocs de prose de la charte. */
+.asset {
+  display: grid;
+  gap: var(--s-2);
+  max-width: 36em;
+}
+.asset .lead {
+  color: var(--muted);
+}
+.asset .situations {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 14px;
+}
+.asset__note {
+  font-size: var(--fs-small);
+  color: var(--muted);
+}
 .steps {
   display: grid;
   gap: var(--s-4);
