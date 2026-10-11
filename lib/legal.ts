@@ -69,8 +69,8 @@ export const LEGAL_SECTIONS: LegalSection[] = [
         en: "Booking request: your name, email address, phone number, the slot you picked, the format you want (video call or phone call) and, if you write one, your message. This is what you type yourself: nothing is inferred or bought elsewhere.",
       },
       {
-        fr: "Formulaire de demande (« Montrez-moi la tâche », « Décrivez la panne ») : la description que vous écrivez, le temps perdu par semaine si vous l’indiquez, votre adresse email et la page depuis laquelle vous écrivez. Ces informations me sont transmises par email et ne sont pas enregistrées sur le site ; un accusé de réception vous est envoyé à la même adresse.",
-        en: "Request form (“Show me the task”, “Describe the problem”): the description you write, the time lost per week if you give it, your email address and the page you write from. This is sent to me by email and is not stored on the site; an acknowledgement is sent to the same address.",
+        fr: "Formulaire de demande (« Montrez-moi la tâche », « Parlez-moi de votre projet », « Décrivez la panne ») : la description que vous écrivez, le temps perdu par semaine si vous l’indiquez, votre adresse email et la page depuis laquelle vous écrivez. Ces informations me sont transmises par email et ne sont pas enregistrées sur le site ; un accusé de réception vous est envoyé à la même adresse.",
+        en: "Request form (“Show me the task”, “Tell me about your project”, “Describe the problem”): the description you write, the time lost per week if you give it, your email address and the page you write from. This is sent to me by email and is not stored on the site; an acknowledgement is sent to the same address.",
       },
       {
         fr: "Protection contre les abus : votre adresse IP n’est jamais enregistrée en clair. Elle est transformée par une empreinte cryptographique irréversible, qui sert uniquement à compter les demandes venant d’une même origine et à bloquer les envois automatisés. L’empreinte ne permet pas de remonter à l’adresse.",

@@ -126,11 +126,11 @@ function AutomateArt() {
           </text>
         </g>
       </g>
-      <polygon
-        className="art-accent"
-        points={FLAKE}
-        transform="translate(332 196)"
-      />
+      {/* La translation vit sur un groupe parent : l'animation `art-fly` pose une propriété CSS
+          `transform`, qui écraserait l'attribut du polygone et renverrait l'éclat à l'origine. */}
+      <g transform="translate(332 196)">
+        <polygon className="art-accent" points={FLAKE} />
+      </g>
       <rect
         className="art-paper"
         x="452"
@@ -243,11 +243,11 @@ function RepairArt() {
         height="14"
         rx="5"
       />
-      <polygon
-        className="art-accent"
-        points={FLAKE}
-        transform="translate(56 178)"
-      />
+      {/* La translation vit sur un groupe parent : l'animation `art-fly` pose une propriété CSS
+          `transform`, qui écraserait l'attribut du polygone et renverrait l'éclat à l'origine. */}
+      <g transform="translate(56 178)">
+        <polygon className="art-accent" points={FLAKE} />
+      </g>
     </svg>
   );
 }
