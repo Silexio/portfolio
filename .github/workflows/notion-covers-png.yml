@@ -1,0 +1,53 @@
+name: Build Notion cover PNGs
+
+on:
+  push:
+    paths:
+      - "public/notion-covers-v3/*.svg"
+      - ".github/workflows/notion-covers-png.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install SVG renderer
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y librsvg2-bin
+
+      - name: Render fixed PNG covers
+        run: |
+          set -e
+          mkdir -p public/notion-covers-v4
+          for src in public/notion-covers-v3/*.svg; do
+            name="$(basename "$src" .svg)"
+            tmp="/tmp/$name.svg"
+            sed 's/stroke="#111"/stroke="#707070"/g' "$src" > "$tmp"
+            rsvg-convert -w 1500 -h 600 "$tmp" -o "public/notion-covers-v4/$name.png"
+          done
+
+          cat > public/notion-covers-v4/ATTRIBUTION.txt <<'EOF'
+Notion cover icons are derived from Lucide Icons.
+https://github.com/lucide-icons/lucide
+License: ISC
+Copyright (c) 2026 Lucide Icons and Contributors.
+EOF
+
+      - name: Commit PNG covers
+        run: |
+          git config user.name "Silexio Bot"
+          git config user.email "bot@silexio.be"
+          git add public/notion-covers-v4
+          if git diff --cached --quiet; then
+            echo "No PNG changes."
+            exit 0
+          fi
+          git commit -m "build: render Notion covers as fixed PNGs"
+          git push
