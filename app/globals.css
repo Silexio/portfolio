@@ -1842,13 +1842,12 @@ button {
 .about__grid {
   display: grid;
   justify-content: start;
-  align-items: center;
+  align-items: start;
   gap: var(--s-5);
 }
 @media (min-width: 900px) {
   .about__grid--portrait {
     justify-content: center;
-    align-items: start;
     grid-template-columns: minmax(0, 420px) minmax(0, 600px);
     gap: var(--s-7);
   }

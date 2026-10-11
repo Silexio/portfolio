@@ -1007,8 +1007,8 @@ const STORY: StoryStep[] = [
         en: "A path aimed at solutions",
       },
       body: {
-        fr: "J’ai commencé à démonter des ordinateurs vers dix ans. Je voulais comprendre comment ils fonctionnaient, réparer ceux de la maison et découvrir ce qu’il y avait derrière l’écran. Cette curiosité m’a suivi : des réseaux et systèmes au développement, en passant par le support informatique.",
-        en: "I started taking computers apart when I was about ten. I wanted to understand how they worked, fix the ones at home, and find out what was behind the screen. That curiosity stayed with me — from networks and systems to software development, by way of the IT support desk.",
+        fr: "J’ai commencé dans le support informatique avant de passer au développement full-stack. Ces deux métiers m’ont appris à partir d’un problème concret et de son usage, pas de la technologie à la mode.",
+        en: "I started in IT support before moving into full-stack development. Both taught me to start with a real problem and how it is used, not with whatever technology is trendy.",
       },
     },
     {
@@ -1018,16 +1018,16 @@ const STORY: StoryStep[] = [
         en: "From hands-on to product",
       },
       body: {
-        fr: "C’est dans le support que j’ai compris ce qui me plaisait le plus : ne pas seulement résoudre un problème, mais faire en sorte qu’il ne se répète plus. J’ai créé des outils pour supprimer des tâches que mon équipe refaisait chaque jour à la main. Plus tard, en agence, j’ai développé des sites et des applications avec Django, React et Docker.",
-        en: "It was on the support desk that I understood what I enjoyed most: not just solving a problem, but making sure it would not come back. I built tools that removed what my team was redoing by hand every day. Later, at an agency, I developed websites and applications with Django, React and Docker.",
+        fr: "En support, j’ai créé des outils pour supprimer des tâches répétées chaque jour. En agence, j’ai développé des sites et applications avec Django, React et Docker.",
+        en: "In IT support, I built tools to eliminate tasks repeated every day. At an agency, I developed websites and applications with Django, React and Docker.",
       },
     },
     {
       icon: "spark",
       title: { fr: "Une approche terrain", en: "A ground-level approach" },
       body: {
-        fr: "Avec Silexio, je poursuis la même idée : rendre l’informatique réellement utile. Pas ajouter un outil de plus pour le plaisir, ni tout remplacer systématiquement, mais comprendre votre quotidien et construire ce qui vous simplifie vraiment le travail.",
-        en: "With Silexio I am following the same idea: making technology genuinely useful. Not adding one more tool for its own sake, nor replacing everything on principle, but understanding your day-to-day and building what actually makes the work simpler.",
+        fr: "Avec Silexio, je garde cette approche : comprendre votre façon de travailler, améliorer l’existant quand c’est pertinent, puis livrer un outil clair que vous restez libre de faire évoluer.",
+        en: "With Silexio, I keep that approach: understand how you work, improve what you already have when it makes sense, and deliver a clear tool you remain free to evolve.",
       },
     },
 ];
@@ -1054,8 +1054,8 @@ export const ABOUT = {
     en: "A person, not a switchboard",
   },
   lead: {
-    fr: "Nicolas Wieckiewicz, développeur full-stack à Chapelle-lez-Herlaimont. De la première idée au code livré, vous échangez directement avec la personne qui développe votre solution.",
-    en: "Nicolas Wieckiewicz, a full-stack developer in Chapelle-lez-Herlaimont. From the initial idea to the final code, you’ll work directly with the person developing your solution.",
+    fr: "Nicolas Wieckiewicz, développeur full-stack à Chapelle-lez-Herlaimont. J’aide les PME à automatiser leurs tâches répétitives et à créer des outils adaptés à leur métier, du premier échange au code livré.",
+    en: "Nicolas Wieckiewicz, full-stack developer in Chapelle-lez-Herlaimont. I help small businesses automate repetitive work and build tools that fit their needs, from the first conversation to the delivered code.",
   },
   story: STORY,
   /**
