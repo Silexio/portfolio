@@ -3,6 +3,7 @@ import {
   formatDayLabel,
   formatSlotLabel,
   formatTimeLabel,
+  slotPeriod,
 } from "@/lib/booking/format";
 
 describe("formatTimeLabel — Brussels DST", () => {
@@ -24,5 +25,21 @@ describe("formatDayLabel / formatSlotLabel", () => {
     expect(formatSlotLabel("2026-01-14T07:00:00.000Z", "en")).toContain(
       "08:00",
     );
+  });
+});
+
+describe("slotPeriod — la coupure se fait à midi de Bruxelles, pas d'UTC", () => {
+  it("classe 11:30 de Bruxelles le matin, en hiver comme en été", () => {
+    expect(slotPeriod("2026-01-14T10:30:00.000Z")).toBe("morning");
+    expect(slotPeriod("2026-07-14T09:30:00.000Z")).toBe("morning");
+  });
+
+  it("classe midi pile l'après-midi, en hiver comme en été", () => {
+    expect(slotPeriod("2026-01-14T11:00:00.000Z")).toBe("afternoon");
+    expect(slotPeriod("2026-07-14T10:00:00.000Z")).toBe("afternoon");
+  });
+
+  it("ne bascule pas sur l'heure UTC : 11:00Z est midi passé à Bruxelles en été", () => {
+    expect(slotPeriod("2026-07-14T11:00:00.000Z")).toBe("afternoon");
   });
 });

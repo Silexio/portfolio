@@ -328,6 +328,7 @@ button {
 .legal__updated,
 .booking-modal__tz,
 .booking-form__selected-label,
+.booking-cal__period-title,
 .booking-cal__empty {
   font-size: var(--fs-small);
   color: var(--muted);
@@ -2205,11 +2206,18 @@ button {
   margin: 0;
   accent-color: var(--accent);
 }
+/* Matin et après-midi : dix-sept boutons alignés d'un bloc ne se lisent pas, deux groupes si. */
+.booking-cal__period {
+  margin-top: var(--s-2);
+}
+.booking-cal__period-title {
+  user-select: none;
+}
 .booking-cal__slots {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
   gap: var(--s-1);
-  margin-top: var(--s-2);
+  margin-top: var(--s-1);
 }
 .booking-cal__slot {
   min-height: var(--tap);

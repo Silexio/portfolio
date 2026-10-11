@@ -294,6 +294,8 @@ export const I18N = {
     },
     pickDay: { fr: "Choisissez un jour", en: "Pick a day" },
     pickSlot: { fr: "Choisissez un horaire", en: "Pick a time" },
+    morning: { fr: "Matin", en: "Morning" },
+    afternoon: { fr: "Après-midi", en: "Afternoon" },
     noSlots: {
       fr: "Aucun créneau disponible ce jour",
       en: "No slots available that day",

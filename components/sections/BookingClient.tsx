@@ -158,6 +158,8 @@ export function BookingClient({
             pickDay: labels.pickDay,
             pickSlot: labels.pickSlot,
             noSlots: labels.noSlots,
+            morning: labels.morning,
+            afternoon: labels.afternoon,
           }}
         />
       ) : (
